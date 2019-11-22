@@ -2,4 +2,4 @@
 venv
 node_modules
 static/bundle.js
-
+package-lock.json
