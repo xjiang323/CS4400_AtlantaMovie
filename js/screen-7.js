@@ -9,14 +9,14 @@ export class AdminOnlyFunctionality extends Component{
         <div>
           <h1 className={"text-center"}>Admin-Only Functionality</h1>
           <Row className={"p-2"}>
-            <Col md={{span:3, offset:3}} className={"text-center"}>
-              <Link to={""}>
+            <Col md={{span:2, offset:4}} className={"text-center"}>
+              <Link to={"/manageUser"}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Manager User
                 </Button>
               </Link>
             </Col>
-            <Col md={{span:3}} className={"text-center"}>
+            <Col md={{span:2}} className={"text-center"}>
               <Link to={""}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Explore Theater
@@ -26,14 +26,14 @@ export class AdminOnlyFunctionality extends Component{
           </Row>
 
           <Row className={"p-2"}>
-            <Col md={{span:3, offset:3}} className={"text-center"}>
-              <Link to={""}>
+            <Col md={{span:2, offset:4}} className={"text-center"}>
+              <Link to={"/manageCompany"}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Manage Company
                 </Button>
               </Link>
             </Col>
-            <Col md={{span:3}} className={"text-center"}>
+            <Col md={{span:2}} className={"text-center"}>
               <Link to={""}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Visit History
@@ -43,14 +43,14 @@ export class AdminOnlyFunctionality extends Component{
           </Row>
 
           <Row className={"p-2"}>
-            <Col md={{span:3, offset:3}} className={"text-center"}>
+            <Col md={{span:2, offset:4}} className={"text-center"}>
               <Link to={""}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Create Movie
                 </Button>
               </Link>
             </Col>
-            <Col md={{span:3}} className={"text-center"}>
+            <Col md={{span:2}} className={"text-center"}>
               <Link to={""}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Back
