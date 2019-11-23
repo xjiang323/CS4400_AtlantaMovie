@@ -6,6 +6,12 @@ import { Route, BrowserRouter, Switch } from 'react-router-dom';
  */
 import Hello from "./Hello";
 import {ManageCompanyFilter} from "./screen-14";
+import {AdminOnlyFunctionality} from "./screen-7";
+import {AdminCustomerFunctionality} from "./screen-8";
+import {ManagerOnlyFunctionality} from "./screen-9";
+import {ManagerCustomerFunctionality} from "./screen-10";
+import {CustomerFunctionality} from "./screen-11";
+import {UserFunctionality} from "./screen-12";
 
 /**
  * All routes go here.
@@ -26,6 +32,24 @@ class App extends Component{
                     <Switch>
                         <Route exact path="/">
                             <Hello/>
+                        </Route>
+                        <Route exact path="/AdminOnlyFunction">
+                            <AdminOnlyFunctionality/>
+                        </Route>
+                        <Route exact path="/AdminCustomerFunction">
+                            <AdminCustomerFunctionality/>
+                        </Route>
+                        <Route exact path="/ManagerOnlyFunction">
+                            <ManagerOnlyFunctionality/>
+                        </Route>
+                        <Route exact path="/ManagerCustomerFunction">
+                            <ManagerCustomerFunctionality/>
+                        </Route>
+                        <Route exact path="/CustomerFunction">
+                            <CustomerFunctionality/>
+                        </Route>
+                        <Route exact path="/UserFunction">
+                            <UserFunctionality/>
                         </Route>
                         <Route exact path="/manageCompany">
                             <ManageCompanyFilter/>
