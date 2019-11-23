@@ -36,6 +36,11 @@ def user_function():
   return render_template('index.html')
 
 
+@app.route('/manageUser')
+def admin_manage_user():
+  return render_template('index.html')
+
+
 @app.route('/manageCompany')
 def manage_company():
   return render_template('index.html')

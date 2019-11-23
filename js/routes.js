@@ -5,13 +5,14 @@ import { Route, BrowserRouter, Switch } from 'react-router-dom';
  * Import all page components here
  */
 import Hello from "./Hello";
-import {ManageCompanyFilter} from "./screen-14";
 import {AdminOnlyFunctionality} from "./screen-7";
 import {AdminCustomerFunctionality} from "./screen-8";
 import {ManagerOnlyFunctionality} from "./screen-9";
 import {ManagerCustomerFunctionality} from "./screen-10";
 import {CustomerFunctionality} from "./screen-11";
 import {UserFunctionality} from "./screen-12";
+import {AdminManageUser} from "./screen-13";
+import {AdminManageCompany} from "./screen-14";
 
 /**
  * All routes go here.
@@ -51,8 +52,11 @@ class App extends Component{
                         <Route exact path="/UserFunction">
                             <UserFunctionality/>
                         </Route>
+                        <Route exact path="/manageUser">
+                            <AdminManageUser/>
+                        </Route>
                         <Route exact path="/manageCompany">
-                            <ManageCompanyFilter/>
+                            <AdminManageCompany/>
                         </Route>
                     </Switch>
                 </div>
