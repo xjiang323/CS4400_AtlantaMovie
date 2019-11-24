@@ -3,14 +3,14 @@ import {Col, Form} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
-import ENDPOINTS from './Constants';
+import {ENDPOINTS} from './Constants';
 
 export class AdminManageUser extends Component{
   constructor(props) {
     super(props);
-    this.state = {username: "", status : "all", flag: "", sortBy: "username", sortDirection: "DESC",
-      userList: [{userName: 'Anjian', creditCardCount: 1, userType: 'Customer', status: 'Pending'},
-                 {userName: 'Xiaotong', creditCardCount: 5, userType: 'Manager', status: 'Approved'}]
+    this.state = {username: "", status : "ALL", flag: "", sortBy: "username", sortDirection: "DESC",
+      userList: [{username: 'Anjian', CreditCardCount: 1, userType: 'Customer', status: 'Pending'},
+                 {username: 'Xiaotong', CreditCardCount: 5, userType: 'Manager', status: 'Approved'}]
     };
 
     this.changeUser = this.changeUser.bind(this);
@@ -48,7 +48,17 @@ export class AdminManageUser extends Component{
     };
 
     // ajax
+    let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
 
+    let url = ENDPOINTS.FILTER_USER + '?' + query;
+
+    // ajax
+    fetch(url).then(res => res.json()).then((result)=>{
+      this.setState({userList: result})
+        },
+        (error)=>{});
   }
 
   approveUser(event) {
@@ -83,14 +93,14 @@ export class AdminManageUser extends Component{
 
   renderTableData() {
     return this.state.userList.map(user => {
-      const {userName, creditCardCount, userType, status} = user;
+      const {username, CreditCardCount, userType, status} = user;
       return (
-          <tr key={userName} className={"p-2"}>
+          <tr key={username} className={"p-2"}>
             <td className={"text-center"}><input type={"radio"}
-                                                 value={userName}
-                                                 checked={this.state.flag === userName}
-                                                 onChange={this.changeFlag}/>{userName}</td>
-            <td className={"text-center"}>{creditCardCount}</td>
+                                                 value={username}
+                                                 checked={this.state.flag === username}
+                                                 onChange={this.changeFlag}/>{username}</td>
+            <td className={"text-center"}>{CreditCardCount}</td>
             <td className={"text-center"}>{userType}</td>
             <td className={"text-center"}>{status}</td>
           </tr>
@@ -111,6 +121,10 @@ export class AdminManageUser extends Component{
       {columnName: 'creditCardCount', text: 'Credit Card Count'},
       {columnName: 'userType', text: 'User Type'},
       {columnName: 'status', text: 'Status'}];
+    const statuses = [{value: 'ALL', text:'--ALL--'},
+      {value: 'Declined', text: 'Decline'},
+      {value: 'Pending', text: 'Pending'},
+      {value: 'Approved', text: 'Approved'}];
     const sortDirections = ['ASC', 'DESC'];
     return (
         <div>
@@ -125,10 +139,11 @@ export class AdminManageUser extends Component{
               <Form.Group as={Col} controlId="status" className={"form-inline"} md={{span:4}}>
                 <Form.Label className={"p-4"}>Status</Form.Label>
                 <Form.Control as="select" className={"w-25 m-2"} value={this.state.status} onChange={this.changeStatus}>
-                  <option value="all">--ALL--</option>
-                  <option value="decline">Decline</option>
-                  <option value="pending">Pending</option>
-                  <option value="approved">Approved</option>
+                  {
+                    statuses.map((status, index) => (
+                        <option value={status.value} key={index}>{status.text}</option>
+                    ))
+                  }
                 </Form.Control>
               </Form.Group>
             </Form.Row>
