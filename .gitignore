@@ -3,3 +3,5 @@ venv
 node_modules
 static/bundle.js
 package-lock.json
+__pycache__
+.idea

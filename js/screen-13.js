@@ -3,11 +3,12 @@ import {Col, Form} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+import ENDPOINTS from './Constants';
 
 export class AdminManageUser extends Component{
   constructor(props) {
     super(props);
-    this.state = {username: "", status : "all", flag: "", sortBy: "username", sortDirect: "Desc",
+    this.state = {username: "", status : "all", flag: "", sortBy: "username", sortDirection: "DESC",
       userList: [{userName: 'Anjian', creditCardCount: 1, userType: 'Customer', status: 'Pending'},
                  {userName: 'Xiaotong', creditCardCount: 5, userType: 'Manager', status: 'Approved'}]
     };
@@ -16,6 +17,14 @@ export class AdminManageUser extends Component{
     this.changeStatus = this.changeStatus.bind(this);
     this.changeFlag = this.changeFlag.bind(this);
     this.renderTableData = this.renderTableData.bind(this);
+    this.approveUser = this.approveUser.bind(this);
+    this.declineUser = this.declineUser.bind(this);
+    this.filter = this.filter.bind(this);
+    this.sortItems = this.sortItems.bind(this);
+  }
+
+  componentDidMount() {
+    this.filter();
   }
 
   changeUser(event) {
@@ -28,6 +37,48 @@ export class AdminManageUser extends Component{
 
   changeFlag(event) {
     this.setState({flag: event.target.value});
+  }
+
+  filter() {
+    const args = {
+      username: this.state.username,
+      status: this.state.status,
+      sortBy: this.state.sortBy,
+      sortDirection: this.state.sortDirection
+    };
+
+    // ajax
+
+  }
+
+  approveUser(event) {
+    const args = {
+      username: this.state.flag
+    };
+
+    // ajax
+
+    // refresh
+    this.filter();
+  }
+
+  declineUser(event) {
+    const args = {
+      username: this.state.flag
+    };
+
+    // ajax
+    let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+
+    let url = ENDPOINTS.DECLINE_USER + '?' + query;
+
+    // ajax
+    fetch(url).then(()=>{}, ()=>{});
+
+    // refresh
+    this.filter();
   }
 
   renderTableData() {
@@ -44,10 +95,23 @@ export class AdminManageUser extends Component{
             <td className={"text-center"}>{status}</td>
           </tr>
       )
-    })
+    });
+  }
+
+  sortItems(sortBy, sortDirection) {
+    this.setState({
+      sortBy: sortBy,
+      sortDirection: sortDirection
+    });
+    this.filter();
   }
 
   render() {
+    const sortBys = [{columnName: 'username', text: 'Username'},
+      {columnName: 'creditCardCount', text: 'Credit Card Count'},
+      {columnName: 'userType', text: 'User Type'},
+      {columnName: 'status', text: 'Status'}];
+    const sortDirections = ['ASC', 'DESC'];
     return (
         <div>
           <h1 className={"text-center"}>Manage User</h1>
@@ -71,35 +135,36 @@ export class AdminManageUser extends Component{
 
             <Form.Row className={"p-2"}>
               <Col md={{span:2, offset:2}} className={"text-center"}>
-                <Link to={""}>
-                  <Button variant={"primary"} size={"lg"} className={"w-100"}>
+                <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.filter}>
                   Filter
-                  </Button>
-                </Link>
+                </Button>
               </Col>
               <Col md={{span:2, offset:2}} className={"text-center"}>
-                <Link to={""}>
-                  <Button variant={"primary"} size={"lg"} className={"w-100"}>
+                <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.approveUser}>
                   Approve
-                  </Button>
-                </Link>
+                </Button>
               </Col>
               <Col md={{span:2}} className={"text-center"}>
-                <Link to={""}>
-                  <Button variant={"primary"} size={"lg"} className={"w-100"}>
+                <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.declineUser}>
                   Decline
-                  </Button>
-                </Link>
+                </Button>
               </Col>
             </Form.Row>
           </Form>
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th className={"text-center"}>Username</th>
-                <th className={"text-center"}>Credit Card Count</th>
-                <th className={"text-center"}>User Type</th>
-                <th className={"text-center"}>Status</th>
+                {
+                  sortBys.map((sortBy, index) => (
+                      <th className="text-center" key={index}>
+                        <b className="mr-4">{sortBy.text}</b>
+                        <i className="fa fa-angle-up fa-lg"
+                           onClick={() => this.sortItems(sortBy.columnName, sortDirections[0])}/>
+                        <i className="fa fa-angle-down fa-lg"
+                           onClick={() => this.sortItems(sortBy.columnName, sortDirections[1])}/>
+                      </th>
+                  ))
+                }
               </tr>
             </thead>
             <tbody>
