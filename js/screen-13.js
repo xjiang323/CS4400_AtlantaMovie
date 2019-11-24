@@ -7,7 +7,7 @@ import Table from "react-bootstrap/Table";
 export class AdminManageUser extends Component{
   constructor(props) {
     super(props);
-    this.state = {username: "", status : "all", flag: "",
+    this.state = {username: "", status : "all", flag: "", sortBy: "username", sortDirect: "Desc",
       userList: [{userName: 'Anjian', creditCardCount: 1, userType: 'Customer', status: 'Pending'},
                  {userName: 'Xiaotong', creditCardCount: 5, userType: 'Manager', status: 'Approved'}]
     };

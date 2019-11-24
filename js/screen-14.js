@@ -8,7 +8,7 @@ export class AdminManageCompany extends Component{
   constructor(props) {
     super(props);
     this.state = {name: "all", minCity: "", maxCity: "", minTheater: "", maxTheater: "",
-                  minEmployee: "", maxEmployee: "", detailed: "",
+                  minEmployee: "", maxEmployee: "", detailed: "", sortBy: "name", sortDirect: "Desc",
                   companyList:[{name: "AMC", city: 2, theater: 1, Employee: 1},
                                {name: "Regal", city: 1, theater: 2, Employee: 5}]
     }
@@ -20,6 +20,8 @@ export class AdminManageCompany extends Component{
     this.changeMinEmployee = this.changeMinEmployee.bind(this);
     this.changeMaxEmployee = this.changeMaxEmployee.bind(this);
     this.changeDetailed = this.changeDetailed.bind(this);
+    this.clickSortDirect = this.clickSortDirect.bind(this);
+    this.renderTableData = this.renderTableData.bind(this);
   }
 
   changeCompany(event) {
@@ -54,11 +56,18 @@ export class AdminManageCompany extends Component{
     this.setState({detailed: event.target.value});
   }
 
+  clickSortDirect() {
+    console.log();
+    this.setState(state => ({
+    sortDirect : (state.sortDirect === "Desc") ? "Desc" : "Asc"
+    }));
+  }
+
   renderTableData() {
     return this.state.companyList.map(company => {
       const {name, city, theater, Employee} = company;
       return (
-          <tr key={name} className={"p-2"}>
+          <tr key={name}>
             <td className={"text-center"}><input type={"radio"}
                                                  value={name}
                                                  checked={this.state.detailed === name}
