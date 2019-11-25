@@ -1,8 +1,17 @@
 from flask import Flask, render_template
-from backed import backend_api
+from backend import backend_api
+from backend import db
+
 app = Flask(__name__)
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_DB'] = 'movie_company'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_PORT'] = 3306
+db.init_app(app)
 
 app.register_blueprint(backend_api)
+
 
 @app.route('/')
 def hello_world():
