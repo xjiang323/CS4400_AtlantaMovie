@@ -216,11 +216,11 @@ export class CustomerExploreMovie extends Component{
                 <Row className={"p-2"}>
                     <Col sm={3}>Movie Play Date</Col>
                     <Col sm={3}>
-                        <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.startDate} onChange={this.setStartDate}/>
+                        <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.moviePlayStartDate} onChange={this.setStartDate}/>
                     </Col>
                     <Col sm={1}>-</Col>
                     <Col sm={3}>
-                        <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.endDate} onChange={this.setEndDate}/>
+                        <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.moviePlayEndDate} onChange={this.setEndDate}/>
                     </Col>
                 </Row>
                 <Row className={"p-2"}>
