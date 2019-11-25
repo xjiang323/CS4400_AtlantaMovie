@@ -48,6 +48,21 @@ def admin_manage_user():
 def manage_company():
   return render_template('index.html')
 
+@app.route('/customerExploreMovie')
+def customer_explore_movie():
+  return render_template('index.html')
+
+@app.route('/customerViewHistory')
+def customer_view_history():
+  return render_template('index.html')
+
+@app.route('/userExploreTheater')
+def user_explore_theater():
+  return render_template('index.html')
+
+@app.route('/userVisitHistory')
+def user_visit_history():
+  return render_template('index.html')
 
 if __name__ == '__main__':
   app.run(debug=True)
