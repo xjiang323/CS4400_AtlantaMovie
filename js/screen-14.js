@@ -10,7 +10,7 @@ export class AdminManageCompany extends Component{
     super(props);
     this.state = {comName: "all", minCity: "", maxCity: "", minTheater: "", maxTheater: "",
                   minEmployee: "", maxEmployee: "", detailed: "", sortBy: "comName", sortDirection: "DESC",
-                  companyList:[]
+                  companyList:[], comDropdownList:[]
     }
     this.changeCompany = this.changeCompany.bind(this);
     this.changeMinCity = this.changeMinCity.bind(this);
@@ -22,11 +22,16 @@ export class AdminManageCompany extends Component{
     this.changeDetailed = this.changeDetailed.bind(this);
     this.renderTableData = this.renderTableData.bind(this);
     this.filter = this.filter.bind(this);
+    this.obtainCom = this.obtainCom.bind(this);
     this.sortItems = this.sortItems.bind(this);
   }
 
+  componentDidMount() {
+    this.obtainCom();
+  }
+
   changeCompany(event) {
-    this.setState({ComName: event.target.value});
+    this.setState({comName: event.target.value});
   }
 
   changeMinCity(event) {
@@ -55,6 +60,14 @@ export class AdminManageCompany extends Component{
 
   changeDetailed(event) {
     this.setState({detailed: event.target.value});
+  }
+
+  obtainCom() {
+    let url = ENDPOINTS.OBTAIN_COMPANY;
+    fetch(url).then(res => res.json()).then((result)=>{
+      this.setState({comDropdownList: result})
+        },
+        (error)=>{});
   }
 
   filter() {
@@ -114,6 +127,7 @@ export class AdminManageCompany extends Component{
       {columnName: 'numTheater', text: '#Theater'},
       {columnName: 'numEmployee', text: '#Employee'}];
     const sortDirections = ['ASC', 'DESC'];
+    const statuses = this.state.comDropdownList;
     return (
         <div>
           <h1 className={"text-center"}>Manage Company</h1>
@@ -123,8 +137,11 @@ export class AdminManageCompany extends Component{
                 <Form.Label className={"p-4"}>Name</Form.Label>
                 <Form.Control as="select" className={"w-25 m-2"} value={this.state.name} onChange={this.changeCompany}>
                   <option value="all">--ALL--</option>
-                  <option value="amc">AMC</option>
-                  <option value="regal">Regal</option>
+                  {
+                    statuses.map((status, index) => (
+                        <option value={status.comName} key={index}>{status.comName}</option>
+                    ))
+                  }
                 </Form.Control>
               </Form.Group>
 

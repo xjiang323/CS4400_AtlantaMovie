@@ -69,6 +69,7 @@ def filter_user():
         cur.close()
     return json.dumps(json_data)
 
+
 @backend_api.route('/filterCompany')
 def filter_company():
     comName = request.args.get('comName')
@@ -101,6 +102,25 @@ def filter_company():
         cur.callproc('admin_filter_company', [comName, minCity, maxCity, minTheater, maxTheater,
                                               minEmployee, maxEmployee, sortBy, sortDirection])
         cur.execute('''SELECT * FROM AdFilterCom''')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+        json_data = []
+        for row in result:
+            json_data.append(dict(zip(row_headers, row)))
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return json.dumps(json_data)
+
+
+@backend_api.route('/obtainCompany')
+def obtain_company():
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.execute('''SELECT DISTINCT comName FROM Company''')
         conn.commit()
         row_headers = [x[0] for x in cur.description]
         result = cur.fetchall()
