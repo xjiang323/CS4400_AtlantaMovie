@@ -9,8 +9,7 @@ export class AdminManageUser extends Component{
   constructor(props) {
     super(props);
     this.state = {username: "", status : "ALL", flag: "", sortBy: "username", sortDirection: "DESC",
-      userList: [{username: 'Anjian', CreditCardCount: 1, userType: 'Customer', status: 'Pending'},
-                 {username: 'Xiaotong', CreditCardCount: 5, userType: 'Manager', status: 'Approved'}]
+      userList: []
     };
 
     this.changeUser = this.changeUser.bind(this);
@@ -24,7 +23,7 @@ export class AdminManageUser extends Component{
   }
 
   componentDidMount() {
-    this.filter();
+    // this.filter();
   }
 
   changeUser(event) {
@@ -67,9 +66,15 @@ export class AdminManageUser extends Component{
     };
 
     // ajax
+    let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+    let url = ENDPOINTS.APPROVE_USER + '?' + query;
 
-    // refresh
-    this.filter();
+    fetch(url).then(()=>{
+      // refresh
+      this.filter();
+    }, ()=>{});
   }
 
   declineUser(event) {
@@ -85,17 +90,17 @@ export class AdminManageUser extends Component{
     let url = ENDPOINTS.DECLINE_USER + '?' + query;
 
     // ajax
-    fetch(url).then(()=>{}, ()=>{});
-
-    // refresh
-    this.filter();
+    fetch(url).then(()=>{
+      // refresh
+      this.filter();
+    }, ()=>{});
   }
 
   renderTableData() {
-    return this.state.userList.map(user => {
+    return this.state.userList.map((user, index) => {
       const {username, CreditCardCount, userType, status} = user;
       return (
-          <tr key={username} className={"p-2"}>
+          <tr key={index} className={"p-2"}>
             <td className={"text-center"}><input type={"radio"}
                                                  value={username}
                                                  checked={this.state.flag === username}
@@ -112,8 +117,7 @@ export class AdminManageUser extends Component{
     this.setState({
       sortBy: sortBy,
       sortDirection: sortDirection
-    });
-    this.filter();
+    }, ()=>{this.filter()});
   }
 
   render() {
@@ -121,11 +125,11 @@ export class AdminManageUser extends Component{
       {columnName: 'creditCardCount', text: 'Credit Card Count'},
       {columnName: 'userType', text: 'User Type'},
       {columnName: 'status', text: 'Status'}];
+    const sortDirections = ['ASC', 'DESC'];
     const statuses = [{value: 'ALL', text:'--ALL--'},
       {value: 'Declined', text: 'Decline'},
       {value: 'Pending', text: 'Pending'},
       {value: 'Approved', text: 'Approved'}];
-    const sortDirections = ['ASC', 'DESC'];
     return (
         <div>
           <h1 className={"text-center"}>Manage User</h1>
@@ -136,7 +140,7 @@ export class AdminManageUser extends Component{
                 <Form.Control className={"w-25 m-2"} value={this.state.username} onChange={this.changeUser}/>
               </Form.Group>
 
-              <Form.Group as={Col} controlId="status" className={"form-inline"} md={{span:4}}>
+              <Form.Group as={Col} controlId="status" className={"form-inline"} md={{span:4,offset:1}}>
                 <Form.Label className={"p-4"}>Status</Form.Label>
                 <Form.Control as="select" className={"w-25 m-2"} value={this.state.status} onChange={this.changeStatus}>
                   {
@@ -166,26 +170,28 @@ export class AdminManageUser extends Component{
               </Col>
             </Form.Row>
           </Form>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                {
-                  sortBys.map((sortBy, index) => (
-                      <th className="text-center" key={index}>
-                        <b className="mr-4">{sortBy.text}</b>
-                        <i className="fa fa-angle-up fa-lg"
-                           onClick={() => this.sortItems(sortBy.columnName, sortDirections[0])}/>
-                        <i className="fa fa-angle-down fa-lg"
-                           onClick={() => this.sortItems(sortBy.columnName, sortDirections[1])}/>
-                      </th>
-                  ))
-                }
-              </tr>
-            </thead>
+
+          <Col md={{span:10, offset:1}}>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  {
+                    sortBys.map((sortBy, index) => (
+                    <th className="text-center" key={index}>
+                      <b className="mr-4">{sortBy.text}</b>
+                      <i className="fa fa-angle-up fa-lg"
+                         onClick={() => this.sortItems(sortBy.columnName, sortDirections[0])}/>
+                      <i className="fa fa-angle-down fa-lg"
+                         onClick={() => this.sortItems(sortBy.columnName, sortDirections[1])}/>
+                    </th>))
+                  }
+                </tr>
+             </thead>
             <tbody>
               {this.renderTableData()}
             </tbody>
-          </Table>
+           </Table>
+          </Col>
 
           <Col md={{span:2, offset:5}} className={"text-center"}>
             <Link to={"/AdminOnlyFunction"}>

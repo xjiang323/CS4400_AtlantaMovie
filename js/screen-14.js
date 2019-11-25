@@ -3,14 +3,14 @@ import {Col, Form} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+import {ENDPOINTS} from "./Constants";
 
 export class AdminManageCompany extends Component{
   constructor(props) {
     super(props);
-    this.state = {name: "all", minCity: "", maxCity: "", minTheater: "", maxTheater: "",
-                  minEmployee: "", maxEmployee: "", detailed: "", sortBy: "name", sortDirect: "Desc",
-                  companyList:[{name: "AMC", city: 2, theater: 1, Employee: 1},
-                               {name: "Regal", city: 1, theater: 2, Employee: 5}]
+    this.state = {comName: "all", minCity: "", maxCity: "", minTheater: "", maxTheater: "",
+                  minEmployee: "", maxEmployee: "", detailed: "", sortBy: "comName", sortDirection: "DESC",
+                  companyList:[]
     }
     this.changeCompany = this.changeCompany.bind(this);
     this.changeMinCity = this.changeMinCity.bind(this);
@@ -20,12 +20,13 @@ export class AdminManageCompany extends Component{
     this.changeMinEmployee = this.changeMinEmployee.bind(this);
     this.changeMaxEmployee = this.changeMaxEmployee.bind(this);
     this.changeDetailed = this.changeDetailed.bind(this);
-    this.clickSortDirect = this.clickSortDirect.bind(this);
     this.renderTableData = this.renderTableData.bind(this);
+    this.filter = this.filter.bind(this);
+    this.sortItems = this.sortItems.bind(this);
   }
 
   changeCompany(event) {
-    this.setState({name: event.target.value});
+    this.setState({ComName: event.target.value});
   }
 
   changeMinCity(event) {
@@ -56,31 +57,63 @@ export class AdminManageCompany extends Component{
     this.setState({detailed: event.target.value});
   }
 
-  clickSortDirect() {
-    console.log();
-    this.setState(state => ({
-    sortDirect : (state.sortDirect === "Desc") ? "Desc" : "Asc"
-    }));
+  filter() {
+    const args = {
+      comName: this.state.comName,
+      minCity: this.state.minCity,
+      maxCity: this.state.maxCity,
+      minTheater: this.state.minTheater,
+      maxTheater: this.state.maxTheater,
+      minEmployee: this.state.minEmployee,
+      maxEmployee: this.state.maxEmployee,
+      sortBy: this.state.sortBy,
+      sortDirection: this.state.sortDirection
+    };
+
+    // ajax
+    let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+
+    let url = ENDPOINTS.FILTER_COMPANY + '?' + query;
+
+    // ajax
+    fetch(url).then(res => res.json()).then((result)=>{
+      this.setState({companyList: result})
+        },
+        (error)=>{});
   }
 
   renderTableData() {
-    return this.state.companyList.map(company => {
-      const {name, city, theater, Employee} = company;
+    return this.state.companyList.map((company, index) => {
+      const {comName, numCityCover, numTheater, numEmployee} = company;
       return (
-          <tr key={name}>
+          <tr key={index}>
             <td className={"text-center"}><input type={"radio"}
-                                                 value={name}
-                                                 checked={this.state.detailed === name}
-                                                 onChange={this.changeDetailed}/>{name}</td>
-            <td className={"text-center"}>{city}</td>
-            <td className={"text-center"}>{theater}</td>
-            <td className={"text-center"}>{Employee}</td>
+                                                 value={comName}
+                                                 checked={this.state.detailed === comName}
+                                                 onChange={this.changeDetailed}/>{comName}</td>
+            <td className={"text-center"}>{numCityCover}</td>
+            <td className={"text-center"}>{numTheater}</td>
+            <td className={"text-center"}>{numEmployee}</td>
           </tr>
       )
     })
   }
 
+  sortItems(sortBy, sortDirection) {
+    this.setState({
+      sortBy: sortBy,
+      sortDirection: sortDirection
+    }, ()=>{this.filter()});
+  }
+
   render() {
+    const sortBys = [{columnName: 'comName', text: 'Name'},
+      {columnName: 'numCityCover', text: '#CityCovered'},
+      {columnName: 'numTheater', text: '#Theater'},
+      {columnName: 'numEmployee', text: '#Employee'}];
+    const sortDirections = ['ASC', 'DESC'];
     return (
         <div>
           <h1 className={"text-center"}>Manage Company</h1>
@@ -121,11 +154,9 @@ export class AdminManageCompany extends Component{
 
             <Form.Row className={"p-2"}>
               <Col md={{span:2, offset:2}} className={"text-center"}>
-                <Link to={""}>
-                  <Button variant={"primary"} size={"lg"} className={"w-100"}>
-                  Filter
-                  </Button>
-                </Link>
+                <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.filter}>
+                Filter
+                </Button>
               </Col>
               <Col md={{span:2, offset:3}} className={"text-center"}>
                 <Link to={""}>
@@ -144,19 +175,27 @@ export class AdminManageCompany extends Component{
             </Form.Row>
           </Form>
 
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th className={"text-center"}>Name</th>
-                <th className={"text-center"}>#CityCovered</th>
-                <th className={"text-center"}>#Theater</th>
-                <th className={"text-center"}>#Employee</th>
-              </tr>
-            </thead>
+          <Col md={{span:10, offset:1}}>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  {
+                    sortBys.map((sortBy, index) => (
+                    <th className="text-center" key={index}>
+                      <b className="mr-4">{sortBy.text}</b>
+                      <i className="fa fa-angle-up fa-lg"
+                         onClick={() => this.sortItems(sortBy.columnName, sortDirections[0])}/>
+                      <i className="fa fa-angle-down fa-lg"
+                         onClick={() => this.sortItems(sortBy.columnName, sortDirections[1])}/>
+                    </th>))
+                  }
+                </tr>
+              </thead>
             <tbody>
               {this.renderTableData()}
             </tbody>
           </Table>
+          </Col>
 
           <Col md={{span:2, offset:5}} className={"text-center"} className={"p-2"}>
             <Link to={"/AdminOnlyFunction"}>
