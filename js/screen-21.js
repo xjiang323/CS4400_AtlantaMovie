@@ -1,27 +1,30 @@
 import React, {Component} from "react";
 import {Container, Button, Table} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {ENDPOINTS} from './Constants';
 
 export class CustomerViewHistory extends Component{
     constructor(props){
         super(props);
         this.props = props;
         this.state = {
-            viewHistory: [ {Movie: 'M2 8800 MV', Theater: 'Theater 98365', Company: 'California', CardNum: '3', View_date: '2018-03-06'} ]
+            viewHistory: []
         };
 
     }
+    componentDidMount() {
+        this.getViewHistory()
+    }
+
     getViewHistory(){
-        this.setState({
-            viewHistory: [ {Movie: 'M2 8800 MV', Theater: 'Theater 98365', Company: 'California', CardNum: '3', View_date: '2018-03-06'} ]
-        });
+        let url = ENDPOINTS.GET_CUSTOMER_VIEW_HISTORY;
+        fetch(url).then(res => res.json()).then((result)=> {
+            this.setState({ viewHistory: result}, () => this.renderTableData())});
 
     }
     setTableHeader() {
         const headings = {'Movie': 0, 'Theater':1, 'Company':2, 'CardNum':3, 'View Date':4};
         let header = Object.keys(headings)
-
-
       return header.map((key, index) => {
 
           return <th key={index}>{key}</th>
@@ -29,14 +32,14 @@ export class CustomerViewHistory extends Component{
    }
    renderTableData() {
       return this.state.viewHistory.map((view_info, index) => {
-          const { Movie, Theater, Company, CardNum, View_date } = view_info
-         return (
-            <tr key={Movie}>
-                <td>{Movie}</td>
-                <td>{Theater}</td>
-                <td>{Company}</td>
-                <td>{CardNum}</td>
-                <td>{View_date}</td>
+          const { movName, thName, comName, creditCardNum, movPlayDate } = view_info
+          return (
+            <tr key={index}>
+                <td>{movName}</td>
+                <td>{thName}</td>
+                <td>{comName}</td>
+                <td>{creditCardNum}</td>
+                <td>{movPlayDate}</td>
             </tr>
          )
       })
@@ -60,9 +63,7 @@ export class CustomerViewHistory extends Component{
                     <Button variant="primary">Back</Button>
                 </Link>
                 </div>
-
             </Container>
-
         )
     }
 

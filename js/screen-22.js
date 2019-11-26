@@ -2,19 +2,20 @@ import React, {Component} from "react";
 import {Col, Container, Row, Button, Table} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import DatePicker from "react-datepicker";
+import {ENDPOINTS} from './Constants';
 
 export class UserExploreTheater extends Component{
     constructor(props){
         super(props);
         this.props = props;
         this.state = {
-            theaterNameOptions: ['Theater 1', 'Theater 2'],
-            companyNameOptions: ['Com1', 'Com2'],
-            stateOptions: ['state1', 'state2'],
-            theaterName: 'ALL',
-            companyName: '',
-            city: '',
-            state: '',
+            thNameOptions: [],
+            comNameOptions: [],
+            stateOptions: [],
+            thName: 'ALL',
+            comName: 'ALL',
+            thCity: '',
+            thState: 'ALL',
             theaterList: [],
             select: '',
             visitDate: ''
@@ -28,46 +29,69 @@ export class UserExploreTheater extends Component{
         this.addVisitHistory = this.addVisitHistory.bind(this);
         this.setVisitDate = this.setVisitDate.bind(this);
     }
+    componentDidMount() {
+        this.getTheater();
+        this.getCompany();
+        this.getState();
+    }
+    getTheater() {
+        let url = ENDPOINTS.GET_ALL_THEATER;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({thNameOptions: result})},
+            (error)=>{});
+    }
+    getCompany() {
+        let url = ENDPOINTS.OBTAIN_COMPANY;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({comNameOptions: result})},
+            (error)=>{});
+    }
+    getState() {
+        let url = ENDPOINTS.GET_ALL_THEATER_STATE;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({stateOptions: result})},
+            (error)=>{});
+    }
+
     changeTheaterName(e){
-        this.setState({ theaterName: e.target.value }, () => console.log('Theater Name', this.state.theaterName));
+        this.setState({ thName: e.target.value }, () => console.log('Theater Name', this.state.thName));
     }
     changeCompanyName(e){
-        this.setState({ companyName: e.target.value }, () => console.log('Movie Name', this.state.companyName));
+        this.setState({ comName: e.target.value }, () => console.log('Movie Name', this.state.comName));
     }
     changeCity(e) {
-        this.setState({ city: e.target.value }, () => console.log('City', this.state.city));
+        this.setState({ thCity: e.target.value }, () => console.log('City', this.state.thCity));
     }
     changeState(e){
-        this.setState({ state: e.target.value }, () => console.log('State', this.state.state));
+        this.setState({ thState: e.target.value }, () => console.log('State', this.state.thState));
     }
     submitFilter(e){
         e.preventDefault();
 
-        const formPayload = {
-            theaterName: this.state.theaterName,
-            companyName: this.state.companyName,
-            city: this.state.city,
-            state: this.state.state
+        const args = {
+            thName: this.state.thName,
+            comName: this.state.comName,
+            thCity: this.state.thCity,
+            thState: this.state.thState
         };
-        console.log('Send to Form:', formPayload);
+        console.log('Send to Form:', args);
 
         this.setState({
-            theaterName: 'ALL',
-            companyName: '',
-            city: '',
-            state: ''
+            thName: 'ALL',
+            comName: 'ALL',
+            thCity: '',
+            thState: 'ALL'
         });
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.USER_FILTER_THEATER + '?' + query;
 
-        this.getTheaterList(formPayload)
+        fetch(url).then(res => res.json()).then((result)=> {
+            this.setState({ theaterList: result}, () => this.renderTableData())});
+
     }
-    getTheaterList(formPayload){
-        this.setState({
-            theaterList: [
-                { Theater: 'Theater 12345', Address:'848 Spring St NW, Atlanta, GA', Company: 'Georgia Tech'},
-                { Theater: 'Theater 98365', Address:'848 Spring St NW, Atlanta, GA', Company: 'California'}
-            ]
-        });
-    }
+
     setTableHeader() {
         const headings = {'Theater':0, 'Address':1, 'Company':2};
         let header = Object.keys(headings)
@@ -77,19 +101,19 @@ export class UserExploreTheater extends Component{
       })
    }
     select(e){
-        this.setState({ select: e.target.value }, () => console.log('Movie Name', this.state.select));
+        this.setState({ select: e.target.value }, () => console.log('Movie index', this.state.select));
      }
    renderTableData() {
       return this.state.theaterList.map((theater_info, index) => {
-          const { Theater, Address, Company } = theater_info
+          const { thName, Address, comName } = theater_info
          return (
-            <tr key={Theater}>
+            <tr key={index}>
                <td><input type={"radio"}
-                                 value={Theater}
-                                 checked={this.state.select === Theater}
-                                 onChange={this.select}/>{Theater}</td>
+                                 value={index}
+                                 checked={parseInt(this.state.select) === index}
+                                 onChange={this.select}/>{thName}</td>
                <td>{Address}</td>
-               <td>{Company}</td>
+               <td>{comName}</td>
             </tr>
          )
       })
@@ -98,7 +122,19 @@ export class UserExploreTheater extends Component{
         this.setState({ visitDate: date }, () => console.log('Visit Date', this.state.visitDate));
     }
    addVisitHistory(e){
-        console.log('Selected Company', this.state.select);
+        const selectIndex = parseInt(this.state.select);
+        const viewRow = this.state.theaterList[selectIndex];
+        const args = {
+            thName: viewRow['thName'],
+            comName: viewRow['comName'],
+            visitDate: this.state.visitDate
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.USER_VISIT_THEATER + '?' + query;
+
+        fetch(url);
    }
 
     render(){
@@ -112,12 +148,12 @@ export class UserExploreTheater extends Component{
                             <Col>
                                 <select
                                     name="theaterName"
-                                    value={this.state.theaterName}
+                                    value={this.state.thName}
                                     onChange={this.changeTheaterName}
                                     className="form-select">
                                     <option value="">--ALL--</option>
-                                    {this.state.theaterNameOptions.map(opt => {
-                                        return (<option key={opt} >{opt}</option>);
+                                    {this.state.thNameOptions.map(opt => {
+                                        return (<option key={opt.thName} >{opt.thName}</option>);
                                     })}
                                 </select>
                             </Col>
@@ -129,12 +165,12 @@ export class UserExploreTheater extends Component{
                             <Col>
                                 <select
                                     name="companyName"
-                                    value={this.state.companyName}
+                                    value={this.state.comName}
                                     onChange={this.changeCompanyName}
                                     className="form-select">
-                                    <option value="">choose</option>
-                                    {this.state.companyNameOptions.map(opt => {
-                                        return (<option key={opt} >{opt}</option>);
+                                    <option value="">--ALL--</option>
+                                    {this.state.comNameOptions.map(opt => {
+                                        return (<option key={opt.comName} >{opt.comName}</option>);
                                     })}
                                 </select>
                             </Col>
@@ -160,9 +196,9 @@ export class UserExploreTheater extends Component{
                                     value={this.state.state}
                                     onChange={this.changeState}
                                     className="form-select">
-                                    <option value="">choose</option>
+                                    <option value="">--ALL--</option>
                                     {this.state.stateOptions.map(opt => {
-                                        return (<option key={opt} >{opt}</option>);
+                                        return (<option key={opt.thState} >{opt.thState}</option>);
                                     })}
                                 </select>
                             </Col>

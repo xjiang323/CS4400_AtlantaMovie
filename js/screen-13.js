@@ -52,7 +52,6 @@ export class AdminManageUser extends Component{
              .join('&');
 
     let url = ENDPOINTS.FILTER_USER + '?' + query;
-
     // ajax
     fetch(url).then(res => res.json()).then((result)=>{
       this.setState({userList: result})

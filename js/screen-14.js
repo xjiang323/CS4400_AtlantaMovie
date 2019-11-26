@@ -225,5 +225,3 @@ export class AdminManageCompany extends Component{
     );
   }
 }
-
-

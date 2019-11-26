@@ -2,16 +2,17 @@ import React, {Component} from "react";
 import {Col, Container, Row, Button, Table} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import DatePicker from "react-datepicker";
+import {ENDPOINTS} from "./Constants";
 
 export class UserVisitHistory extends Component {
     constructor(props) {
         super(props);
         this.props = props;
         this.state = {
-            companyName: '',
-            visitStartDate: null,
-            visitEndDate: null,
-            companyNameOptions: ['Com1', 'Com2'],
+            comName: '',
+            visitStartDate: '',
+            visitEndDate: '',
+            comNameOptions: [],
             visitList: []
         };
         this.changeCompanyName = this.changeCompanyName.bind(this);
@@ -19,8 +20,17 @@ export class UserVisitHistory extends Component {
         this.setVisitStartDate = this.setVisitStartDate.bind(this);
         this.setVisitEndDate = this.setVisitEndDate.bind(this);
     }
+    componentDidMount() {
+        this.getCompany();
+    }
+    getCompany() {
+        let url = ENDPOINTS.OBTAIN_COMPANY;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({comNameOptions: result})},
+            (error)=>{});
+    }
     changeCompanyName(e){
-        this.setState({ companyName: e.target.value }, () => console.log('Movie Name', this.state.companyName));
+        this.setState({ comName: e.target.value }, () => console.log('Movie Name', this.state.comName));
     }
     setVisitStartDate(date){
         this.setState({ visitStartDate: date }, () => console.log('Start Date', this.state.visitStartDate));
@@ -31,28 +41,26 @@ export class UserVisitHistory extends Component {
     submitFilter(e){
         e.preventDefault();
 
-        const formPayload = {
-            companyName: this.state.companyName,
+        const args = {
+            comName: this.state.comName,
             visitStartDate: this.state.visitStartDate,
             visitEndDate: this.state.visitEndDate
         };
-        console.log('Send to Form:', formPayload);
+        console.log('Send to Form:', args);
 
         this.setState({
-            companyName: 'ALL',
-            visitStartDate: null,
-            visitEndDate: null
+            comName: 'ALL',
+            visitStartDate: '',
+            visitEndDate: ''
         });
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.USER_FILTER_VISIT_HISTORY + '?' + query;
 
-        this.getVisitList(formPayload)
-    }
-    getVisitList(formPayload){
-        this.setState({
-            visitList: [
-                { Theater: 'Theater 12345', Address:'848 Spring St NW, Atlanta, GA', Company: 'Georgia Tech', Visit_date: '2017-03-06' },
-                { Theater: 'Theater 98365', Address:'848 Spring St NW, Atlanta, GA', Company: 'California', Visit_date: '2018-03-06' }
-            ]
-        });
+        fetch(url).then(res => res.json()).then((result)=> {
+            this.setState({ visitList: result}, () => this.renderTableData())});
+
     }
     setTableHeader() {
         const headings = {'Theater':0, 'Address':1, 'Company':2, 'Visit Date':3};
@@ -64,13 +72,13 @@ export class UserVisitHistory extends Component {
    }
    renderTableData() {
       return this.state.visitList.map((visit_info, index) => {
-          const { Theater, Address, Company, Visit_date } = visit_info
+          const { thName, Address, comName, visitDate } = visit_info
          return (
-            <tr key={Theater}>
-               <td>{Theater}</td>
+            <tr key={thName}>
+               <td>{thName}</td>
                <td>{Address}</td>
-               <td>{Company}</td>
-                <td>{Visit_date}</td>
+               <td>{comName}</td>
+                <td>{visitDate}</td>
             </tr>
          )
       })
@@ -83,12 +91,12 @@ export class UserVisitHistory extends Component {
                     <Col sm={3}>Company Name
                         <select
                             name="companyName"
-                            value={this.state.companyName}
+                            value={this.state.comName}
                             onChange={this.changeCompanyName}
                             className="form-select">
                             <option value="">choose</option>
-                            {this.state.companyNameOptions.map(opt => {
-                                return (<option key={opt} >{opt}</option>);
+                            {this.state.comNameOptions.map(opt => {
+                                return (<option key={opt.comName} >{opt.comName}</option>);
                             })}
                         </select>
                     </Col>

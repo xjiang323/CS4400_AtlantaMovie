@@ -2,97 +2,118 @@ import React, {Component} from "react";
 import {Col, Container, Row, Button, Table} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import DatePicker from "react-datepicker";
+import {ENDPOINTS} from './Constants';
 
 export class CustomerExploreMovie extends Component{
     constructor(props) {
         super(props);
         this.props = props;
         this.state = {
-            movieNameOptions: ['M1','M2'],
-            companyNameOptions: ['Com1','Com2'],
-            stateOptions: ['state1','state2'],
-            cardNumOptions:['1000', '9999'],
-            movieName: 'ALL',
-            companyName: '',
-            city: '',
-            state: '',
-            cardNum: '',
+            movNameOptions: [],
+            comNameOptions: [],
+            stateOptions: [],
+            cardNumOptions:[],
+            movName: 'ALL',
+            comName: 'ALL',
+            thCity: '',
+            thState: 'ALL',
+            creditCardNum: '',
             moviePlayStartDate: '',
             moviePlayEndDate: '',
             movieList: [],
-            select: '',
-            selectMovie: '',
-            selectTheater: '',
-            selectCompany: '',
-            selectDate: ''
+            select: ''
         };
 
-        this.changeMovieName = this.changeMovieName.bind(this);
-        this.changeCompanyName = this.changeCompanyName.bind(this);
-        this.changeCity = this.changeCity.bind(this);
+        this.changemovName = this.changemovName.bind(this);
+        this.changecomName = this.changecomName.bind(this);
+        this.changethCity = this.changethCity.bind(this);
         this.changeState = this.changeState.bind(this);
         this.changeCardNum = this.changeCardNum.bind(this);
         this.submitFilter = this.submitFilter.bind(this);
-        this.getMovieList = this.getMovieList.bind(this);
         this.select = this.select.bind(this);
-        this.selectTheater = this.selectTheater.bind(this);
-        this.selectCompany = this.selectCompany.bind(this);
-        this.selectDate = this.selectDate.bind(this);
         this.addViewHistory = this.addViewHistory.bind(this);
         this.setStartDate = this.setStartDate.bind(this);
         this.setEndDate = this.setEndDate.bind(this);
     }
+    componentDidMount() {
+        this.getCompany();
+        this.getMovie();
+        this.getState();
+        this.getUserCardNum();
+    }
+    getMovie() {
+        let url = ENDPOINTS.GET_ALL_MOVIE;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({movNameOptions: result})},
+            (error)=>{});
+    }
+    getCompany() {
+        let url = ENDPOINTS.OBTAIN_COMPANY;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({comNameOptions: result})},
+            (error)=>{});
+    }
+    getState() {
+        let url = ENDPOINTS.GET_ALL_THEATER_STATE;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({stateOptions: result})},
+            (error)=>{});
+    }
+    getUserCardNum() {
+        let url = ENDPOINTS.GET_USER_CARD_NUMBER;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({cardNumOptions: result})},
+            (error)=>{});
+    }
 
-    changeMovieName(e){
-        this.setState({ movieName: e.target.value }, () => console.log('Movie Name', this.state.movieName));
+
+
+    changemovName(e){
+        this.setState({ movName: e.target.value }, () => console.log('Movie Name', this.state.movName));
     }
-    changeCompanyName(e){
-        this.setState({ companyName: e.target.value }, () => console.log('Movie Name', this.state.companyName));
+    changecomName(e){
+        this.setState({ comName: e.target.value }, () => console.log('Company Name', this.state.comName));
     }
-    changeCity(e) {
-        this.setState({ city: e.target.value }, () => console.log('City', this.state.city));
+    changethCity(e) {
+        this.setState({ thCity: e.target.value }, () => console.log('thCity', this.state.thCity));
     }
     changeState(e){
-        this.setState({ state: e.target.value }, () => console.log('State', this.state.state));
+        this.setState({ thState: e.target.value }, () => console.log('State', this.state.state));
     }
 
     changeCardNum(e){
-        this.setState({ cardNum: e.target.value }, () => console.log('card Num', this.state.cardNum));
+        this.setState({ creditCardNum: e.target.value }, () => console.log('card Num', this.state.creditCardNum));
     }
 
     submitFilter(e){
         e.preventDefault();
 
-        const formPayload = {
-            movieName: this.state.movieName,
-            companyName: this.state.companyName,
-            city: this.state.city,
-            state: this.state.state,
+        const args = {
+            movName: this.state.movName,
+            comName: this.state.comName,
+            thCity: this.state.thCity,
+            thState: this.state.thState,
             moviePlayStartDate: this.state.moviePlayStartDate,
-            moviePlayEndDate: this.state.moviePlayEndDate,
-            startDate: this.state.startDate,
-            endDate: this.state.endDate
+            moviePlayEndDate: this.state.moviePlayEndDate
         };
-        console.log('Send to Form:', formPayload);
 
         this.setState({
-            movieName: 'ALL',
-            companyName: '',
-            city: '',
-            state: '',
-            moviePlayStartDate: null,
-            moviePlayEndDate: null,
+            movName: 'ALL',
+            comName: 'ALL',
+            thCity: '',
+            thState: 'ALL',
+            moviePlayStartDate: '',
+            moviePlayEndDate: '',
         });
+        //ajax
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.FILTER_MOVIE + '?' + query;
 
-        this.getMovieList(formPayload)
-    }
-    getMovieList(formPayload){
-        this.setState({
-            movieList: [
-                { Movie: 'M1 4400 MV', Theater: 'Theater 12345', Address:'848 Spring St NW, Atlanta, GA', Company: 'Georgia Tech', Play_date: '2017-03-06' },
-                { Movie: 'M2 8800 MV', Theater: 'Theater 98365', Address:'848 Spring St NW, Atlanta, GA', Company: 'California', Play_date: '2018-03-06' }
-            ]
-        });
+        fetch(url).then(res => res.json()).then((result)=> {
+            this.setState({ movieList: result}, () => this.renderTableData())});
+
     }
     setStartDate(date){
         this.setState({ moviePlayStartDate: date }, () => console.log('Start Date', this.state.moviePlayStartDate));
@@ -113,40 +134,47 @@ export class CustomerExploreMovie extends Component{
         this.setState({select : e.target.value})
         // this.setState({ select: e.target.value }, () => console.log('Movie Name', this.state.select));
      }
-     selectTheater(e){
-        this.setState({ select: e.target.value }, () => console.log('Selected Theater', this.state.selectTheater));
-     }
-     selectCompany(e){
-        this.setState({ select: e.target.value }, () => console.log('Selected Company', this.state.selectCompany));
-     }
-     selectDate(e){
-        this.setState({ select: e.target.value }, () => console.log('Selected date', this.state.selectDate));
-     }
 
      addViewHistory(e){
-        console.log('Selected Company', this.state.select);
+        const selectIndex = parseInt(this.state.select);
+        const viewRow = this.state.movieList[selectIndex];
+        const args = {
+            creditCardNum: this.state.creditCardNum,
+            movName: viewRow['movName'],
+            comName: viewRow['comName'],
+            thName: viewRow['thName'],
+            movReleaseDate: viewRow['movReleaseDate'],
+            movPlayDate: viewRow['movPlayDate']
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.CUSTOMER_VIEW_MOV + '?' + query;
+
+        fetch(url);
+
      }
 
    renderTableData() {
       return this.state.movieList.map((movie_info, index) => {
-          const { Movie, Theater, Address, Company, Play_date } = movie_info
-          console.log(movie_info)
+          const { movName, thName, Address, comName, movPlayDate } = movie_info;
+          console.log(movie_info);
          return (
-            <tr key={Movie}>
+            <tr key={index}>
                <td><input type={"radio"}
-                                 value={Movie}
-                                 checked={this.state.select === Movie}
-                                 onChange={this.select}/>{Movie}</td>
-               <td>{Theater}</td>
+                                 value={index}
+                                 checked={parseInt(this.state.select) === index}
+                                 onChange={this.select}/>{movName}</td>
+               <td>{thName}</td>
                <td>{Address}</td>
-               <td>{Company}</td><td>{Play_date}</td>
+               <td>{comName}</td>
+                <td>{movPlayDate}</td>
             </tr>
          )
       })
    }
 
     render(){
-
         return (
             <Container>
                 <h1 className={"text-center"}>Explore Movie</h1>
@@ -156,13 +184,13 @@ export class CustomerExploreMovie extends Component{
                             <Col>Movie Name</Col>
                             <Col>
                                 <select
-                                    name="movieName"
-                                    value={this.state.movieName}
-                                    onChange={this.changeMovieName}
+                                    name="movName"
+                                    value={this.state.movName}
+                                    onChange={this.changemovName}
                                     className="form-select">
                                     <option value="">--ALL--</option>
-                                    {this.state.movieNameOptions.map(opt => {
-                                        return (<option key={opt} >{opt}</option>);
+                                    {this.state.movNameOptions.map(opt => {
+                                        return (<option key={opt.movName} >{opt.movName}</option>);
                                     })}
                                 </select>
                             </Col>
@@ -173,13 +201,13 @@ export class CustomerExploreMovie extends Component{
                             <Col>Company Name</Col>
                             <Col>
                                 <select
-                                    name="companyName"
-                                    value={this.state.companyName}
-                                    onChange={this.changeCompanyName}
+                                    name="comName"
+                                    value={this.state.comName}
+                                    onChange={this.changecomName}
                                     className="form-select">
-                                    <option value="">choose</option>
-                                    {this.state.companyNameOptions.map(opt => {
-                                        return (<option key={opt} >{opt}</option>);
+                                    <option value="">--ALL--</option>
+                                    {this.state.comNameOptions.map(opt => {
+                                        return (<option key={opt.comName} >{opt.comName}</option>);
                                     })}
                                 </select>
                             </Col>
@@ -189,9 +217,9 @@ export class CustomerExploreMovie extends Component{
                <Row className={"p-2"}>
                     <Col>
                         <Row className={"p-2"}>
-                            <Col>City</Col>
+                            <Col>thCity</Col>
                             <Col>
-                                <input type="text" className="form-control" id="movieCity" placeholder="City" value={this.state.city} onChange={this.changeCity}/>
+                                <input type="text" className="form-control" id="moviethCity" placeholder="thCity" value={this.state.thCity} onChange={this.changethCity}/>
                             </Col>
                         </Row>
                     </Col>
@@ -201,12 +229,12 @@ export class CustomerExploreMovie extends Component{
                             <Col>
                                 <select
                                     name="state"
-                                    value={this.state.state}
+                                    value={this.state.thState}
                                     onChange={this.changeState}
                                     className="form-select">
-                                    <option value="">choose</option>
+                                    <option value="">--ALL--</option>
                                     {this.state.stateOptions.map(opt => {
-                                        return (<option key={opt} >{opt}</option>);
+                                        return (<option key={opt.thState} >{opt.thState}</option>);
                                     })}
                                 </select>
                             </Col>
@@ -250,12 +278,12 @@ export class CustomerExploreMovie extends Component{
                             <Col>
                                 <select
                                     name="card num"
-                                    value={this.state.cardNum}
+                                    value={this.state.creditCardNum}
                                     onChange={this.changeCardNum}
                                     className="form-select">
                                     <option value="">choose</option>
                                     {this.state.cardNumOptions.map(opt => {
-                                        return (<option key={opt} >{opt}</option>);
+                                        return (<option key={opt.creditCardNum} >{opt.creditCardNum}</option>);
                                     })}
                                 </select>
                             </Col>
