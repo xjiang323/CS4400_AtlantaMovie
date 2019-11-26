@@ -9,7 +9,7 @@ export class UserVisitHistory extends Component {
         super(props);
         this.props = props;
         this.state = {
-            comName: '',
+            comName: 'ALL',
             visitStartDate: '',
             visitEndDate: '',
             comNameOptions: [],
@@ -74,7 +74,7 @@ export class UserVisitHistory extends Component {
       return this.state.visitList.map((visit_info, index) => {
           const { thName, Address, comName, visitDate } = visit_info
          return (
-            <tr key={thName}>
+            <tr key={index}>
                <td>{thName}</td>
                <td>{Address}</td>
                <td>{comName}</td>
@@ -94,7 +94,7 @@ export class UserVisitHistory extends Component {
                             value={this.state.comName}
                             onChange={this.changeCompanyName}
                             className="form-select">
-                            <option value="">choose</option>
+                            <option value="">--ALL--</option>
                             {this.state.comNameOptions.map(opt => {
                                 return (<option key={opt.comName} >{opt.comName}</option>);
                             })}
