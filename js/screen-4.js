@@ -13,9 +13,7 @@ export class Customer_reg extends Component {
             username:'',
             password:'',
             confirmPassword:'',
-            CreditCard_Number:['0000000000000000',
-                               '0000000000000000','0000000000000000','0000000000000000'],
-            carderror:''
+            CreditCard_Number:[]
 
 
 

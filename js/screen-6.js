@@ -18,7 +18,8 @@ export class ManagerCustomerReg extends Component {
             StreetAddress:'',
             city:'',
             state:'',
-            zipcode:''
+            zipcode:'',
+            Creditcardnumber:[]
 
         }
 
@@ -32,6 +33,7 @@ export class ManagerCustomerReg extends Component {
         this.addcity = this.addcity.bind(this);
         this.addstate = this.addstate.bind(this);
         this.addzipcode= this.addzipcode.bind(this);
+        this.cardnum=this.cardnum.bind(this);
 
 
     };
@@ -75,6 +77,10 @@ export class ManagerCustomerReg extends Component {
 
     addzipcode(event){
         this.setSate({zipcode:event.target.value});
+    }
+
+    cardnum(event){
+        this.setState({Creditcardnumber}:event.target.value})
     }
 
 
@@ -218,7 +224,7 @@ export class ManagerCustomerReg extends Component {
 
                     <Form.Row className={"p-2"}>
                         <Form.Group as={Col} controlId="cardnumber" className={"form-inline"} md={{span:2,offset:3}}>
-                            <Form.Control className={"w-200 m-2"} value={this.state.CreditCard_Number} onChange={this.CreditCard}/>
+                            <Form.Control className={"w-200 m-2"} value={this.state.Creditcardnumber} onChange={this.cardnum}/>
                         </Form.Group>
                         <Col md={{span:2, offset:4}} className={"text-center"}>
                             <Button variant={"secondary"} size={"lg"} className={"w-50"} onClick={this.addButton}>
