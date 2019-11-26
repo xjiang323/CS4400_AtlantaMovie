@@ -58,6 +58,31 @@ def manage_company():
   return render_template('index.html')
 
 
+@app.route('/createTheater')
+def admin_create_theater():
+  return render_template('index.html')
+
+
+@app.route('/companyDetail')
+def admin_company_detail():
+  return render_template('index.html')
+
+
+@app.route('/createMovie')
+def admin_create_movie():
+  return render_template('index.html')
+
+
+@app.route('/theaterOverview')
+def manager_theater_overview():
+  return render_template('index.html')
+
+
+@app.route('/scheduleMovie')
+def manager_schedule_movie():
+  return render_template('index.html')
+
+
 @app.route('/customerExploreMovie')
 def customer_explore_movie():
   return render_template('index.html')
@@ -76,7 +101,6 @@ def user_explore_theater():
 @app.route('/userVisitHistory')
 def user_visit_history():
   return render_template('index.html')
-
 
 if __name__ == '__main__':
   app.run(debug=True)

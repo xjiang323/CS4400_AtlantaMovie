@@ -13,10 +13,16 @@ import {CustomerFunctionality} from "./screen-11";
 import {UserFunctionality} from "./screen-12";
 import {AdminManageUser} from "./screen-13";
 import {AdminManageCompany} from "./screen-14";
+import {AdminCreateTheater} from "./screen-15";
+import {AdminCompanyDetail} from "./screen-16"
+import {AdminCreateMovie} from "./screen-17";
+import {ManagerTheaterOverview} from "./screen-18";
+import {ManagerScheduleMovie} from "./screen-19";
 import {CustomerExploreMovie} from "./screen-20";
 import {CustomerViewHistory} from "./screen-21";
 import {UserExploreTheater} from "./screen-22";
 import {UserVisitHistory} from "./screen-23";
+
 /**
  * All routes go here.
  * Don't forget to import the components above after adding new route.
@@ -72,6 +78,21 @@ class App extends Component{
                         </Route>
                         <Route exact path="/userVisitHistory">
                             <UserVisitHistory/>
+                        </Route>
+                        <Route exact path="/createMovie">
+                            <AdminCreateMovie/>
+                        </Route>
+                        <Route exact path="/theaterOverview">
+                            <ManagerTheaterOverview/>
+                        </Route>
+                        <Route exact path="/scheduleMovie">
+                        <ManagerScheduleMovie/>
+                        </Route>
+                        <Route exact path="/createTheater">
+                            <AdminCreateTheater/>
+                        </Route>
+                        <Route exact path="/companyDetail">
+                            <AdminCompanyDetail/>
                         </Route>
                     </Switch>
                 </div>
