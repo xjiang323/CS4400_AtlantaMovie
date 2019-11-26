@@ -217,9 +217,9 @@ export class CustomerExploreMovie extends Component{
                <Row className={"p-2"}>
                     <Col>
                         <Row className={"p-2"}>
-                            <Col>thCity</Col>
+                            <Col>City</Col>
                             <Col>
-                                <input type="text" className="form-control" id="moviethCity" placeholder="thCity" value={this.state.thCity} onChange={this.changethCity}/>
+                                <input type="text" className="form-control" id="moviethCity" placeholder="City" value={this.state.thCity} onChange={this.changethCity}/>
                             </Col>
                         </Row>
                     </Col>
