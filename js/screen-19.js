@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Col, Form, Row, Container, Table, Button} from "react-bootstrap";
+import {Col, Form, Row, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {ENDPOINTS} from './Constants';
 import DatePicker from "react-datepicker";

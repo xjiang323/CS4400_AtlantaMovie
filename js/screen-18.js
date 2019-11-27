@@ -55,8 +55,6 @@ export class ManagerTheaterOverview extends Component{
     }
 
 
-
-
     setTableHeader() {
         const headings = {'Movie Name':0, 'Duration':1, 'Release Date':2, 'Play Date':3};
         let header = Object.keys(headings)
@@ -67,12 +65,12 @@ export class ManagerTheaterOverview extends Component{
 
     renderTableData() {
         return this.state.movieList.map((movie_info, index) => {
-            const {movName, duration, movRelaseDate, movPlayDate} = movie_info;
+            const {movName, movDuration, movReleaseDate, movPlayDate} = movie_info;
             return (
                 <tr key={index}>
                     <td>{movName}</td>
-                    <td>{duration}</td>
-                    <td>{movRelaseDate}</td>
+                    <td>{movDuration}</td>
+                    <td>{movReleaseDate}</td>
                     <td>{movPlayDate}</td>
                 </tr>
             )
