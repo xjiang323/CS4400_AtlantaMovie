@@ -5,6 +5,12 @@ import { Route, BrowserRouter, Switch } from 'react-router-dom';
  * Import all page components here
  */
 import Hello from "./Hello";
+import {Login} from "./screen-1";
+import {RegisterNavigation} from "./screen-2";
+import {UserOnly_reg} from "./screen-3";
+import {Customer_reg} from "./screen-4";
+import {ManagerOnlyReg} from "./screen-5";
+import {ManagerCustomerReg} from "./screen-6";
 import {AdminOnlyFunctionality} from "./screen-7";
 import {AdminCustomerFunctionality} from "./screen-8";
 import {ManagerOnlyFunctionality} from "./screen-9";
@@ -22,13 +28,6 @@ import {CustomerExploreMovie} from "./screen-20";
 import {CustomerViewHistory} from "./screen-21";
 import {UserExploreTheater} from "./screen-22";
 import {UserVisitHistory} from "./screen-23";
-import {RegisterNavigation} from "./screen-2";
-import {Login} from "./screen-1";
-import {UserOnly_reg} from "./screen-3";
-import {Customer_reg} from "./screen-4";
-import {ManagerOnlyReg} from "./screen-5";
-import {ManagerCustomerReg} from "./screen-6";
-
 
 /**
  * All routes go here.
@@ -51,33 +50,30 @@ class App extends Component{
                             <Hello/>
                         </Route>
 
-
-                        <Route exact path="/AdminOnlyFunction">
-                            <AdminOnlyFunctionality/>
-                        </Route>
+                        // 1-6
                         <Route exact path="/login">
                             <Login/>
                         </Route>
                         <Route exact path="/RegisterNavigation">
                             <RegisterNavigation/>
                         </Route>
-
                         <Route exact path="/UserOnlyReg">
                             <UserOnly_reg/>
                         </Route>
-
                         <Route exact path="/CustomerReg">
                             <Customer_reg/>
                         </Route>
-
                         <Route exact path="/ManagerReg">
                             <ManagerOnlyReg/>
                         </Route>
-
                         <Route exact path="/ManagerCustomerReg">
                             <ManagerCustomerReg/>
                         </Route>
 
+                        // 7-12
+                        <Route exact path="/AdminOnlyFunction">
+                            <AdminOnlyFunctionality/>
+                        </Route>
                         <Route exact path="/AdminCustomerFunction">
                             <AdminCustomerFunctionality/>
                         </Route>
@@ -99,6 +95,25 @@ class App extends Component{
                         <Route exact path="/manageCompany">
                             <AdminManageCompany/>
                         </Route>
+
+                        // 15-19
+                        <Route exact path="/createTheater">
+                            <AdminCreateTheater/>
+                        </Route>
+                        <Route exact path="/companyDetail">
+                            <AdminCompanyDetail/>
+                        </Route>
+                        <Route exact path="/createMovie">
+                            <AdminCreateMovie/>
+                        </Route>
+                        <Route exact path="/theaterOverview">
+                            <ManagerTheaterOverview/>
+                        </Route>
+                        <Route exact path="/scheduleMovie">
+                            <ManagerScheduleMovie/>
+                        </Route>
+
+                        // 20-23
                         <Route exact path="/customerExploreMovie">
                             <CustomerExploreMovie/>
                         </Route>
@@ -110,21 +125,6 @@ class App extends Component{
                         </Route>
                         <Route exact path="/userVisitHistory">
                             <UserVisitHistory/>
-                        </Route>
-                        <Route exact path="/createMovie">
-                            <AdminCreateMovie/>
-                        </Route>
-                        <Route exact path="/theaterOverview">
-                            <ManagerTheaterOverview/>
-                        </Route>
-                        <Route exact path="/scheduleMovie">
-                        <ManagerScheduleMovie/>
-                        </Route>
-                        <Route exact path="/createTheater">
-                            <AdminCreateTheater/>
-                        </Route>
-                        <Route exact path="/companyDetail">
-                            <AdminCompanyDetail/>
                         </Route>
                     </Switch>
                 </div>
