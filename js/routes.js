@@ -22,6 +22,13 @@ import {CustomerExploreMovie} from "./screen-20";
 import {CustomerViewHistory} from "./screen-21";
 import {UserExploreTheater} from "./screen-22";
 import {UserVisitHistory} from "./screen-23";
+import {RegisterNavigation} from "./screen-2";
+import {Login} from "./screen-1";
+import {UserOnly_reg} from "./screen-3";
+import {Customer_reg} from "./screen-4";
+import {ManagerOnlyReg} from "./screen-5";
+import {ManagerCustomerReg} from "./screen-6";
+
 
 /**
  * All routes go here.
@@ -43,9 +50,34 @@ class App extends Component{
                         <Route exact path="/">
                             <Hello/>
                         </Route>
+
+
                         <Route exact path="/AdminOnlyFunction">
                             <AdminOnlyFunctionality/>
                         </Route>
+                        <Route exact path="/login">
+                            <Login/>
+                        </Route>
+                        <Route exact path="/RegisterNavigation">
+                            <RegisterNavigation/>
+                        </Route>
+
+                        <Route exact path="/UserOnlyReg">
+                            <UserOnly_reg/>
+                        </Route>
+
+                        <Route exact path="/CustomerReg">
+                            <Customer_reg/>
+                        </Route>
+
+                        <Route exact path="/ManagerReg">
+                            <ManagerOnlyReg/>
+                        </Route>
+
+                        <Route exact path="/ManagerCustomerReg">
+                            <ManagerCustomerReg/>
+                        </Route>
+
                         <Route exact path="/AdminCustomerFunction">
                             <AdminCustomerFunctionality/>
                         </Route>

@@ -87,25 +87,27 @@ export class UserVisitHistory extends Component {
         return (
             <Container>
                 <h1 className={"text-center"}>Visit History</h1>
-                <Row className={"p-2"}>
-                    <Col sm={3}>Company Name
-                        <select
-                            name="companyName"
-                            value={this.state.comName}
-                            onChange={this.changeCompanyName}
-                            className="form-select">
-                            <option value="">--ALL--</option>
-                            {this.state.comNameOptions.map(opt => {
-                                return (<option key={opt.comName} >{opt.comName}</option>);
-                            })}
-                        </select>
-                    </Col>
-                    <Col sm={2}>Visit Date</Col>
-                    <Col sm={3}>
+                <Row className={"p-4"}>
+
+                        <Col sm ={5}>Company Name
+                            <select
+                                name="companyName"
+                                value={this.state.comName}
+                                onChange={this.changeCompanyName}
+                                className="form-select">
+                                <option value="">--ALL--</option>
+                                {this.state.comNameOptions.map(opt => {
+                                    return (<option key={opt.comName} >{opt.comName}</option>);
+                                })}
+                            </select>
+                        </Col>
+
+                    <Col  sm={1.5}>Visit Date</Col>
+                    <Col sm={1.5} >
                         <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.visitStartDate} onChange={this.setVisitStartDate}/>
                     </Col>
-                    <Col sm={1}>-</Col>
-                    <Col sm={3}>
+                    <Col sm={0.5}>-</Col>
+                    <Col sm={1.5} >
                         <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.visitEndDate} onChange={this.setVisitEndDate}/>
                     </Col>
                 </Row>

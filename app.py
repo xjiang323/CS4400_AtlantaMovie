@@ -18,6 +18,33 @@ def hello_world():
   return render_template('index.html')
 
 
+@app.route('/login')
+def login():
+  return render_template('index.html')
+
+
+@app.route('/RegisterNavigation')
+def register_navigate():
+  return render_template('index.html')
+
+
+@app.route('/UserOnlyReg')
+def useronly_reg():
+  return render_template('index.html')
+
+
+@app.route('/CustomerReg')
+def customer_reg():
+  return render_template('index.html')
+
+@app.route('/ManagerReg')
+def manager_reg():
+  return render_template('index.html')
+
+@app.route('/ManagerCustomerReg')
+def manager_customer_reg():
+ return render_template('index.html')
+
 @app.route('/AdminOnlyFunction')
 def admin_function():
   return render_template('index.html')
