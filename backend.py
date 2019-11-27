@@ -178,7 +178,8 @@ def create_th():
     Zipcode = request.args.get('Zipcode')
     Capacity = request.args.get('Capacity')
 
-    if Name is None or Company is None or Street_Address is None or City is None or Manager is None or State is None or Zipcode is None or Capacity is None:
+    if Name == '' or Company == '' or Street_Address == '' or City == ''\
+            or Manager == '' or State == '' or Zipcode == '' or Capacity == '':
         return Response(status=500)
     conn = db.connect()
     cur = conn.cursor()
@@ -239,11 +240,9 @@ def create_movie():
     Name = request.args.get('Name')
     Duration = request.args.get('Duration')
     ReleaseDate = request.args.get('ReleaseDate')
-
-
     ReleaseDate = parse_date(ReleaseDate)
 
-    if Name is None or Duration is None or ReleaseDate is None:
+    if Name == '' or Duration == '' or ReleaseDate == '':
             return Response(status=500)
     conn = db.connect()
     cur = conn.cursor()
@@ -256,8 +255,6 @@ def create_movie():
     finally:
         cur.close()
     return Response(status=200)
-
-
 
 # screen18
 @backend_api.route('/ManagerFilterTheater')
@@ -298,7 +295,8 @@ def filter_theater():
     else:
         includedNotPlay = True
     try:
-        cur.callproc('manager_filter_th', [movName, USERNAME, minMovDuration, maxMovDuration, minMovReleaseDate, maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
+        cur.callproc('manager_filter_th', [movName, USERNAME, minMovDuration, maxMovDuration, minMovReleaseDate,
+                                           maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
         cur.execute('''SELECT * FROM ManFilterTh''')
         conn.commit()
         row_headers = [x[0] for x in cur.description]
