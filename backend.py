@@ -117,6 +117,58 @@ def filter_company():
         cur.close()
     return json.dumps(json_data)
 
+@backend_api.route('/ManagerFilterTheater')
+def filter_theater():
+    movName = request.args.get('movName')
+    minMovDuration = request.args.get('minMovDuration')
+    maxMovDuration = request.args.get('maxMovDuration')
+    minMovReleaseDate = request.args.get('minMovReleaseDate')
+    maxMovReleaseDate = request.args.get('maxMovReleaseDate')
+    minMovPlayDate = request.args.get('minMovPlayDate')
+    maxMovPlayDate = request.args.get('maxMovPlayDate')
+    includedNotPlay = request.args.get('includedNotPlay')
+    conn = db.connect()
+    cur = conn.cursor()
+
+
+    if minMovDuration == '':
+        minMovDuration = None
+    if maxMovDuration == '':
+        maxMovDuration = None
+    if minMovReleaseDate == '':
+        minMovReleaseDate = None
+    else:
+        minMovReleaseDate = parse_date(minMovReleaseDate)
+    if maxMovReleaseDate == '':
+        maxMovReleaseDate = None
+    else:
+        maxMovReleaseDate = parse_date(maxMovReleaseDate)
+    if minMovPlayDate == '':
+        minMovPlayDate = None
+    else:
+        minMovPlayDate = parse_date(minMovPlayDate)
+    if maxMovPlayDate == '':
+        maxMovPlayDate = None
+    else:
+        maxMovPlayDate = parse_date(maxMovPlayDate)
+
+
+
+    try:
+        cur.callproc('manager_filter_th',[movName, USERNAME, minMovDuration, maxMovDuration, minMovReleaseDate, maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
+        cur.execute('''SELECT * FROM ManFilterTh''')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+        json_data = []
+        for row in result:
+            json_data.append(dict(zip(row_headers, row)))
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return json.dumps(json_data, default=myconverter)
+
 @backend_api.route('/filterMovie')
 def filter_movie():
     comName = request.args.get('comName')

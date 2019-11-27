@@ -8,10 +8,12 @@ export const ENDPOINTS = {
     GET_ALL_MOVIE: '/getAllMovie',
     GET_ALL_THEATER_STATE: '/getAllTheaterState',
     GET_USER_CARD_NUMBER : '/getUserCardNum',
+    MANAGER_FILTER_THEATER_OVERVIEW: '/ManagerFilterTheater',
     CUSTOMER_VIEW_MOV: '/customerViewMov',
     GET_CUSTOMER_VIEW_HISTORY: '/getCustomerViewHistory',
     GET_ALL_THEATER: '/getAllTheater',
     USER_FILTER_THEATER: '/userFilerTheater',
     USER_VISIT_THEATER: '/userVisitTheater',
     USER_FILTER_VISIT_HISTORY: '/userFilterVisitHistory'
+
 };

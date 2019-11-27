@@ -8,8 +8,8 @@ export class ManagerTheaterOverview extends Component{
     constructor(props) {
         super(props);
         this.state = {moviename: "", minmovieduration: "", maxmovieduration: "", minmoviereleasedate: "", maxmoviereleasedate: "",
-                      minmovieplaydate: "", maxmovieplaydate: "", onlynotplayedmovie: "False",
-                      movieList:[{moviename:'The One', Duration:120, RelaseDate:'2019-01-01', PlayDate:'2019-02-01'}]};
+                      minmovieplaydate: "", maxmovieplaydate: "", onlynotplayedmovie: false,
+                      movieList:[]};
 
         this.changeMovieName = this.changeMovieName.bind(this);
         this.changeminMovieDuration = this.changeminMovieDuration.bind(this);
@@ -19,6 +19,7 @@ export class ManagerTheaterOverview extends Component{
         this.changeminMoviePlayDate = this.changeminMoviePlayDate.bind(this);
         this.changemaxMoviePlayDate = this.changemaxMoviePlayDate.bind(this);
         this.changeonlyIncludedNotPlayedMovie = this.changeonlyIncludedNotPlayedMovie.bind(this);
+        this.filter = this.filter.bind(this);
 
     }
     changeMovieName(e) {
@@ -50,8 +51,9 @@ export class ManagerTheaterOverview extends Component{
     }
 
     changeonlyIncludedNotPlayedMovie(){
-        a="1"
+        this.setState({onlynotplayedmovie: !this.state.onlynotplayedmovie});
     }
+
 
 
 
@@ -65,13 +67,13 @@ export class ManagerTheaterOverview extends Component{
 
     renderTableData() {
         return this.state.movieList.map((movie_info, index) => {
-            const {moviename, Duration, RelaseDate, PlayDate} = movie_info;
+            const {movName, duration, movRelaseDate, movPlayDate} = movie_info;
             return (
-                <tr key={moviename}>
-                    <td>{moviename}</td>
-                    <td>{Duration}</td>
-                    <td>{RelaseDate}</td>
-                    <td>{PlayDate}</td>
+                <tr key={index}>
+                    <td>{movName}</td>
+                    <td>{duration}</td>
+                    <td>{movRelaseDate}</td>
+                    <td>{movPlayDate}</td>
                 </tr>
             )
         });
@@ -88,6 +90,19 @@ export class ManagerTheaterOverview extends Component{
             maxMovPlayDate: this.state.maxmovieplaydate,
             includedNotPlay: this.state.onlynotplayedmovie,
         };
+
+        // ajax
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+
+        let url = ENDPOINTS.MANAGER_FILTER_THEATER_OVERVIEW + '?' + query;
+
+        // ajax
+        fetch(url).then(res => res.json()).then((result)=>{
+                this.setState({movieList: result})
+            },
+            (error)=>{});
     }
 
     render(){
@@ -133,13 +148,13 @@ export class ManagerTheaterOverview extends Component{
 
                     <Form.Row className={"p-2"}>
                         <Form.Group as={Col} controlId="formBasicCheckbox" md={{span:4,offset:5}}>
-                            <Form.Check type="checkbox" label="Only Include Not Played Movies" />
+                            <Form.Check onChange = {this.changeonlyIncludedNotPlayedMovie} type="checkbox" label="Only Include Not Played Movies" />
                         </Form.Group>
                     </Form.Row>
 
                     <Form.Row className={"p-2"}>
                         <Form.Group as={Col} md={{span:2,offset:5}} className={"text-center"}>
-                            <Button variant={"primary"} size={"lg"} className={"w-100"}>
+                            <Button variant={"primary"} onClick = {this.filter} size={"lg"} className={"w-100"}>
                                 Filter
                             </Button>
                         </Form.Group>
