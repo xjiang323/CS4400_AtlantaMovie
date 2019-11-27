@@ -803,6 +803,7 @@
 
 <body>
   <div id="reactEntry"></div>
+  <p hidden id = "global-user" >{{ logged_username }}</p>
 
   <!-- Attach React components -->
   <script type="text/javascript" src="{{ url_for('static', filename='bundle.js') }}"></script>

@@ -2,6 +2,7 @@ import React from 'react';
 import {Col, Form, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {Link} from "react-router-dom";
+import {ENDPOINTS} from "./Constants";
 
 
 export class Login extends React.Component {
@@ -14,15 +15,63 @@ export class Login extends React.Component {
 
         this.recordName = this.recordName.bind(this);
         this.recordPsw = this.recordPsw.bind(this);
+        this.login = this.login.bind(this);
+        this.type=this.type.bind(this);
     };
 
 
+
+    login(e){
+        e.preventDefault();
+        console.log(this.state.name);
+        console.log(this.state.password);
+        const args = {
+            username : this.state.name,
+            password : this.state.password
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.LOGIN + '?' + query;
+        window.location.href = url;
+    }
+    // setFuntionalityURL(){
+    //     if(this.state.type === 'AdminCustomer'){
+    //         this.state.URL = '/AdminCustomerFunction'
+    //     }
+    //     if (this.state.type === 'Customer') {
+    //         this.state.URL = '/CustomerFunction'
+    //     }
+    //     if(this.state.type === 'ManagerCustomer'){
+    //         this.state.URL = '/ManagerCustomerFunction'
+    //     }
+    //     if(this.state.type === 'Admin'){
+    //         this.state.URL = '/AdminFunction'
+    //     }
+    //     if(this.state.type === 'Manager'){
+    //         this.state.URL = '/ManagerOnlyFunction'
+    //     }
+    //     if(this.state.type === 'User'){
+    //         this.state.URL = '/UserFunction'
+    //     }
+    //     console.log(this.state.URL);
+    // }
+
     recordName(event) {
         this.setState({name: event.target.value});
+        console.log(this.state.name);
   }
 
     recordPsw(event) {
         this.setState({password: event.target.value});
+        console.log(this.state.password);
+
+    }
+
+    type(event){
+        this.setState({type:event.target.value});
+        console.log(this.state.type);
+
     }
 
 

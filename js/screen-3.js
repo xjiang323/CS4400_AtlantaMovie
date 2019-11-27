@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Col, Form, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {Link} from "react-router-dom";
+import {ENDPOINTS} from "./Constants";
 
 
 export class UserOnly_reg extends Component {
@@ -23,6 +24,27 @@ export class UserOnly_reg extends Component {
 
 
     };
+
+
+    recordReg(e){
+        e.preventDefault();
+        console.log(this.state.Fname)
+        console.log(this.state.Lname)
+        console.log(this.state.username);
+        console.log(this.state.password);
+
+        const args = {
+            firstname:this.state.Fname,
+            lastname:this.state.Lname,
+            username : this.state.username,
+            password : this.state.password,
+
+        }
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.USER_REG + '?' + query;
+    }
 
 
     First_name(event) {
@@ -97,7 +119,7 @@ export class UserOnly_reg extends Component {
                          </Col>
                          <Col md={{span:2, offset:3}} className={"text-center"}>
                              <Link to={""}>
-                                 <Button variant={"primary"} size={"lg"} className={"w-150"}>
+                                 <Button variant={"primary"} size={"lg"} className={"w-150"} onClick={this.recordReg}>
                                      Register
                                  </Button>
                              </Link>

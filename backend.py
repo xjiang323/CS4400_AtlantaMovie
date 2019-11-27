@@ -1,13 +1,249 @@
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, session, redirect
 from flaskext.mysql import MySQL
+import config
 import json
 import datetime
+import hashlib
 
 db = MySQL()
 
+
 backend_api = Blueprint('backend_api', __name__)
 
-USERNAME = 'georgep'
+def pwsmd5(my_string):
+    m = hashlib.md5()
+    m.update(my_string.encode('utf-8'))
+    return m.hexdigest()
+
+
+@backend_api.route('/valid_login')
+def valid_login():
+    global USERNAME, xx
+    username = request.args.get('username')
+    password = request.args.get('password')
+    if password:
+        password = pwsmd5(password)
+    else:
+        return Response(status=500)
+    if username is None:
+        return Response(status=500)
+    # print(username, password)
+    conn = db.connect()
+    cur = conn.cursor()
+
+    try:
+        cur.callproc('user_login', [username, password])
+        cur.execute('''SELECT * FROM UserLogin''')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+        if not result:
+            print('not result')
+            return Response(status=500)
+        tmp = result
+        result = dict(zip(row_headers,result[0]))
+
+        if result['isAdmin'] == 1 and result['isCustomer'] == 1:
+            type = 'Admin-Customer'
+        elif result['isAdmin'] == 1:
+            type = 'Admin'
+        elif result['isManager'] == 1 and result['isCustomer'] == 1:
+            type = 'Manager-Customer'
+        elif result['isManager'] == 1:
+            type = 'Manager'
+        elif result['isCustomer'] == 1:
+            type = 'Customer'
+        else:
+            type = 'User'
+        json_data = []
+        for row in tmp:
+            json_data.append(dict(zip(row_headers, row)))
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    # print(json_data)
+    new_json = []
+    tmp = {}
+    tmp['user_type'] = type
+    tmp['username'] = json_data[0]['username']
+    tmp['status'] = json_data[0]['i_status']
+    new_json.append(tmp)
+    config.USERNAME = username
+    # document.getElementById('global-user').textContent
+
+    if type == 'Customer':
+        return redirect('/CustomerFunction', code=302);
+    if type == 'AdminCustomer':
+        return redirect('/AdminCustomerFunction', code=302);
+    if type == 'ManagerCustomer':
+        return redirect('/ManagerCustomerFunction', code=302);
+    if type == 'Admin':
+        return redirect('/AdminFunction', code=302);
+    if type == 'Manager':
+        return redirect('/ManagerOnlyFunction', code=302);
+    if type == 'User':
+        return redirect('/UserFunction', code=302);
+
+
+
+@backend_api.route('/recordUserRegister')
+def record_user_register():
+    firstname=request.args.get('Fname')
+    lastname=request.args.get('Lname')
+    username=request.args.get('username')
+    password = request.args.get('password')
+    confirmpsw=request.args.get('confirmPassword')
+    if firstname is None or lastname is None or username is None or password is None or len(password) < 8:
+        return Response(status=500)
+    if password==confirmpsw:
+        password = pwsmd5(password)
+    else:
+        return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('user_register', [username, password,firstname,lastname])
+        conn.commit()
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return Response(status=200)
+
+
+@backend_api.route('/RedManagerOnlyReg')
+def record_ManagerOnly_reg():
+    firstname = request.args.get('Fname')
+    lastname = request.args.get('Lname')
+    username = request.args.get('username')
+    password = request.args.get('password')
+    confirmpsw = request.args.get('confirmPassword')
+    address=request.args.get('StreetAddress')
+    comName=request.args.get('compnay')
+    city=request.args.get('city')
+    state=request.args.get('statr')
+    zipcode=request.args.get('zipcode')
+
+    if firstname is None or \
+            lastname is None or username is None \
+            or password is None or len(password) < 8\
+            or address is None or comName is None or city is None or state is None or zipcode is None\
+            or len(zipcode) != 5:
+        return Response(status=500)
+    if password == confirmpsw:
+        password = pwsmd5(password)
+    else:
+        return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('manager_only_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
+        conn.commit()
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return Response(status=200)
+
+@backend_api.route('/screen6')
+def record_screen6():
+    firstname = request.args.get('Fname')
+    lastname = request.args.get('Lname')
+    username = request.args.get('username')
+    password = request.args.get('password')
+    confirmpsw = request.args.get('confirmPassword')
+    address=request.args.get('StreetAddress')
+    comName=request.args.get('compnay')
+    city=request.args.get('city')
+    state=request.args.get('statr')
+    zipcode=request.args.get('zipcode')
+
+    if firstname is None or \
+            lastname is None or username is None \
+            or password is None or len(password) < 8\
+            or address is None or comName is None or city is None or state is None or zipcode is None\
+            or len(zipcode)!=5:
+        return Response(status=500)
+    if password == confirmpsw:
+        password = pwsmd5(password)
+    else:
+        return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
+        conn.commit()
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return Response(status=200)
+
+
+@backend_api.route('/addCard')
+def add_card():
+    username = request.args.get('username')
+    Creditcardnumbe = request.args.get('Creditcardnumber')
+    if Creditcardnumbe is None or username is None or len(Creditcardnumbe) != 16:
+        return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('customer_add_creditcard', [username, Creditcardnumbe])
+        conn.commit()
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return Response(status=200)
+
+
+@backend_api.route('/addManagerCard')
+def add_mancard():
+    username = request.args.get('username')
+    Creditcardnumbe = request.args.get('Creditcardnumber')
+    if Creditcardnumbe is None or username is None or len(Creditcardnumbe) != 16:
+        return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('manager_customer_add_creditcard', [username, Creditcardnumbe])
+        conn.commit()
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return Response(status=200)
+
+
+@backend_api.route('/removeCard')
+def remove_card():
+    username = request.args.get('username')
+    Creditcardnumbe = request.args.get('Creditcardnumber')
+    if username is None or Creditcardnumbe is None or len(Creditcardnumbe) != 16:
+        return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.execute('''SELECT * FROM CreditCard''')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+        if not result:
+            return Response(status=500)
+        result = dict(zip(row_headers, result[0]))
+        json_data = []
+        for row in result:
+            json_data.append(dict(zip(row_headers, row)))
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return json.dumps(json_data)
+
+
+
 
 # screen13
 @backend_api.route('/approveUser')

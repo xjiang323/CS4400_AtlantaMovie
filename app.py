@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from backend import backend_api
 from backend import db
+import config
 
 app = Flask(__name__)
 app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -70,7 +71,7 @@ def manager_customer_function():
 # 11
 @app.route('/CustomerFunction')
 def customer_function():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME)
 
 # 12
 @app.route('/UserFunction')
@@ -130,7 +131,7 @@ def user_explore_theater():
 # 23
 @app.route('/userVisitHistory')
 def user_visit_history():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME )
 
 
 if __name__ == '__main__':

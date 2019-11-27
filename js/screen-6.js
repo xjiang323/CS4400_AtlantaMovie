@@ -2,6 +2,8 @@ import React, {Component} from "react";
 import {Col, Form,  Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {Link} from "react-router-dom";
+import {ENDPOINTS} from "./Constants";
+import ReactDOM from "react-dom";
 
 
 
@@ -19,7 +21,9 @@ export class ManagerCustomerReg extends Component {
             city:'',
             state:'',
             zipcode:'',
-            Creditcardnumber:[]
+            Creditcardnumber:[],
+
+
 
         }
 
@@ -34,6 +38,7 @@ export class ManagerCustomerReg extends Component {
         this.addstate = this.addstate.bind(this);
         this.addzipcode= this.addzipcode.bind(this);
         this.cardnum=this.cardnum.bind(this);
+
 
 
     };
@@ -80,8 +85,110 @@ export class ManagerCustomerReg extends Component {
     }
 
     cardnum(event){
-        this.setState({Creditcardnumber}:event.target.value})
+        this.setState({Creditcardnumber}:event.target.value,
+            ()=>{
+
+            })
     }
+
+
+    filter() {
+        const args = {
+      Creditcardnumber: this.state.Creditcardnumber,
+
+    };
+
+    // ajax
+    let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+
+    let url = ENDPOINTS.ADD_CARD + '?' + query;
+    // ajax
+    fetch(url).then(res => res.json()).then((result)=>{
+      this.setState({Creditcardnumber: result})
+        },
+        (error)=>{});
+    }
+
+    createUI(){
+     return this.state.Creditcardnumber.map((el, i) =>
+         <div key={i}>
+    	    <input type="text" value={this.filer.value} />
+    	    <input type='button' value='remove' onClick={this.removeCard.bind(this, i)}/>
+         </div>
+     )
+    }
+
+
+    handleChange(i, event) {
+        let Creditcardnumber = [...this.state.Creditcardnumber];
+        Creditcardnumber[i] = event.target.value;
+        this.setState({ Creditcardnumber });
+    }
+
+//
+//     onSubmit = event => {
+//         event.preventDefault();
+//         const cardNum = this.Creditcardnumber.value;
+//         const info = {Creditcardnumber: cardNum};
+//         const data = this.state.data;
+//         data.push(info);
+//         this.setState({
+//             data: data
+//  });
+// };
+
+
+
+    addClick(event) {
+        const args = {
+            Creditcardnumber: this.state.Creditcardnumber
+        };
+
+    // ajax
+    let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+    let url = ENDPOINTS.ADD_CARD + '?' + query;
+
+
+    fetch(url).then(()=>{
+      // refresh
+      this.filter();
+      }, ()=>{});
+    }
+
+
+    removeCard(i,event) {
+        const args = {
+            Creditcardnumber: this.state.Creditcardnumber
+    };
+
+    // ajax
+    let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+
+    let url = ENDPOINTS.REMOVE_CARD + '?' + query;
+
+    let Creditcardnumber = [...this.state.Creditcardnumber];
+        Creditcardnumber.splice(i,1);
+        this.setState({ Creditcardnumber });
+
+    // ajax
+    fetch(url).then(()=>{
+      // refresh
+      this.filter();
+      }, ()=>{});
+    }
+
+
+
+
+
+
+
 
 
 
@@ -216,22 +323,31 @@ export class ManagerCustomerReg extends Component {
                          </Form.Group>
                     </Form.Row>
 
-                    <Form.Row className={"p-2"} >
-                        <Form.Group as={Col} className={"form-inline"} md={{span:2,offset:1}} >
-                            <Form.Label >Credit Card #</Form.Label>
-                        </Form.Group>
+                    {/*<Form.Row className={"p-2"} >*/}
+                    {/*    <Form.Group as={Col} className={"form-inline"} md={{span:2,offset:1}} >*/}
+                    {/*        <Form.Label >Credit Card #</Form.Label>*/}
+                    {/*    </Form.Group>*/}
+                    {/*</Form.Row>*/}
+
+                    <Form.Row onSubmit={this.onSubmit}>
+                        <h4>Credit Card #</h4>
+                        {this.createUI()}
+                        <input type="text"  value={this.state.cardnum} ref={input => this.age = input}/>
+                        <input type='button' value='Add' onClick={this.addClick}/>
                     </Form.Row>
 
-                    <Form.Row className={"p-2"}>
-                        <Form.Group as={Col} controlId="cardnumber" className={"form-inline"} md={{span:2,offset:3}}>
-                            <Form.Control className={"w-200 m-2"} value={this.state.Creditcardnumber} onChange={this.cardnum}/>
-                        </Form.Group>
-                        <Col md={{span:2, offset:4}} className={"text-center"}>
-                            <Button variant={"secondary"} size={"lg"} className={"w-50"} onClick={this.addButton}>
-                                Add
-                            </Button>
-                         </Col>
-                    </Form.Row>
+
+
+                    {/*<Form.Row className={"p-2"}>*/}
+                    {/*    <Form.Group as={Col} controlId="cardnumber" className={"form-inline"} md={{span:2,offset:3}}>*/}
+                    {/*        <Form.Control className={"w-200 m-2"} value={this.state.Creditcardnumber} onChange={this.cardnum}/>*/}
+                    {/*    </Form.Group>*/}
+                    {/*    <Col md={{span:2, offset:4}} className={"text-center"}>*/}
+                    {/*        <Button variant={"secondary"} size={"lg"} className={"w-50"} onClick={this.AddCard}>*/}
+                    {/*            Add*/}
+                    {/*        </Button>*/}
+                    {/*     </Col>*/}
+                    {/*</Form.Row>*/}
 
 
                      <Form.Row className={"p-2"}>
@@ -252,7 +368,6 @@ export class ManagerCustomerReg extends Component {
                      </Form.Row>
                 </Form>
             </div>
-
         )
     }
 }

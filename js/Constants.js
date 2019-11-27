@@ -20,6 +20,12 @@ export const ENDPOINTS = {
     GET_ALL_THEATER: '/getAllTheater',
     USER_FILTER_THEATER: '/userFilerTheater',
     USER_VISIT_THEATER: '/userVisitTheater',
-    USER_FILTER_VISIT_HISTORY: '/userFilterVisitHistory'
+    USER_FILTER_VISIT_HISTORY: '/userFilterVisitHistory',
+    LOGIN: '/valid_login',
+    USER_REG:'/recordUserRegister',
+    ADD_CARD:'/addCard',
+    REMOVE_CARD:'/removeCard',
+    ADD_MAGCARD:'/addManagerCard'
 
 };
+
