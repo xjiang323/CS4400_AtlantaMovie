@@ -277,7 +277,7 @@ def filter_theater():
         cur.close()
     return json.dumps(json_data, default=myconverter)
 
-
+# screen20
 @backend_api.route('/filterMovie')
 def filter_movie():
     comName = request.args.get('comName')
@@ -318,12 +318,12 @@ def filter_movie():
 
     return json.dumps(new_data, default=myconverter)
 
-
+# screen20
 def myconverter(o):
     if isinstance(o, datetime.date):
         return o.__str__()
 
-
+# screen20
 @backend_api.route('/getAllMovie')
 def get_all_movie():
     conn = db.connect()
@@ -342,7 +342,7 @@ def get_all_movie():
         cur.close()
     return json.dumps(json_data)
 
-
+# screen20
 @backend_api.route('/getAllTheaterState')
 def get_all_theather_state():
     conn = db.connect()
@@ -361,7 +361,7 @@ def get_all_theather_state():
         cur.close()
     return json.dumps(json_data)
 
-
+# screen20
 @backend_api.route('/getUserCardNum')
 def get_user_cardNum():
     conn = db.connect()
@@ -381,7 +381,7 @@ def get_user_cardNum():
         cur.close()
     return json.dumps(json_data)
 
-
+# screen20
 @backend_api.route('/customerViewMov')
 def customer_view_mov():
     creditCardNum = request.args.get('creditCardNum')
@@ -410,7 +410,7 @@ def customer_view_mov():
         cur.close()
     return 'Nothing'
 
-
+# screen20
 @backend_api.route('/getCustomerViewHistory')
 def get_customer_view_history():
     conn = db.connect()
@@ -430,7 +430,7 @@ def get_customer_view_history():
         cur.close()
     return json.dumps(json_data, default=myconverter)
 
-
+# screen21
 @backend_api.route('/getAllTheater')
 def get_all_theather():
     conn = db.connect()
@@ -449,7 +449,7 @@ def get_all_theather():
         cur.close()
     return json.dumps(json_data)
 
-
+# screen21
 @backend_api.route('/userFilerTheater')
 def user_filer_theater():
     comName = request.args.get('comName')
@@ -478,7 +478,7 @@ def user_filer_theater():
 
     return json.dumps(new_data, default=myconverter)
 
-
+# screen21
 @backend_api.route('/userVisitTheater')
 def user_visit_theater():
     thName = request.args.get('thName')
@@ -519,7 +519,7 @@ def user_visit_theater():
         cur.close()
     return 'nothing'
 
-
+# screen21
 @backend_api.route('/userFilterVisitHistory')
 def user_filer_visit_history():
     comName = request.args.get('comName')
@@ -556,7 +556,7 @@ def user_filer_visit_history():
 
     return json.dumps(new_data, default=myconverter)
 
-
+# screen21
 def parse_date(date):
     date = date.split()
     monthMap = {
@@ -580,7 +580,7 @@ def parse_date(date):
     parseVisitDate = '-'.join(tmp)
     return parseVisitDate
 
-
+# screen21
 def parse_address(json_data):
     new_data = []
     for row in json_data:
