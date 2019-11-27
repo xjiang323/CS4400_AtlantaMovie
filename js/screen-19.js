@@ -12,6 +12,7 @@ export class ManagerScheduleMovie extends Component{
         this.changeMovieName = this.changeMovieName.bind(this);
         this.changeReleaseDate = this.changeReleaseDate.bind(this);
         this.changePlayDate = this.changePlayDate.bind(this);
+        this.add = this.add.bind(this);
     }
 
     changeMovieName(e) {
@@ -24,6 +25,19 @@ export class ManagerScheduleMovie extends Component{
 
     changePlayDate(date) {
         this.setState({playdate: date});
+    }
+
+    add() {
+        const args = {
+            Name: this.state.name,
+            ReleaseDate: this.state.releasedate,
+            PlayDate: this.state.playdate,
+        }
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.MANAGER_SCHEDULE_MOVIE + '?' + query;
+        fetch(url).then(()=>{}, ()=>{});
     }
 
 
@@ -41,18 +55,18 @@ export class ManagerScheduleMovie extends Component{
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="MovieName" className={"form-inline"} md={{span: 4, offset: 2}}>
-                            <Col xs lg="2">Play Date</Col>
+                            <Col xs lg="2">Release Date</Col>
                             <Col xs lg="2">
-                                <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.playdate} onChange={this.changePlayDate}/>
+                                <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.releasedate} onChange={this.changeReleaseDate}/>
                             </Col>
                         </Form.Group>
 
                     </Form.Row>
 
                     <Form.Row className="justify-content-md-center">
-                        <Col xs lg="2">Release Date</Col>
+                        <Col xs lg="2">Play Date</Col>
                         <Col xs lg="2">
-                            <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.releasedate} onChange={this.changeReleaseDate}/>
+                            <DatePicker dateFormat="yyyy-MM-dd" selected={this.state.playdate} onChange={this.changePlayDate}/>
                         </Col>
                     </Form.Row>
 
@@ -66,7 +80,7 @@ export class ManagerScheduleMovie extends Component{
                     </Col>
 
                     <Col md={{span:2, offset:2}} className={"text-center"}>
-                        <Button variant={"primary"} size={"lg"} className={"w-100"}>Create</Button>
+                        <Button variant={"primary"} onClick = {this.add} size={"lg"} className={"w-100"}>Add</Button>
                     </Col>
                 </Row>
             </div>

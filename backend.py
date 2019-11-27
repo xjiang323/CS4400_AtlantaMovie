@@ -233,6 +233,32 @@ def obtain_theater():
         cur.close()
     return json.dumps(json_data)
 
+# screen17
+@backend_api.route('/AdminCreateMovie')
+def create_movie():
+    Name = request.args.get('Name')
+    Duration = request.args.get('Duration')
+    ReleaseDate = request.args.get('ReleaseDate')
+
+
+    ReleaseDate = parse_date(ReleaseDate)
+
+    if Name is None or Duration is None or ReleaseDate is None:
+            return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+
+    try:
+        cur.callproc('admin_create_mov', [Name, ReleaseDate, Duration])
+        conn.commit()
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return Response(status=200)
+
+
+
 # screen18
 @backend_api.route('/ManagerFilterTheater')
 def filter_theater():
@@ -285,6 +311,32 @@ def filter_theater():
     finally:
         cur.close()
     return json.dumps(json_data, default=myconverter)
+
+# screen19
+@backend_api.route('/ManagerScheduleMovie')
+def add_movie():
+    Name = request.args.get('Name')
+    ReleaseDate = request.args.get('ReleaseDate')
+    PlayDate = request.args.get('PlayDate')
+
+
+    ReleaseDate = parse_date(ReleaseDate)
+    PlayDate = parse_date(PlayDate)
+
+
+    if Name is None or PlayDate is None or ReleaseDate is None:
+            return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+
+    try:
+        cur.callproc('manager_schedule_mov', [USERNAME, Name, ReleaseDate, PlayDate])
+        conn.commit()
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return Response(status=200)
 
 # screen20
 @backend_api.route('/filterMovie')

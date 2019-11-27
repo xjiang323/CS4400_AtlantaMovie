@@ -12,10 +12,10 @@ export class AdminCreateMovie extends Component{
      this.changeMovieName = this.changeMovieName.bind(this);
      this.changeDuration = this.changeDuration.bind(this);
      this.changeReleaseDate = this.changeReleaseDate.bind(this);
+     this.create = this.create.bind(this);
     }
 
     changeMovieName(e) {
-        console.log(e);
         this.setState({name: e.target.value});
     }
 
@@ -25,6 +25,19 @@ export class AdminCreateMovie extends Component{
 
     changeReleaseDate(date) {
         this.setState({releasedate: date});
+    }
+
+    create() {
+        const args = {
+            Name: this.state.name,
+            Duration: this.state.duration,
+            ReleaseDate: this.state.releasedate,
+        }
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.ADMIN_CREATE_MOVIE + '?' + query;
+        fetch(url).then(()=>{}, ()=>{});
     }
 
 
@@ -43,7 +56,7 @@ export class AdminCreateMovie extends Component{
 
                             <Form.Group as={Col} controlId="MovieName" className={"form-inline"} md={{span: 4, offset: 2}}>
                                 <Form.Label className={"p-4"}>Duration</Form.Label>
-                                <Form.Control className={"w-25 m-2"} value={this.state.name} onChange={this.changeMovieName}/>
+                                <Form.Control className={"w-25 m-2"} value={this.state.duration} onChange={this.changeDuration}/>
                             </Form.Group>
 
                         </Form.Row>
@@ -65,7 +78,7 @@ export class AdminCreateMovie extends Component{
                         </Col>
 
                         <Col md={{span:3, offset:2}} className={"text-center"}>
-                            <Button variant={"primary"} size={"lg"} className={"w-100"}>Create</Button>
+                            <Button variant={"primary"} onClick = {this.create} size={"lg"} className={"w-100"}>Create</Button>
                         </Col>
                     </Row>
                 </div>
