@@ -26,7 +26,7 @@ def approve_user():
         cur.close()
     return Response(status=200)
 
-
+# screen13
 @backend_api.route('/declineUser')
 def decline_user():
     username = request.args.get('username')
@@ -43,7 +43,7 @@ def decline_user():
         cur.close()
     return Response(status=200)
 
-
+# screen13
 @backend_api.route('/filterUser')
 def filter_user():
     username = request.args.get('username')
@@ -141,16 +141,25 @@ def obtain_company():
 # screen15
 @backend_api.route('/obtainManager')
 def obtain_manager():
+    company = request.args.get('Company')
     conn = db.connect()
     cur = conn.cursor()
+    ex = conn.cursor()
     try:
-        cur.execute('''SELECT DISTINCT Manager.username FROM Manager''')
+        cur.execute('''SELECT DISTINCT username FROM Manager WHERE comName = "%s"'''%company)
         conn.commit()
-        row_headers = [x[0] for x in cur.description]
-        result = cur.fetchall()
+        row_headers1 = [x[0] for x in cur.description]
+        result1 = cur.fetchall()
+
+        ex.execute('''SELECT DISTINCT manUsername FROM Theater WHERE comName = "%s"''' % company)
+        conn.commit()
+        # row_headers2 = [x[0] for x in ex.description]
+        result2 = ex.fetchall()
+        result2 = set(result2)
         json_data = []
-        for row in result:
-            json_data.append(dict(zip(row_headers, row)))
+        for row in result1:
+            if row not in result2:
+                json_data.append(dict(zip(row_headers1, row)))
     except Exception as e:
         return Response(status=500)
     finally:

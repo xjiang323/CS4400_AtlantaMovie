@@ -127,7 +127,7 @@ export class AdminManageCompany extends Component{
       {columnName: 'numTheater', text: '#Theater'},
       {columnName: 'numEmployee', text: '#Employee'}];
     const sortDirections = ['ASC', 'DESC'];
-    const statuses = this.state.comDropdownList;
+    const companies = this.state.comDropdownList;
     return (
         <div>
           <h1 className={"text-center"}>Manage Company</h1>
@@ -138,8 +138,8 @@ export class AdminManageCompany extends Component{
                 <Form.Control as="select" className={"w-25 m-2"} value={this.state.name} onChange={this.changeCompany}>
                   <option value="all">--ALL--</option>
                   {
-                    statuses.map((status, index) => (
-                        <option value={status.comName} key={index}>{status.comName}</option>
+                    companies.map((company, index) => (
+                        <option value={company.comName} key={index}>{company.comName}</option>
                     ))
                   }
                 </Form.Control>
@@ -176,14 +176,14 @@ export class AdminManageCompany extends Component{
                 </Button>
               </Col>
               <Col md={{span:2, offset:3}} className={"text-center"}>
-                <Link to={""}>
+                <Link to={{pathname: "/createTheater", param1: this.state.detailed}}>
                   <Button variant={"primary"} size={"lg"} className={"w-100"}>
                   Create Theater
                   </Button>
                 </Link>
               </Col>
               <Col md={{span:1}} className={"text-center"}>
-                <Link to={""}>
+                <Link to={{pathname: "/companyDetail", param1: this.state.detailed}}>
                   <Button variant={"primary"} size={"lg"} className={"w-100"}>
                   Detail
                   </Button>

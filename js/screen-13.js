@@ -80,14 +80,12 @@ export class AdminManageUser extends Component{
     const args = {
       username: this.state.flag
     };
-
     // ajax
     let query = Object.keys(args)
              .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
              .join('&');
 
     let url = ENDPOINTS.DECLINE_USER + '?' + query;
-
     // ajax
     fetch(url).then(()=>{
       // refresh

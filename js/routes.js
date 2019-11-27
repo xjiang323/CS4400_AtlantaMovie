@@ -97,12 +97,8 @@ class App extends Component{
                         </Route>
 
                         // 15-19
-                        <Route exact path="/createTheater">
-                            <AdminCreateTheater/>
-                        </Route>
-                        <Route exact path="/companyDetail">
-                            <AdminCompanyDetail/>
-                        </Route>
+                        <Route exact path="/createTheater" component={AdminCreateTheater}/>
+                        <Route exact path="/companyDetail" component={AdminCompanyDetail}/>
                         <Route exact path="/createMovie">
                             <AdminCreateMovie/>
                         </Route>

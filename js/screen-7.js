@@ -4,6 +4,10 @@ import {Col, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
 export class AdminOnlyFunctionality extends Component{
+  constructor(props) {
+    super(props)
+  }
+
   render() {
     return (
         <div>
@@ -17,7 +21,7 @@ export class AdminOnlyFunctionality extends Component{
               </Link>
             </Col>
             <Col md={{span:2}} className={"text-center"}>
-              <Link to={""}>
+              <Link to={"/userExploreTheater"}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Explore Theater
                 </Button>
@@ -34,7 +38,7 @@ export class AdminOnlyFunctionality extends Component{
               </Link>
             </Col>
             <Col md={{span:2}} className={"text-center"}>
-              <Link to={""}>
+              <Link to={"/serVisitHistory"}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Visit History
                 </Button>
@@ -44,14 +48,14 @@ export class AdminOnlyFunctionality extends Component{
 
           <Row className={"p-2"}>
             <Col md={{span:2, offset:4}} className={"text-center"}>
-              <Link to={""}>
+              <Link to={"/createMovie"}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Create Movie
                 </Button>
               </Link>
             </Col>
             <Col md={{span:2}} className={"text-center"}>
-              <Link to={""}>
+              <Link to={"/login"}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Back
                 </Button>
