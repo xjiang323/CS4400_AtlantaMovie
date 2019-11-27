@@ -9,7 +9,7 @@ backend_api = Blueprint('backend_api', __name__)
 
 USERNAME = 'georgep'
 
-
+# screen13
 @backend_api.route('/approveUser')
 def approve_user():
     username = request.args.get('username')
@@ -73,6 +73,7 @@ def filter_user():
         cur.close()
     return json.dumps(json_data)
 
+# screen14
 @backend_api.route('/filterCompany')
 def filter_company():
     comName = request.args.get('comName')
@@ -117,6 +118,113 @@ def filter_company():
         cur.close()
     return json.dumps(json_data)
 
+
+# screen14
+@backend_api.route('/obtainCompany')
+def obtain_company():
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.execute('''SELECT DISTINCT comName FROM Company''')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+        json_data = []
+        for row in result:
+            json_data.append(dict(zip(row_headers, row)))
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return json.dumps(json_data)
+
+# screen15
+@backend_api.route('/obtainManager')
+def obtain_manager():
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.execute('''SELECT DISTINCT Manager.username FROM Manager''')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+        json_data = []
+        for row in result:
+            json_data.append(dict(zip(row_headers, row)))
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return json.dumps(json_data)
+
+# screen15
+@backend_api.route('/createTh')
+def create_th():
+    Name = request.args.get('Name')
+    Company = request.args.get('Company')
+    Street_Address = request.args.get('Street_Address')
+    City = request.args.get('City')
+    Manager = request.args.get('Manager')
+    State = request.args.get('State')
+    Zipcode = request.args.get('Zipcode')
+    Capacity = request.args.get('Capacity')
+
+    if Name is None or Company is None or Street_Address is None or City is None or Manager is None or State is None or Zipcode is None or Capacity is None:
+        return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('admin_create_theater', [Name, Company, Street_Address, City, Manager, State, Zipcode, Capacity])
+        conn.commit()
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return Response(status=200)
+
+# screen16
+@backend_api.route('/obtainEmployee')
+def obtain_employee():
+    CompanyName = request.args.get('CompanyName')
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('admin_view_comDetail_emp', [CompanyName])
+        cur.execute('''SELECT * FROM AdComDetailEmp''')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+        json_data = []
+        for row in result:
+            json_data.append(dict(zip(row_headers, row)))
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return json.dumps(json_data)
+
+# screen16
+@backend_api.route('/obtainTheater')
+def obtain_theater():
+    CompanyName = request.args.get('CompanyName')
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('admin_view_comDetail_th', [CompanyName])
+        cur.execute('''SELECT * FROM AdComDetailTh''')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+        json_data = []
+        for row in result:
+            json_data.append(dict(zip(row_headers, row)))
+    except Exception as e:
+        return Response(status=500)
+    finally:
+        cur.close()
+    return json.dumps(json_data)
+
+# screen18
 @backend_api.route('/ManagerFilterTheater')
 def filter_theater():
     movName = request.args.get('movName')
@@ -129,7 +237,6 @@ def filter_theater():
     includedNotPlay = request.args.get('includedNotPlay')
     conn = db.connect()
     cur = conn.cursor()
-
 
     if minMovDuration == '':
         minMovDuration = None
@@ -151,11 +258,12 @@ def filter_theater():
         maxMovPlayDate = None
     else:
         maxMovPlayDate = parse_date(maxMovPlayDate)
-
-
-
+    if includedNotPlay == 'false':
+        includedNotPlay = False
+    else:
+        includedNotPlay = True
     try:
-        cur.callproc('manager_filter_th',[movName, USERNAME, minMovDuration, maxMovDuration, minMovReleaseDate, maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
+        cur.callproc('manager_filter_th', [movName, USERNAME, minMovDuration, maxMovDuration, minMovReleaseDate, maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
         cur.execute('''SELECT * FROM ManFilterTh''')
         conn.commit()
         row_headers = [x[0] for x in cur.description]
@@ -168,6 +276,7 @@ def filter_theater():
     finally:
         cur.close()
     return json.dumps(json_data, default=myconverter)
+
 
 @backend_api.route('/filterMovie')
 def filter_movie():
@@ -209,27 +318,11 @@ def filter_movie():
 
     return json.dumps(new_data, default=myconverter)
 
+
 def myconverter(o):
     if isinstance(o, datetime.date):
         return o.__str__()
 
-@backend_api.route('/obtainCompany')
-def obtain_company():
-    conn = db.connect()
-    cur = conn.cursor()
-    try:
-        cur.execute('''SELECT DISTINCT comName FROM Company''')
-        conn.commit()
-        row_headers = [x[0] for x in cur.description]
-        result = cur.fetchall()
-        json_data = []
-        for row in result:
-            json_data.append(dict(zip(row_headers, row)))
-    except Exception as e:
-        return Response(status=500)
-    finally:
-        cur.close()
-    return json.dumps(json_data)
 
 @backend_api.route('/getAllMovie')
 def get_all_movie():
@@ -249,6 +342,7 @@ def get_all_movie():
         cur.close()
     return json.dumps(json_data)
 
+
 @backend_api.route('/getAllTheaterState')
 def get_all_theather_state():
     conn = db.connect()
@@ -266,6 +360,7 @@ def get_all_theather_state():
     finally:
         cur.close()
     return json.dumps(json_data)
+
 
 @backend_api.route('/getUserCardNum')
 def get_user_cardNum():
@@ -285,6 +380,7 @@ def get_user_cardNum():
     finally:
         cur.close()
     return json.dumps(json_data)
+
 
 @backend_api.route('/customerViewMov')
 def customer_view_mov():
@@ -314,6 +410,7 @@ def customer_view_mov():
         cur.close()
     return 'Nothing'
 
+
 @backend_api.route('/getCustomerViewHistory')
 def get_customer_view_history():
     conn = db.connect()
@@ -333,6 +430,7 @@ def get_customer_view_history():
         cur.close()
     return json.dumps(json_data, default=myconverter)
 
+
 @backend_api.route('/getAllTheater')
 def get_all_theather():
     conn = db.connect()
@@ -350,6 +448,7 @@ def get_all_theather():
     finally:
         cur.close()
     return json.dumps(json_data)
+
 
 @backend_api.route('/userFilerTheater')
 def user_filer_theater():
@@ -378,6 +477,7 @@ def user_filer_theater():
     new_data = parse_address(json_data)
 
     return json.dumps(new_data, default=myconverter)
+
 
 @backend_api.route('/userVisitTheater')
 def user_visit_theater():
@@ -419,6 +519,7 @@ def user_visit_theater():
         cur.close()
     return 'nothing'
 
+
 @backend_api.route('/userFilterVisitHistory')
 def user_filer_visit_history():
     comName = request.args.get('comName')
@@ -455,6 +556,7 @@ def user_filer_visit_history():
 
     return json.dumps(new_data, default=myconverter)
 
+
 def parse_date(date):
     date = date.split()
     monthMap = {
@@ -477,6 +579,7 @@ def parse_date(date):
     tmp.append(date[2])
     parseVisitDate = '-'.join(tmp)
     return parseVisitDate
+
 
 def parse_address(json_data):
     new_data = []
