@@ -8,16 +8,27 @@ export class CustomerViewHistory extends Component{
         super(props);
         this.props = props;
         this.state = {
+            username: '',
             viewHistory: []
         };
 
     }
     componentDidMount() {
+        this.getUsername()
         this.getViewHistory()
     }
-
+    getUsername(){
+        this.setState({ username: document.getElementById('global-user').textContent}, () => console.log('username', this.state.username))
+    }
     getViewHistory(){
-        let url = ENDPOINTS.GET_CUSTOMER_VIEW_HISTORY;
+        const args = {
+            username: this.state.username
+        }
+		let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+		let url = ENDPOINTS.GET_CUSTOMER_VIEW_HISTORY + '?' + query;
+
         fetch(url).then(res => res.json()).then((result)=> {
             this.setState({ viewHistory: result}, () => this.renderTableData())});
 

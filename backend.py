@@ -21,6 +21,7 @@ def valid_login():
     global USERNAME, xx
     username = request.args.get('username')
     password = request.args.get('password')
+    print(username, password)
     if password:
         password = pwsmd5(password)
     else:
@@ -44,11 +45,11 @@ def valid_login():
         result = dict(zip(row_headers,result[0]))
 
         if result['isAdmin'] == 1 and result['isCustomer'] == 1:
-            type = 'Admin-Customer'
+            type = 'AdminCustomer'
         elif result['isAdmin'] == 1:
             type = 'Admin'
         elif result['isManager'] == 1 and result['isCustomer'] == 1:
-            type = 'Manager-Customer'
+            type = 'ManagerCustomer'
         elif result['isManager'] == 1:
             type = 'Manager'
         elif result['isCustomer'] == 1:
@@ -62,12 +63,13 @@ def valid_login():
         return Response(status=500)
     finally:
         cur.close()
-    # print(json_data)
+    print(json_data)
+    print('type', type)
     new_json = []
     tmp = {}
     tmp['user_type'] = type
     tmp['username'] = json_data[0]['username']
-    tmp['status'] = json_data[0]['i_status']
+    tmp['status'] = json_data[0]['status']
     new_json.append(tmp)
     config.USERNAME = username
     # document.getElementById('global-user').textContent
@@ -705,13 +707,14 @@ def customer_view_mov():
         cur.close()
     return 'Nothing'
 
-# screen20
+# screen21
 @backend_api.route('/getCustomerViewHistory')
 def get_customer_view_history():
+    username = request.args.get('username')
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('customer_view_history', [USERNAME])
+        cur.callproc('customer_view_history', [username])
         cur.execute('''SELECT * FROM CosViewHistory''')
         conn.commit()
         row_headers = [x[0] for x in cur.description]

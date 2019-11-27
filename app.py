@@ -121,7 +121,7 @@ def customer_explore_movie():
 # 21
 @app.route('/customerViewHistory')
 def customer_view_history():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME)
 
 # 22
 @app.route('/userExploreTheater')
