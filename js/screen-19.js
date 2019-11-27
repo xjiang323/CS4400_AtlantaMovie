@@ -7,12 +7,17 @@ import DatePicker from "react-datepicker";
 export class ManagerScheduleMovie extends Component{
     constructor(props) {
         super(props);
-        this.state = {name:"", releasedate:"", playdate:""};
+        this.state = {movName:"", releasedate:"", playdate:"", movieList:[]};
 
         this.changeMovieName = this.changeMovieName.bind(this);
         this.changeReleaseDate = this.changeReleaseDate.bind(this);
         this.changePlayDate = this.changePlayDate.bind(this);
+        this.getMovie = this.getMovie.bind(this);
         this.add = this.add.bind(this);
+    }
+
+    componentDidMount() {
+        this.getMovie();
     }
 
     changeMovieName(e) {
@@ -27,9 +32,16 @@ export class ManagerScheduleMovie extends Component{
         this.setState({playdate: date});
     }
 
+    getMovie() {
+        let url = ENDPOINTS.GET_ALL_MOVIE;
+        fetch(url).then(res => res.json()).then((result)=>{
+                this.setState({movieList: result})},
+            (error)=>{});
+    }
+
     add() {
         const args = {
-            Name: this.state.name,
+            Name: this.state.movName,
             ReleaseDate: this.state.releasedate,
             PlayDate: this.state.playdate,
         }
@@ -42,6 +54,7 @@ export class ManagerScheduleMovie extends Component{
 
 
     render() {
+        const movies = this.state.movieList;
         return (
 
             <div>
@@ -51,7 +64,13 @@ export class ManagerScheduleMovie extends Component{
                     <Form.Row className={"p-2"}>
                         <Form.Group as={Col} controlId="MovieName" className={"form-inline"} md={{span: 4, offset: 2}}>
                             <Form.Label className={"p-4"}>Name</Form.Label>
-                            <Form.Control className={"w-25 m-2"} value={this.state.name} onChange={this.changeMovieName}/>
+                            <Form.Control as="select" className={"w-25 m-2"} value={this.state.movName} onChange={this.changeMovieName}>
+                                {
+                                    movies.map((movie, index) => (
+                                        <option value={movie.movName} key={index}>{movie.movName}</option>
+                                    ))
+                                }
+                            </Form.Control>
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="MovieName" className={"form-inline"} md={{span: 4, offset: 2}}>

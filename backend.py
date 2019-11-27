@@ -249,7 +249,7 @@ def create_movie():
     cur = conn.cursor()
 
     try:
-        cur.callproc('admin_create_mov', [Name, ReleaseDate, Duration])
+        cur.callproc('admin_create_mov', [Name, Duration, ReleaseDate])
         conn.commit()
     except Exception as e:
         return Response(status=500)
