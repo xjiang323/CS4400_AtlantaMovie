@@ -97,8 +97,7 @@ export class ManagerCustomerReg extends Component {
 
     renderRemoveTable(){
         return this.state.Creditcardnumber.map((card, idx) =>
-            (
-                <Form.Row key={idx} className={"text-center"} >
+            (<Form.Row key={idx} className={"text-center"} >
                 <p>{card.number}</p>
                 <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
             </Form.Row>
