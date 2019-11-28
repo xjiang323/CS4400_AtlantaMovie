@@ -101,6 +101,7 @@ def record_user_register():
     username=request.args.get('username')
     password = request.args.get('password')
     confirmpsw=request.args.get('confirmPassword')
+    # print([username, password, firstname, lastname])
     if firstname is None or lastname is None or username is None or password is None or len(password) < 8:
         return Response(status=500)
     if password == confirmpsw:
@@ -116,7 +117,8 @@ def record_user_register():
         return Response(status=500)
     finally:
         cur.close()
-    return Response(status=200)
+    return redirect('/login', code=302);
+
 
 
 @backend_api.route('/RedManagerOnlyReg')

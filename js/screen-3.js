@@ -8,65 +8,67 @@ import {ENDPOINTS} from "./Constants";
 export class UserOnly_reg extends Component {
     constructor(props){
         super(props);
+        this.props = props;
         this.state={
             Fname:'',
             Lname:'',
             username:'',
             password:'',
             confirmPassword:''
-        }
+        };
 
         this.First_name = this.First_name.bind(this);
         this.Last_name = this.Last_name.bind(this);
         this.UserName = this.UserName.bind(this);
         this.Psw = this.Psw.bind(this);
         this.confirmPassword = this.confirmPassword.bind(this);
-
+        this.recordReg = this.recordReg.bind(this);
 
     };
 
 
     recordReg(e){
-        e.preventDefault();
-        console.log(this.state.Fname);
-        console.log(this.state.Lname);
-        console.log(this.state.username);
-        console.log(this.state.password);
 
         const args = {
-            Fname:this.state.Fname,
-            Lname:this.state.Lname,
+            Fname: this.state.Fname,
+            Lname: this.state.Lname,
             username : this.state.username,
             password : this.state.password,
-
+            confirmPassword : this.state.confirmPassword
         }
         let query = Object.keys(args)
             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
             .join('&');
         let url = ENDPOINTS.USER_REG + '?' + query;
-        fetch(url).then(()=>{}, ()=>{});
+        window.location.href = url;
+        // fetch(url).then(()=>{}, ()=>{});
     }
 
 
     First_name(event) {
-        this.setState({Fname: event.target.value});
+        this.setState({ Fname: event.target.value }, () => console.log('first name', this.state.Fname));
+        // this.setState({Fname: event.target.value});
     }
 
     Last_name(event) {
-        this.setState({Lname: event.target.value});
+        this.setState({ Lname: event.target.value }, () => console.log('last name', this.state.Lname));
+        // this.setState({Lname: event.target.value});
     }
 
     UserName(event) {
-        this.setState({username: event.target.value});
+        this.setState({ username: event.target.value }, () => console.log('username', this.state.username));
+        // this.setState({username: event.target.value});
     }
 
     Psw(event){
-        this.setSate({password:event.target.value});
-        console.log(this.state.password);
+        this.setState({ password: event.target.value }, () => console.log('password', this.state.password));
+        // this.setState({password:event.target.value});
+        // console.log(this.state.password);
     }
 
     confirmPassword(event){
-        this.setSate({confirmPassword:event.target.value});
+        this.setState({ confirmPassword: event.target.value }, () => console.log('confirmPassword password', this.state.confirmPassword));
+        // this.setState({confirmPassword:event.target.value});
     }
 
 
