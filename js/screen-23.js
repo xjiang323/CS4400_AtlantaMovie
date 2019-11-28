@@ -9,6 +9,7 @@ export class UserVisitHistory extends Component {
         super(props);
         this.props = props;
         this.state = {
+            username: '',
             comName: 'ALL',
             visitStartDate: '',
             visitEndDate: '',
@@ -21,7 +22,11 @@ export class UserVisitHistory extends Component {
         this.setVisitEndDate = this.setVisitEndDate.bind(this);
     }
     componentDidMount() {
+        this.getUsername();
         this.getCompany();
+    }
+    getUsername(){
+        this.setState({ username: document.getElementById('global-user').textContent}, () => console.log('username', this.state.username))
     }
     getCompany() {
         let url = ENDPOINTS.OBTAIN_COMPANY;
@@ -42,6 +47,7 @@ export class UserVisitHistory extends Component {
         e.preventDefault();
 
         const args = {
+            username: this.state.username,
             comName: this.state.comName,
             visitStartDate: this.state.visitStartDate,
             visitEndDate: this.state.visitEndDate

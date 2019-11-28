@@ -11,19 +11,22 @@ export class CustomerViewHistory extends Component{
             username: '',
             viewHistory: []
         };
-
+        this.getUsername = this.getUsername.bind(this);
+        this.getViewHistory = this.getViewHistory.bind(this);
+        this.setTableHeader = this.setTableHeader.bind(this);
+        this.renderTableData = this.renderTableData.bind(this);
     }
     componentDidMount() {
-        this.getUsername()
-        this.getViewHistory()
+        this.getUsername();
+        // this.getViewHistory();
     }
     getUsername(){
-        this.setState({ username: document.getElementById('global-user').textContent}, () => console.log('username', this.state.username))
+        this.setState({ username: document.getElementById('global-user').textContent}, () => this.getViewHistory())
     }
     getViewHistory(){
         const args = {
             username: this.state.username
-        }
+        };
 		let query = Object.keys(args)
              .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
              .join('&');

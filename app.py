@@ -51,22 +51,22 @@ def manager_customer_reg():
 # 7
 @app.route('/AdminOnlyFunction')
 def admin_function():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME)
 
 # 8
 @app.route('/AdminCustomerFunction')
 def admin_customer_function():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME)
 
 # 9
 @app.route('/ManagerOnlyFunction')
 def manager_only_function():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME)
 
 # 10
 @app.route('/ManagerCustomerFunction')
 def manager_customer_function():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME)
 
 # 11
 @app.route('/CustomerFunction')
@@ -76,7 +76,7 @@ def customer_function():
 # 12
 @app.route('/UserFunction')
 def user_function():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME)
 
 # 13
 @app.route('/manageUser')
@@ -106,7 +106,7 @@ def admin_create_movie():
 # 18
 @app.route('/theaterOverview')
 def manager_theater_overview():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME)
 
 # 19
 @app.route('/scheduleMovie')
@@ -131,7 +131,7 @@ def user_explore_theater():
 # 23
 @app.route('/userVisitHistory')
 def user_visit_history():
-  return render_template('index.html', logged_username=config.USERNAME )
+  return render_template('index.html', logged_username=config.USERNAME)
 
 
 if __name__ == '__main__':

@@ -42,8 +42,10 @@ def valid_login():
             print('not result')
             return Response(status=500)
         tmp = result
+        print(result)
         result = dict(zip(row_headers,result[0]))
 
+        print(result)
         if result['isAdmin'] == 1 and result['isCustomer'] == 1:
             type = 'AdminCustomer'
         elif result['isAdmin'] == 1:
@@ -57,13 +59,15 @@ def valid_login():
         else:
             type = 'User'
         json_data = []
+
         for row in tmp:
             json_data.append(dict(zip(row_headers, row)))
     except Exception as e:
+        print('exp')
         return Response(status=500)
     finally:
         cur.close()
-    print(json_data)
+
     print('type', type)
     new_json = []
     tmp = {}
@@ -817,13 +821,13 @@ def user_visit_theater():
         cur.close()
     return 'nothing'
 
-# screen21
+# screen23
 @backend_api.route('/userFilterVisitHistory')
 def user_filer_visit_history():
+    username = request.args.get('username')
     comName = request.args.get('comName')
     visitStartDate = request.args.get('visitStartDate')
     visitEndDate = request.args.get('visitEndDate')
-    print(visitStartDate)
     if visitStartDate == '':
         visitStartDate = None
     else:
@@ -832,11 +836,11 @@ def user_filer_visit_history():
         visitEndDate = None
     else:
         visitEndDate = parse_date(visitEndDate)
-
+    print([username, comName, visitStartDate, visitEndDate])
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('user_filter_visitHistory', [USERNAME, comName, visitStartDate, visitEndDate])
+        cur.callproc('user_filter_visitHistory', [username, comName, visitStartDate, visitEndDate])
         cur.execute('''SELECT * FROM UserVisitHistory''')
         conn.commit()
         header = [x[0] for x in cur.description]
