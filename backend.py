@@ -437,7 +437,7 @@ def create_th():
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('admin_create_theater', [Name, Company, Street_Address, City, Manager, State, Zipcode, Capacity])
+        cur.callproc('admin_create_theater', [Name, Company, Street_Address, City, State, Zipcode, Capacity, Manager])
         conn.commit()
     except Exception as e:
         return Response(status=500)
@@ -549,7 +549,7 @@ def filter_theater():
     else:
         includedNotPlay = True
     try:
-        cur.callproc('manager_filter_th', [movName, username, minMovDuration, maxMovDuration, minMovReleaseDate,
+        cur.callproc('manager_filter_th', [username, movName, minMovDuration, maxMovDuration, minMovReleaseDate,
                                            maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
         cur.execute('''SELECT * FROM ManFilterTh''')
         conn.commit()

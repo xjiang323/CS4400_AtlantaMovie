@@ -53,14 +53,14 @@ export class AdminCompanyDetail extends Component{
 
     renderTableData() {
         return this.state.TheaterList.map((theater, index) => {
-            const {thName, thManagerUsername, thCity, thState, thCapcity} = theater;
+            const {thName, thManagerUsername, thCity, thState, thCapacity} = theater;
             return (
                 <tr key={index}>
                     <td>{thName}</td>
                     <td>{thManagerUsername}</td>
                     <td>{thCity}</td>
                     <td>{thState}</td>
-                    <td>{thCapcity}</td>
+                    <td>{thCapacity}</td>
                 </tr>
             )
         });
