@@ -38,7 +38,7 @@ export class AdminOnlyFunctionality extends Component{
               </Link>
             </Col>
             <Col md={{span:2}} className={"text-center"}>
-              <Link to={"/serVisitHistory"}>
+              <Link to={"/userVisitHistory"}>
                 <Button variant={"primary"} size={"lg"} className={"w-100"}>
                 Visit History
                 </Button>
