@@ -3,6 +3,7 @@ import {Col, Form, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {ButtonGroup} from "react-bootstrap";
 import { ListGroupItem, Button, ButtonToolbar } from "react-bootstrap";
+import {ENDPOINTS} from "./Constants";
 
 export class Customer_reg extends Component {
     constructor(props){
@@ -57,6 +58,81 @@ export class Customer_reg extends Component {
 
 
 
+    filter() {
+        const args = {
+      Creditcardnumber: this.state.Creditcardnumber,
+
+    };
+
+    // ajax
+    let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+
+    let url = ENDPOINTS.ADD_CARD + '?' + query;
+    // ajax
+    fetch(url).then(res => res.json()).then((result)=>{
+      this.setState({Creditcardnumber: result})
+        },
+        (error)=>{});
+    }
+
+
+    createUI() {
+        return this.state.Creditcardnumber.map((el, i) =>
+            <div key={i}>
+                <input type="text" value={el} />
+                <input type='button' value='remove' onClick={this.removeCard.bind(this, i)} />
+            </div>
+        )
+    }
+
+
+    addClick(event) {
+        const args = {
+            Creditcardnumber: this.CreditCard.value,
+            username: this.state.username
+        };
+        // ajax
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.ADD_CARD + '?' + query;
+        fetch(url).then((res) => {
+            if (res.status == 200) {
+                let Creditcardnumber = [...this.state.Creditcardnumber];
+                Creditcardnumber.push(this.CreditCard.value)
+                this.setState({ Creditcardnumber })
+            }
+        }, () => { });
+    }
+
+
+    removeCard(i, event) {
+        const args = {
+            Creditcardnumber: this.state.Creditcardnumber[i],
+            username: this.state.username
+        };
+
+        // ajax
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+
+        let url = ENDPOINTS.REMOVE_CARD + '?' + query;
+        // ajax
+        fetch(url).then((res) => {
+            if (res.status == 200) {
+                let Creditcardnumber = [...this.state.Creditcardnumber];
+                Creditcardnumber.splice(i, 1);
+                this.setState({ Creditcardnumber });
+            }
+        }, () => { });
+    }
+
+
+
+
     render(){
         return (
             <div>
@@ -96,22 +172,18 @@ export class Customer_reg extends Component {
 
 
 
-                    <Form.Row className={"p-2"} >
-                        <Form.Group as={Col} className={"form-inline"} md={{span:2,offset:1}} >
-                            <Form.Label >Credit Card #</Form.Label>
-                        </Form.Group>
-                    </Form.Row>
-
-                    <Form.Row className={"p-2"}>
-                        <Form.Group as={Col} controlId="cardnumber" className={"form-inline"} md={{span:2,offset:3}}>
-                            <Form.Control className={"w-200 m-2"} value={this.state.CreditCard_Number} onChange={this.CreditCard}/>
-                        </Form.Group>
-                        <Col md={{span:2, offset:4}} className={"text-center"}>
-                            <Button variant={"secondary"} size={"lg"} className={"w-50"} onClick={this.addButton}>
-                                Add
-                            </Button>
-                         </Col>
-                    </Form.Row>
+                    <div>
+                        <Form.Row onSubmit={this.onSubmit}>
+                            <h4>Credit Card #</h4>
+                        </Form.Row>
+                    </div>
+                    <div>
+                        {this.createUI()}
+                    </div>
+                    <div>
+                        <input type="text" defaultValue="" ref={input => this.CreditCard = input} />
+                        <input type='button' value='Add' onClick={this.addClick.bind(this)} />
+                    </div>
 
 
 

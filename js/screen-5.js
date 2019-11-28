@@ -111,6 +111,8 @@ export class ManagerOnlyReg extends Component {
 
 
 
+
+
     render(){
         return (
             <div>
