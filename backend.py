@@ -232,13 +232,14 @@ def add_mancard():
 
 @backend_api.route('/removeCard')
 def remove_card():
-    Creditcardnumbe = request.args.get('Creditcardnumber')
+    Creditcardnumber = request.args.get('Creditcardnumber')
     username=request.args.get('username')
     conn = db.connect()
     cur = conn.cursor()
-    sql = 'DELETE FROM CustomerCreditCard WHERE crediCardNum == ?'
+
     try:
-        cur.execute(sql, (Creditcardnumbe,))
+        query = "DELETE FROM CustomerCreditCard WHERE creditCardNum = (%s)"
+        cur.execute(query, Creditcardnumber)
         conn.commit()
         # row_headers = [x[0] for x in cur.description]
         # result = cur.fetchall()
