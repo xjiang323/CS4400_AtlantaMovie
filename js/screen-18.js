@@ -8,7 +8,7 @@ export class ManagerTheaterOverview extends Component{
     constructor(props) {
         super(props);
         this.state = {moviename: "", minmovieduration: "", maxmovieduration: "", minmoviereleasedate: "", maxmoviereleasedate: "",
-                      minmovieplaydate: "", maxmovieplaydate: "", onlynotplayedmovie: false,
+                      minmovieplaydate: "", maxmovieplaydate: "", onlynotplayedmovie: false, username: "", usertype: "",
                       movieList:[]};
 
         this.changeMovieName = this.changeMovieName.bind(this);
@@ -19,9 +19,32 @@ export class ManagerTheaterOverview extends Component{
         this.changeminMoviePlayDate = this.changeminMoviePlayDate.bind(this);
         this.changemaxMoviePlayDate = this.changemaxMoviePlayDate.bind(this);
         this.changeonlyIncludedNotPlayedMovie = this.changeonlyIncludedNotPlayedMovie.bind(this);
+        this.getUsername = this.getUsername.bind(this);
         this.filter = this.filter.bind(this);
+        this.backToFunc = this.backToFunc.bind(this);
 
     }
+
+    componentDidMount() {
+        this.getUsername();
+    }
+
+    getUsername(){
+        this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
+        this.setState({ username: document.getElementById('global-user').textContent}, () => console.log('username', this.state.username))
+    }
+
+    backToFunc(){
+        const args = {
+            usertype : this.state.usertype
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+        window.location.href = url;
+    }
+
     changeMovieName(e) {
         this.setState({moviename: e.target.value});
     }
@@ -79,6 +102,7 @@ export class ManagerTheaterOverview extends Component{
 
     filter() {
         const args = {
+            username: this.state.username,
             movName: this.state.moviename,
             minMovDuration: this.state.minmovieduration,
             maxMovDuration: this.state.maxmovieduration,
@@ -170,11 +194,7 @@ export class ManagerTheaterOverview extends Component{
                 </Table>
                 </Col>
                 <Col md={{span:2, offset:5}} className={"text-center"}>
-                    <Link to={"/ManagerOnlyFunction"}>
-                        <Button variant={"primary"} size={"lg"} className={"w-100"}>
-                            Back
-                        </Button>
-                    </Link>
+                        <Button variant="primary" onClick={this.backToFunc} className={"w-100"}>Back</Button>
                 </Col>
             </div>
         )

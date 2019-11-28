@@ -7,12 +7,33 @@ import DatePicker from "react-datepicker";
 export class AdminCreateMovie extends Component{
     constructor(props) {
         super(props);
-        this.state = {name:"", duration:"", releasedate:""};
+        this.state = {name:"", duration:"", releasedate:"", usertype:""};
 
      this.changeMovieName = this.changeMovieName.bind(this);
      this.changeDuration = this.changeDuration.bind(this);
      this.changeReleaseDate = this.changeReleaseDate.bind(this);
+     this.getUsertype = this.getUsertype.bind(this);
      this.create = this.create.bind(this);
+     this.backToFunc = this.backToFunc.bind(this);
+    }
+
+    componentDidMount() {
+        this.getUsertype();
+    }
+
+    getUsertype() {
+        this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
+    }
+
+    backToFunc(){
+        const args = {
+            usertype : this.state.usertype
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+        window.location.href = url;
     }
 
     changeMovieName(e) {
@@ -72,9 +93,7 @@ export class AdminCreateMovie extends Component{
 
                     <Row className={"p-2"}>
                         <Col md={{span:3, offset:2}} className={"text-center"}>
-                            <Link to={"/AdminOnlyFunction"}>
-                                <Button variant={"primary"} size={"lg"} className={"w-100"}>Back</Button>
-                            </Link>
+                            <Button variant={"primary"} size={"lg"} onClick={this.backToFunc} className={"w-100"}>Back</Button>
                         </Col>
 
                         <Col md={{span:3, offset:2}} className={"text-center"}>

@@ -502,6 +502,7 @@ def create_movie():
 # screen18
 @backend_api.route('/ManagerFilterTheater')
 def filter_theater():
+    username = request.args.get('username')
     movName = request.args.get('movName')
     minMovDuration = request.args.get('minMovDuration')
     maxMovDuration = request.args.get('maxMovDuration')
@@ -538,7 +539,7 @@ def filter_theater():
     else:
         includedNotPlay = True
     try:
-        cur.callproc('manager_filter_th', [movName, USERNAME, minMovDuration, maxMovDuration, minMovReleaseDate,
+        cur.callproc('manager_filter_th', [movName, username, minMovDuration, maxMovDuration, minMovReleaseDate,
                                            maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
         cur.execute('''SELECT * FROM ManFilterTh''')
         conn.commit()
@@ -556,6 +557,7 @@ def filter_theater():
 # screen19
 @backend_api.route('/ManagerScheduleMovie')
 def add_movie():
+    username = request.args.get('username')
     Name = request.args.get('Name')
     ReleaseDate = request.args.get('ReleaseDate')
     PlayDate = request.args.get('PlayDate')
@@ -569,7 +571,7 @@ def add_movie():
     cur = conn.cursor()
 
     try:
-        cur.callproc('manager_schedule_mov', [USERNAME, Name, ReleaseDate, PlayDate])
+        cur.callproc('manager_schedule_mov', [username, Name, ReleaseDate, PlayDate])
         conn.commit()
     except Exception as e:
         return Response(status=500)

@@ -101,17 +101,17 @@ def admin_company_detail():
 # 17
 @app.route('/createMovie')
 def admin_create_movie():
-  return render_template('index.html')
+  return render_template('index.html', logged_usertype=config.USERTYPE)
 
 # 18
 @app.route('/theaterOverview')
 def manager_theater_overview():
-  return render_template('index.html', logged_username=config.USERNAME)
+  return render_template('index.html', logged_username=config.USERNAME, logged_usertype=config.USERTYPE)
 
 # 19
 @app.route('/scheduleMovie')
 def manager_schedule_movie():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME, logged_usertype=config.USERTYPE)
 
 # 20
 @app.route('/customerExploreMovie')
