@@ -96,7 +96,7 @@ def record_user_register():
     confirmpsw=request.args.get('confirmPassword')
     if firstname is None or lastname is None or username is None or password is None or len(password) < 8:
         return Response(status=500)
-    if password==confirmpsw:
+    if password == confirmpsw:
         password = pwsmd5(password)
     else:
         return Response(status=500)
@@ -119,11 +119,11 @@ def record_ManagerOnly_reg():
     username = request.args.get('username')
     password = request.args.get('password')
     confirmpsw = request.args.get('confirmPassword')
-    address=request.args.get('StreetAddress')
-    comName=request.args.get('compnay')
-    city=request.args.get('city')
-    state=request.args.get('statr')
-    zipcode=request.args.get('zipcode')
+    address = request.args.get('StreetAddress')
+    comName = request.args.get('compnay')
+    city = request.args.get('city')
+    state = request.args.get('statr')
+    zipcode = request.args.get('zipcode')
 
     if firstname is None or \
             lastname is None or username is None \
@@ -138,13 +138,14 @@ def record_ManagerOnly_reg():
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('manager_only_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
+        cur.callproc('manager_only_register', [username, password, firstname, lastname, comName, address, city, state, zipcode])
         conn.commit()
     except Exception as e:
         return Response(status=500)
     finally:
         cur.close()
     return Response(status=200)
+
 
 @backend_api.route('/screen6')
 def record_screen6():
@@ -153,11 +154,11 @@ def record_screen6():
     username = request.args.get('username')
     password = request.args.get('password')
     confirmpsw = request.args.get('confirmPassword')
-    address=request.args.get('StreetAddress')
-    comName=request.args.get('compnay')
-    city=request.args.get('city')
-    state=request.args.get('statr')
-    zipcode=request.args.get('zipcode')
+    address = request.args.get('StreetAddress')
+    comName = request.args.get('compnay')
+    city = request.args.get('city')
+    state = request.args.get('statr')
+    zipcode = request.args.get('zipcode')
 
     if firstname is None or \
             lastname is None or username is None \
@@ -186,6 +187,7 @@ def add_card():
     username = request.args.get('username')
     Creditcardnumbe = request.args.get('Creditcardnumber')
     if Creditcardnumbe is None or username is None or len(Creditcardnumbe) != 16:
+        print('1')
         return Response(status=500)
     conn = db.connect()
     cur = conn.cursor()
@@ -193,6 +195,8 @@ def add_card():
         cur.callproc('customer_add_creditcard', [username, Creditcardnumbe])
         conn.commit()
     except Exception as e:
+        print('2')
+        print(e)
         return Response(status=500)
     finally:
         cur.close()
@@ -204,6 +208,7 @@ def add_mancard():
     username = request.args.get('username')
     Creditcardnumbe = request.args.get('Creditcardnumber')
     if Creditcardnumbe is None or username is None or len(Creditcardnumbe) != 16:
+        print('1')
         return Response(status=500)
     conn = db.connect()
     cur = conn.cursor()
@@ -211,6 +216,7 @@ def add_mancard():
         cur.callproc('manager_customer_add_creditcard', [username, Creditcardnumbe])
         conn.commit()
     except Exception as e:
+        print(e)
         return Response(status=500)
     finally:
         cur.close()
@@ -219,28 +225,29 @@ def add_mancard():
 
 @backend_api.route('/removeCard')
 def remove_card():
-    username = request.args.get('username')
     Creditcardnumbe = request.args.get('Creditcardnumber')
-    if username is None or Creditcardnumbe is None or len(Creditcardnumbe) != 16:
-        return Response(status=500)
+    username=request.args.get('username')
     conn = db.connect()
     cur = conn.cursor()
+    sql = 'DELETE FROM CustomerCreditCard WHERE crediCardNum == ?'
     try:
-        cur.execute('''SELECT * FROM CreditCard''')
+        cur.execute(sql, (Creditcardnumbe,))
         conn.commit()
-        row_headers = [x[0] for x in cur.description]
-        result = cur.fetchall()
-        if not result:
-            return Response(status=500)
-        result = dict(zip(row_headers, result[0]))
-        json_data = []
-        for row in result:
-            json_data.append(dict(zip(row_headers, row)))
+        # row_headers = [x[0] for x in cur.description]
+        # result = cur.fetchall()
+        # print('1')
+        # if not result:
+        #     return Response(status=500)
+        # result = dict(zip(row_headers, result[0]))
+        # json_data = []
+        # for row in result:
+        #     json_data.append(dict(zip(row_headers, row)))
     except Exception as e:
+        print(e)
         return Response(status=500)
     finally:
         cur.close()
-    return json.dumps(json_data)
+    return Response(status=200)
 
 
 

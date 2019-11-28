@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Col, Form, Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {Link} from "react-router-dom";
+import {ENDPOINTS} from "./Constants";
 
 
 export class ManagerOnlyReg extends Component {
@@ -76,6 +77,33 @@ export class ManagerOnlyReg extends Component {
         this.setSate({zipcode:event.target.value});
     }
 
+
+
+    getReg(e){
+        e.preventDefault();
+        console.log(this.state.Fname);
+        console.log(this.state.Lname);
+        console.log(this.state.username);
+        console.log(this.state.password);
+        console.log(this.state.StreetAddress);
+
+        const args = {
+            Fname:this.state.Fname,
+            Lname:this.state.Lname,
+            username : this.state.username,
+            password : this.state.password,
+            StreetAddress:this.state.StreetAddress,
+            city:this.state.city,
+            state:this.state.state,
+            zipcode:this.state.zipcode,
+
+        }
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.MANAGER_ONLY_REG + '?' + query;
+        fetch(url).then(()=>{}, ()=>{});
+    }
 
 
 
@@ -227,7 +255,7 @@ export class ManagerOnlyReg extends Component {
                          </Col>
                          <Col md={{span:2, offset:3}} className={"text-center"}>
                              <Link to={""}>
-                                 <Button variant={"primary"} size={"lg"} className={"w-150"}>
+                                 <Button variant={"primary"} size={"lg"} className={"w-150"} onClik={this.getReg}>
                                      Register
                                  </Button>
                              </Link>

@@ -28,14 +28,14 @@ export class UserOnly_reg extends Component {
 
     recordReg(e){
         e.preventDefault();
-        console.log(this.state.Fname)
-        console.log(this.state.Lname)
+        console.log(this.state.Fname);
+        console.log(this.state.Lname);
         console.log(this.state.username);
         console.log(this.state.password);
 
         const args = {
-            firstname:this.state.Fname,
-            lastname:this.state.Lname,
+            Fname:this.state.Fname,
+            Lname:this.state.Lname,
             username : this.state.username,
             password : this.state.password,
 
@@ -44,6 +44,7 @@ export class UserOnly_reg extends Component {
             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
             .join('&');
         let url = ENDPOINTS.USER_REG + '?' + query;
+        fetch(url).then(()=>{}, ()=>{});
     }
 
 
@@ -61,6 +62,7 @@ export class UserOnly_reg extends Component {
 
     Psw(event){
         this.setSate({password:event.target.value});
+        console.log(this.state.password);
     }
 
     confirmPassword(event){
