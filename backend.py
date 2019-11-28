@@ -110,7 +110,7 @@ def record_user_register():
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('user_register', [username, password,firstname,lastname])
+        cur.callproc('user_register', [username, password, firstname, lastname])
         conn.commit()
     except Exception as e:
         return Response(status=500)
