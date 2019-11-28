@@ -101,6 +101,7 @@ def record_user_register():
     username=request.args.get('username')
     password = request.args.get('password')
     confirmpsw=request.args.get('confirmPassword')
+    # print([username, password, firstname, lastname])
     if firstname is None or lastname is None or username is None or password is None or len(password) < 8:
         return Response(status=500)
     if password == confirmpsw:
@@ -116,7 +117,8 @@ def record_user_register():
         return Response(status=500)
     finally:
         cur.close()
-    return Response(status=200)
+    return redirect('/login', code=302);
+
 
 
 @backend_api.route('/RedManagerOnlyReg')
@@ -455,7 +457,7 @@ def create_th():
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('admin_create_theater', [Name, Company, Street_Address, City, Manager, State, Zipcode, Capacity])
+        cur.callproc('admin_create_theater', [Name, Company, Street_Address, City, State, Zipcode, Capacity, Manager])
         conn.commit()
     except Exception as e:
         return Response(status=500)
@@ -567,7 +569,7 @@ def filter_theater():
     else:
         includedNotPlay = True
     try:
-        cur.callproc('manager_filter_th', [movName, username, minMovDuration, maxMovDuration, minMovReleaseDate,
+        cur.callproc('manager_filter_th', [username, movName, minMovDuration, maxMovDuration, minMovReleaseDate,
                                            maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
         cur.execute('''SELECT * FROM ManFilterTh''')
         conn.commit()

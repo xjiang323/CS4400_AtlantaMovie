@@ -227,7 +227,7 @@ export class AdminCreateTheater extends Component {
 
 						<Row className={"p-2"}>
 							<Col md={{span:2, offset:3}} className={"text-center"}>
-								<Link to={"/AdminOnlyFunction"}>
+								<Link to={"/manageCompany"}>
 									<Button variant={"primary"} size={"lg"} className={"w-100"}>Back</Button>
 								</Link>
 							</Col>

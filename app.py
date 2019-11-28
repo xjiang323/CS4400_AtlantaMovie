@@ -6,7 +6,7 @@ import config
 app = Flask(__name__)
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'movie_company'
+app.config['MYSQL_DATABASE_DB'] = 'TEAM43'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_PORT'] = 3306
 db.init_app(app)
