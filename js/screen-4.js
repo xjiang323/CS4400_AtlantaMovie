@@ -1,9 +1,7 @@
 import React, {Component} from "react";
 import {Col, Form, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {ButtonGroup} from "react-bootstrap";
-import { ListGroupItem, Button, ButtonToolbar } from "react-bootstrap";
-import {ENDPOINTS} from "./Constants";
+
 
 export class Customer_reg extends Component {
     constructor(props){
@@ -14,7 +12,8 @@ export class Customer_reg extends Component {
             username:'',
             password:'',
             confirmPassword:'',
-            CreditCard_Number:[]
+            CreditCard_Number:[],
+            tmp: ''
 
 
 
@@ -27,6 +26,11 @@ export class Customer_reg extends Component {
         this.Psw = this.Psw.bind(this);
         this.confirmPassword = this.confirmPassword.bind(this);
         this.CreditCard = this.CreditCard.bind(this);
+        this.removeCard=this.removeCard.bind(this);
+        this.changevalue=this.changevalue.bind(this);
+        this.addClick=this.addClick.bind(this);
+        this.renderRemoveTable=this.renderRemoveTable.bind(this);
+        this.Reg=this.Reg.bind(this)
 
     };
 
@@ -44,91 +48,129 @@ export class Customer_reg extends Component {
     }
 
     Psw(event){
-        this.setSate({password:event.target.value});
+        this.setState({password:event.target.value});
     }
 
     confirmPassword(event){
-        this.setSate({confirmPassword:event.target.value});
+        this.setState({confirmPassword:event.target.value});
     }
 
     CreditCard(event){
-        this.setSate({CreditCard_Number:event.target.value});
+        this.setState({CreditCard_Number:event.target.value});
     }
 
 
-
-
-    filter() {
-        const args = {
-      Creditcardnumber: this.state.Creditcardnumber,
-
-    };
-
-    // ajax
-    let query = Object.keys(args)
-             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
-             .join('&');
-
-    let url = ENDPOINTS.ADD_CARD + '?' + query;
-    // ajax
-    fetch(url).then(res => res.json()).then((result)=>{
-      this.setState({Creditcardnumber: result})
-        },
-        (error)=>{});
+    removeCard(idx){
+    let someArray = this.state.Creditcardnumber;
+    someArray.splice(idx, 1);
+    this.setState({ Creditcardnumber: someArray });
     }
 
 
-    createUI() {
-        return this.state.Creditcardnumber.map((el, i) =>
-            <div key={i}>
-                <input type="text" value={el} />
-                <input type='button' value='remove' onClick={this.removeCard.bind(this, i)} />
-            </div>
+    renderRemoveTable(){
+        return this.state.Creditcardnumber.map((card, idx) =>
+            (<Row key={idx}>
+                <p>{card.number}</p>
+                <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
+            </Row>)
+
         )
     }
 
 
-    addClick(event) {
-        const args = {
-            Creditcardnumber: this.CreditCard.value,
-            username: this.state.username
-        };
-        // ajax
-        let query = Object.keys(args)
-            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
-            .join('&');
-        let url = ENDPOINTS.ADD_CARD + '?' + query;
-        fetch(url).then((res) => {
-            if (res.status == 200) {
-                let Creditcardnumber = [...this.state.Creditcardnumber];
-                Creditcardnumber.push(this.CreditCard.value)
-                this.setState({ Creditcardnumber })
-            }
-        }, () => { });
-    }
+
+    addClick() {
+    this.setState({Creditcardnumber:
+            this.state.Creditcardnumber.concat([{ id:this.state.tmp, number: this.state.tmp }]),
+    tmp: ''}, () => {console.log('credircard after push:', this.state.Creditcardnumber);});
+
+  }
+
+    changevalue(e){
+        this.setState({ tmp: e.target.value });
+  }
 
 
-    removeCard(i, event) {
-        const args = {
-            Creditcardnumber: this.state.Creditcardnumber[i],
-            username: this.state.username
-        };
 
-        // ajax
-        let query = Object.keys(args)
-            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
-            .join('&');
 
-        let url = ENDPOINTS.REMOVE_CARD + '?' + query;
-        // ajax
-        fetch(url).then((res) => {
-            if (res.status == 200) {
-                let Creditcardnumber = [...this.state.Creditcardnumber];
-                Creditcardnumber.splice(i, 1);
-                this.setState({ Creditcardnumber });
-            }
-        }, () => { });
-    }
+
+
+    // filter() {
+    //     const args = {
+    //   Creditcardnumber: this.state.Creditcardnumber,
+    //
+    // };
+    //
+    // // ajax
+    // let query = Object.keys(args)
+    //          .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+    //          .join('&');
+    //
+    // let url = ENDPOINTS.ADD_CARD + '?' + query;
+    // // ajax
+    // fetch(url).then(res => res.json()).then((result)=>{
+    //   this.setState({Creditcardnumber: result})
+    //     },
+    //     (error)=>{});
+    // }
+    //
+    //
+    // createUI() {
+    //     return this.state.Creditcardnumber.map((el, i) =>
+    //         <div key={i}>
+    //             <input type="text" value={el} />
+    //             <input type='button' value='remove' onClick={this.removeCard.bind(this, i)} />
+    //         </div>
+    //     )
+    // }
+    //
+    //
+    // addClick(event) {
+    //     const args = {
+    //         Creditcardnumber: this.CreditCard.value,
+    //         username: this.state.username
+    //     };
+    //     // ajax
+    //     let query = Object.keys(args)
+    //         .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+    //         .join('&');
+    //     let url = ENDPOINTS.ADD_CARD + '?' + query;
+    //     fetch(url).then((res) => {
+    //         if (res.status == 200) {
+    //             let Creditcardnumber = [...this.state.Creditcardnumber];
+    //             Creditcardnumber.push(this.CreditCard.value)
+    //             this.setState({ Creditcardnumber })
+    //         }
+    //     }, () => { });
+    // }
+    //
+    //
+    // removeCard(i, event) {
+    //     const args = {
+    //         Creditcardnumber: this.state.Creditcardnumber[i],
+    //         username: this.state.username
+    //     };
+    //
+    //     // ajax
+    //     let query = Object.keys(args)
+    //         .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+    //         .join('&');
+    //
+    //     let url = ENDPOINTS.REMOVE_CARD + '?' + query;
+    //     // ajax
+    //     fetch(url).then((res) => {
+    //         if (res.status == 200) {
+    //             let Creditcardnumber = [...this.state.Creditcardnumber];
+    //             Creditcardnumber.splice(i, 1);
+    //             this.setState({ Creditcardnumber });
+    //         }
+    //     }, () => { });
+    // }
+
+
+
+
+
 
 
 
@@ -174,15 +216,15 @@ export class Customer_reg extends Component {
 
                     <div>
                         <Form.Row onSubmit={this.onSubmit}>
-                            <h4>Credit Card #</h4>
+                            <h6>Credit Card #</h6>
                         </Form.Row>
                     </div>
-                    <div>
-                        {this.createUI()}
+                    <div className={"text-center"}>
+                        {this.renderRemoveTable()}
                     </div>
-                    <div>
-                        <input type="text" defaultValue="" ref={input => this.CreditCard = input} />
-                        <input type='button' value='Add' onClick={this.addClick.bind(this)} />
+                    <div className={"text-center"}>
+                        <input type="text" value={this.state.tmp} onChange={this.changevalue} />
+                        <input type='button' value='Add' onClick={this.addClick} />
                     </div>
 
 

@@ -27,6 +27,8 @@ export const ENDPOINTS = {
     REMOVE_CARD:'/removeCard',
     ADD_MAGCARD:'/addManagerCard',
     MANAGER_ONLY_REG:'/RedManagerOnlyReg',
-    BACK_TO_FUNC: '/backToFunctionality'
+    BACK_TO_FUNC: '/backToFunctionality',
+    SCREEN4_REG:'/screen4Reg',
+    SCREEN6_REG:'/screen6Reg'
 };
 

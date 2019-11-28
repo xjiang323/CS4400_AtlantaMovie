@@ -153,8 +153,25 @@ def record_ManagerOnly_reg():
         cur.close()
     return Response(status=200)
 
+@backend_api.route('/screen5Reg')
+def screen4_reg():
+    firstname = request.args.get('Fname')
+    lastname = request.args.get('Lname')
+    username = request.args.get('username')
+    password = request.args.get('password')
+    confirmpsw = request.args.get('confirmPassword')
+    address = request.args.get('StreetAddress')
+    comName = request.args.get('company')
+    city = request.args.get('city')
+    state = request.args.get('statr')
+    zipcode = request.args.get('zipcode')
+    credtcardNum=request.args.get('Creditcardnumber')
 
-@backend_api.route('/screen6')
+    if
+
+
+
+@backend_api.route('/screen6Reg')
 def record_screen6():
     firstname = request.args.get('Fname')
     lastname = request.args.get('Lname')
@@ -166,12 +183,13 @@ def record_screen6():
     city = request.args.get('city')
     state = request.args.get('statr')
     zipcode = request.args.get('zipcode')
+    credtcardNum = request.args.get('Creditcardnumber')
 
     if firstname is None or \
             lastname is None or username is None \
             or password is None or len(password) < 8\
             or address is None or comName is None or city is None or state is None or zipcode is None\
-            or len(zipcode)!=5:
+            or credtcardNum is None or len(credtcardNum) !=16 or len(zipcode)!=5:
         return Response(status=500)
     if password == confirmpsw:
         password = pwsmd5(password)
@@ -181,8 +199,10 @@ def record_screen6():
     cur = conn.cursor()
     try:
         cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
+        cur.callproc('manager_customer_add_creditcard',[username, credtcardNum])
         conn.commit()
     except Exception as e:
+        print(e)
         return Response(status=500)
     finally:
         cur.close()

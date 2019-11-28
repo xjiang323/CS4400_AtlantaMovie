@@ -22,7 +22,7 @@ export class ManagerCustomerReg extends Component {
             state:'',
             zipcode:'',
             Creditcardnumber:[],
-
+            tmp: ''
 
 
         }
@@ -37,9 +37,11 @@ export class ManagerCustomerReg extends Component {
         this.addcity = this.addcity.bind(this);
         this.addstate = this.addstate.bind(this);
         this.addzipcode= this.addzipcode.bind(this);
-        this.cardnum=this.cardnum.bind(this);
-
-
+        this.removeCard=this.removeCard.bind(this);
+        this.changevalue=this.changevalue.bind(this);
+        this.addClick=this.addClick.bind(this);
+        this.renderRemoveTable=this.renderRemoveTable.bind(this);
+        this.scree6Reg=this.scree6Reg.bind(this);
 
     };
 
@@ -61,113 +63,91 @@ export class ManagerCustomerReg extends Component {
     }
 
     Psw(event){
-        this.setSate({password:event.target.value});
+        this.setState({password:event.target.value});
     }
 
     confirmPassword(event){
-        this.setSate({confirmPassword:event.target.value});
+        this.setState({confirmPassword:event.target.value});
     }
 
     address(event){
-        this.setSate({StreetAddress:event.target.value});
+        this.setState({StreetAddress:event.target.value});
     }
 
     addcity(event){
-        this.setSate({city:event.target.value});
+        this.setState({city:event.target.value});
     }
 
     addstate(event){
-        this.setSate({sate:event.target.value});
+        this.setState({sate:event.target.value});
     }
 
     addzipcode(event){
-        this.setSate({zipcode:event.target.value});
-    }
-
-    cardnum(event){
-        this.setState({Creditcardnumber}:event.target.value,
-            ()=>{
-
-            })
+        this.setState({zipcode:event.target.value});
     }
 
 
-    filter() {
-        const args = {
-      Creditcardnumber: this.state.Creditcardnumber,
 
-    };
-
-    // ajax
-    let query = Object.keys(args)
-             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
-             .join('&');
-
-    let url = ENDPOINTS.ADD_MAGCARD + '?' + query;
-    // ajax
-    fetch(url).then(res => res.json()).then((result)=>{
-      this.setState({Creditcardnumber: result})
-        },
-        (error)=>{});
+    removeCard(idx){
+    let someArray = this.state.Creditcardnumber;
+    someArray.splice(idx, 1);
+    this.setState({ Creditcardnumber: someArray }, () => {console.log('after remove', this.state.Creditcardnumber)});
     }
 
 
-    createUI() {
-        return this.state.Creditcardnumber.map((el, i) =>
-            <div key={i}>
-                <input type="text" value={el} />
-                <input type='button' value='remove' onClick={this.removeCard.bind(this, i)} />
-            </div>
+    renderRemoveTable(){
+        return this.state.Creditcardnumber.map((card, idx) =>
+            (
+                <Form.Row key={idx} className={"text-center"} >
+                <p>{card.number}</p>
+                <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
+            </Form.Row>
+            )
+
         )
     }
 
 
-    addClick(event) {
+
+    addClick() {
+    this.setState({Creditcardnumber:
+            this.state.Creditcardnumber.concat([{ id:this.state.tmp, number: this.state.tmp }]),
+    tmp: ''}, () => {console.log('credircard after push:', this.state.Creditcardnumber);});
+
+
+  }
+
+    changevalue(e){
+        this.setState({ tmp: e.target.value });
+  }
+
+
+
+
+
+    scree6Reg(e){
+        e.preventDefault();
+
         const args = {
-            Creditcardnumber: this.cardnum.value,
-            username: this.state.username
-        };
-        // ajax
+            Fname:this.state.Fname,
+            Lname:this.state.Lname,
+            username : this.state.username,
+            password : this.state.password,
+            company:this.state.compnay,
+            StreetAddress:this.state.StreetAddress,
+            city:this.state.city,
+            state:this.state.state,
+            zipcode:this.state.zipcode,
+            Creditcardnumber:this.state.Creditcardnumber,
+
+
+
+        }
         let query = Object.keys(args)
             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
             .join('&');
-        let url = ENDPOINTS.ADD_MAGCARD + '?' + query;
-        fetch(url).then((res) => {
-            if (res.status == 200) {
-                let Creditcardnumber = [...this.state.Creditcardnumber];
-                Creditcardnumber.push(this.cardnum.value)
-                this.setState({ Creditcardnumber })
-            }
-        }, () => { });
-    }
-
-
-    removeCard(i, event) {
-        const args = {
-            Creditcardnumber: this.state.Creditcardnumber[i],
-            username: this.state.username
-        };
-
-        // ajax
-        let query = Object.keys(args)
-            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
-            .join('&');
-
-        let url = ENDPOINTS.REMOVE_CARD + '?' + query;
-        // ajax
-        fetch(url).then((res) => {
-            if (res.status == 200) {
-                let Creditcardnumber = [...this.state.Creditcardnumber];
-                Creditcardnumber.splice(i, 1);
-                this.setState({ Creditcardnumber });
-            }
-        }, () => { });
-    }
-
-
-    sendThru() {
-        title:this.inputTitle.value = "";
-        entry:this.inputEntry.value = "";
+        let url = ENDPOINTS.SCREEN6_REG + '?' + query;
+        fetch(url).then(()=>{}, ()=>{});
     }
 
 
@@ -308,15 +288,15 @@ export class ManagerCustomerReg extends Component {
 
                     <div>
                         <Form.Row onSubmit={this.onSubmit}>
-                            <h4>Credit Card #</h4>
+                            <h6>Credit Card #</h6>
                         </Form.Row>
                     </div>
-                    <div>
-                        {this.createUI()}
+                    <div className={"text-center"} >
+                        {this.renderRemoveTable()}
                     </div>
-                    <div>
-                        <input type="text" defaultValue="" ref={input => this.cardnum = input} />
-                        <input type='button' value='Add' onClick={this.addClick.bind(this)} />
+                    <div className={"text-center"}>
+                        <input type="text" value={this.state.tmp} onChange={this.changevalue} />
+                        <input type='button' value='Add' onClick={this.addClick} />
                     </div>
 
 
@@ -331,8 +311,8 @@ export class ManagerCustomerReg extends Component {
                               </Link>
                          </Col>
                          <Col md={{span:2, offset:3}} className={"text-center"}>
-                             <Link to={""}>
-                                 <Button variant={"primary"} size={"lg"} className={"w-150"}>
+                             <Link to={"/login"}>
+                                 <Button variant={"primary"} size={"lg"} className={"w-150"} onClick={this.recordReg}>
                                      Register
                                  </Button>
                              </Link>
