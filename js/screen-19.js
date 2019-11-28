@@ -7,21 +7,43 @@ import DatePicker from "react-datepicker";
 export class ManagerScheduleMovie extends Component{
     constructor(props) {
         super(props);
-        this.state = {movName:"", releasedate:"", playdate:"", movieList:[]};
+        this.state = {movName: "", releasedate: "", playdate: "", username: "", usertype: "", movieList:[]};
 
         this.changeMovieName = this.changeMovieName.bind(this);
         this.changeReleaseDate = this.changeReleaseDate.bind(this);
         this.changePlayDate = this.changePlayDate.bind(this);
         this.getMovie = this.getMovie.bind(this);
+        this.getUsername = this.getUsername.bind(this);
         this.add = this.add.bind(this);
+        this.backToFunc = this.backToFunc.bind(this);
     }
 
     componentDidMount() {
+        this.getUsername();
         this.getMovie();
     }
 
+    getUsername(){
+        this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
+        this.setState({ username: document.getElementById('global-user').textContent}, () => console.log('username', this.state.username))
+    }
+
+    backToFunc(){
+        const args = {
+            usertype : this.state.usertype
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+    .join('&');
+        let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+        window.location.href = url;
+    }
+
     changeMovieName(e) {
-        this.setState({name: e.target.value});
+        this.setState({movName: e.target.value},
+            () => {
+            console.log(this.state.movName)
+            });
     }
 
     changeReleaseDate(date) {
@@ -35,12 +57,13 @@ export class ManagerScheduleMovie extends Component{
     getMovie() {
         let url = ENDPOINTS.GET_ALL_MOVIE;
         fetch(url).then(res => res.json()).then((result)=>{
-                this.setState({movieList: result})},
+                this.setState({movieList: result, movName: result[0].movName})},
             (error)=>{});
     }
 
     add() {
         const args = {
+            username: this.state.username,
             Name: this.state.movName,
             ReleaseDate: this.state.releasedate,
             PlayDate: this.state.playdate,
@@ -93,9 +116,7 @@ export class ManagerScheduleMovie extends Component{
 
                 <Row className={"p-2"}>
                     <Col md={{span:2, offset:3}} className={"text-center"}>
-                        <Link to={"/ManagerOnlyFunction"}>
-                            <Button variant={"primary"} size={"lg"} className={"w-100"}>Back</Button>
-                        </Link>
+                            <Button variant={"primary"} size={"lg"} onClick={this.backToFunc} className={"w-100"}>Back</Button>
                     </Col>
 
                     <Col md={{span:2, offset:2}} className={"text-center"}>

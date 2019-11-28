@@ -18,9 +18,10 @@ def pwsmd5(my_string):
 
 @backend_api.route('/valid_login')
 def valid_login():
-    global USERNAME, xx
+    global USERNAME, USERTYPE, xx
     username = request.args.get('username')
     password = request.args.get('password')
+    print(username, password)
     if password:
         password = pwsmd5(password)
     else:
@@ -41,14 +42,16 @@ def valid_login():
             print('not result')
             return Response(status=500)
         tmp = result
+        print(result)
         result = dict(zip(row_headers,result[0]))
 
+        print(result)
         if result['isAdmin'] == 1 and result['isCustomer'] == 1:
-            type = 'Admin-Customer'
+            type = 'AdminCustomer'
         elif result['isAdmin'] == 1:
             type = 'Admin'
         elif result['isManager'] == 1 and result['isCustomer'] == 1:
-            type = 'Manager-Customer'
+            type = 'ManagerCustomer'
         elif result['isManager'] == 1:
             type = 'Manager'
         elif result['isCustomer'] == 1:
@@ -56,20 +59,24 @@ def valid_login():
         else:
             type = 'User'
         json_data = []
+
         for row in tmp:
             json_data.append(dict(zip(row_headers, row)))
     except Exception as e:
+        print('exp')
         return Response(status=500)
     finally:
         cur.close()
-    # print(json_data)
+
+    print('type', type)
     new_json = []
     tmp = {}
     tmp['user_type'] = type
     tmp['username'] = json_data[0]['username']
-    tmp['status'] = json_data[0]['i_status']
+    tmp['status'] = json_data[0]['status']
     new_json.append(tmp)
     config.USERNAME = username
+    config.USERTYPE = type
     # document.getElementById('global-user').textContent
 
     if type == 'Customer':
@@ -502,6 +509,7 @@ def create_movie():
 # screen18
 @backend_api.route('/ManagerFilterTheater')
 def filter_theater():
+    username = request.args.get('username')
     movName = request.args.get('movName')
     minMovDuration = request.args.get('minMovDuration')
     maxMovDuration = request.args.get('maxMovDuration')
@@ -538,7 +546,7 @@ def filter_theater():
     else:
         includedNotPlay = True
     try:
-        cur.callproc('manager_filter_th', [movName, USERNAME, minMovDuration, maxMovDuration, minMovReleaseDate,
+        cur.callproc('manager_filter_th', [movName, username, minMovDuration, maxMovDuration, minMovReleaseDate,
                                            maxMovReleaseDate, minMovPlayDate, maxMovPlayDate, includedNotPlay])
         cur.execute('''SELECT * FROM ManFilterTh''')
         conn.commit()
@@ -556,22 +564,21 @@ def filter_theater():
 # screen19
 @backend_api.route('/ManagerScheduleMovie')
 def add_movie():
+    username = request.args.get('username')
     Name = request.args.get('Name')
     ReleaseDate = request.args.get('ReleaseDate')
     PlayDate = request.args.get('PlayDate')
 
-
     ReleaseDate = parse_date(ReleaseDate)
     PlayDate = parse_date(PlayDate)
 
-
-    if Name is None or PlayDate is None or ReleaseDate is None:
-            return Response(status=500)
+    if Name == '' or PlayDate == '' or ReleaseDate == '':
+        return Response(status=500)
     conn = db.connect()
     cur = conn.cursor()
 
     try:
-        cur.callproc('manager_schedule_mov', [USERNAME, Name, ReleaseDate, PlayDate])
+        cur.callproc('manager_schedule_mov', [username, Name, ReleaseDate, PlayDate])
         conn.commit()
     except Exception as e:
         return Response(status=500)
@@ -666,11 +673,13 @@ def get_all_theather_state():
 # screen20
 @backend_api.route('/getUserCardNum')
 def get_user_cardNum():
+    username = request.args.get('username')
     conn = db.connect()
     cur = conn.cursor()
+    print('username',username)
     try:
-        query = "SELECT DISTINCT creditCardNum FROM CreditCard WHERE username = (%s) "
-        cur.execute(query, USERNAME)
+        query = "SELECT DISTINCT creditCardNum FROM CustomerCreditCard WHERE username = (%s) "
+        cur.execute(query, username)
         conn.commit()
         row_headers = [x[0] for x in cur.description]
         result = cur.fetchall()
@@ -712,13 +721,14 @@ def customer_view_mov():
         cur.close()
     return 'Nothing'
 
-# screen20
+# screen21
 @backend_api.route('/getCustomerViewHistory')
 def get_customer_view_history():
+    username = request.args.get('username')
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('customer_view_history', [USERNAME])
+        cur.callproc('customer_view_history', [username])
         cur.execute('''SELECT * FROM CosViewHistory''')
         conn.commit()
         row_headers = [x[0] for x in cur.description]
@@ -732,7 +742,7 @@ def get_customer_view_history():
         cur.close()
     return json.dumps(json_data, default=myconverter)
 
-# screen21
+# screen22
 @backend_api.route('/getAllTheater')
 def get_all_theather():
     conn = db.connect()
@@ -751,7 +761,7 @@ def get_all_theather():
         cur.close()
     return json.dumps(json_data)
 
-# screen21
+# screen22
 @backend_api.route('/userFilerTheater')
 def user_filer_theater():
     comName = request.args.get('comName')
@@ -780,9 +790,10 @@ def user_filer_theater():
 
     return json.dumps(new_data, default=myconverter)
 
-# screen21
+# screen22
 @backend_api.route('/userVisitTheater')
 def user_visit_theater():
+    username = request.args.get('username')
     thName = request.args.get('thName')
     comName = request.args.get('comName')
     visitDate = request.args.get('visitDate')
@@ -812,7 +823,7 @@ def user_visit_theater():
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('user_visit_th', [thName, comName, parseVisitDate, USERNAME])
+        cur.callproc('user_visit_th', [thName, comName, parseVisitDate, username])
         conn.commit()
     except Exception as e:
         print('exc')
@@ -821,13 +832,13 @@ def user_visit_theater():
         cur.close()
     return 'nothing'
 
-# screen21
+# screen23
 @backend_api.route('/userFilterVisitHistory')
 def user_filer_visit_history():
+    username = request.args.get('username')
     comName = request.args.get('comName')
     visitStartDate = request.args.get('visitStartDate')
     visitEndDate = request.args.get('visitEndDate')
-    print(visitStartDate)
     if visitStartDate == '':
         visitStartDate = None
     else:
@@ -836,11 +847,11 @@ def user_filer_visit_history():
         visitEndDate = None
     else:
         visitEndDate = parse_date(visitEndDate)
-
+    print([username, comName, visitStartDate, visitEndDate])
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('user_filter_visitHistory', [USERNAME, comName, visitStartDate, visitEndDate])
+        cur.callproc('user_filter_visitHistory', [username, comName, visitStartDate, visitEndDate])
         cur.execute('''SELECT * FROM UserVisitHistory''')
         conn.commit()
         header = [x[0] for x in cur.description]
@@ -894,3 +905,20 @@ def parse_address(json_data):
             tmp[key] = row[key]
         new_data.append(tmp)
     return new_data
+
+@backend_api.route('/backToFunctionality')
+def gack_to_funtionality():
+    usertype = request.args.get('usertype')
+
+    if usertype == 'Customer':
+        return redirect('/CustomerFunction', code=302);
+    if usertype == 'AdminCustomer':
+        return redirect('/AdminCustomerFunction', code=302);
+    if usertype == 'ManagerCustomer':
+        return redirect('/ManagerCustomerFunction', code=302);
+    if usertype == 'Admin':
+        return redirect('/AdminFunction', code=302);
+    if usertype == 'Manager':
+        return redirect('/ManagerOnlyFunction', code=302);
+    if usertype == 'User':
+        return redirect('/UserFunction', code=302);

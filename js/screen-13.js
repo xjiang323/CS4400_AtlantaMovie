@@ -8,7 +8,7 @@ import {ENDPOINTS} from './Constants';
 export class AdminManageUser extends Component{
   constructor(props) {
     super(props);
-    this.state = {username: "", status : "ALL", flag: "", sortBy: "username", sortDirection: "DESC",
+    this.state = {username: "", usertype:"", status : "ALL", flag: "", sortBy: "username", sortDirection: "DESC",
       userList: []
     };
 
@@ -20,10 +20,27 @@ export class AdminManageUser extends Component{
     this.declineUser = this.declineUser.bind(this);
     this.filter = this.filter.bind(this);
     this.sortItems = this.sortItems.bind(this);
+    this.getUsertype = this.getUsertype.bind(this);
+    this.backToFunc = this.backToFunc.bind(this);
   }
 
   componentDidMount() {
-    // this.filter();
+    this.getUsertype();
+  }
+
+  getUsertype(){
+    this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
+  }
+
+  backToFunc(){
+    const args = {
+      usertype : this.state.usertype
+    };
+    let query = Object.keys(args)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+  .join('&');
+    let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+    window.location.href = url;
   }
 
   changeUser(event) {
@@ -192,7 +209,7 @@ export class AdminManageUser extends Component{
 
           <Col md={{span:2, offset:5}} className={"text-center"}>
             <Link to={"/AdminOnlyFunction"}>
-              <Button variant={"primary"} size={"lg"} className={"w-100"}>
+              <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.backToFunc}>
                 Back
               </Button>
             </Link>

@@ -8,16 +8,33 @@ export class CustomerViewHistory extends Component{
         super(props);
         this.props = props;
         this.state = {
+            usertype:'',
+            username: '',
             viewHistory: []
         };
-
+        this.getUsername = this.getUsername.bind(this);
+        this.getViewHistory = this.getViewHistory.bind(this);
+        this.setTableHeader = this.setTableHeader.bind(this);
+        this.renderTableData = this.renderTableData.bind(this);
+        this.backToFunc = this.backToFunc.bind(this);
     }
     componentDidMount() {
-        this.getViewHistory()
+        this.getUsername();
+        // this.getViewHistory();
     }
-
+    getUsername(){
+        this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
+        this.setState({ username: document.getElementById('global-user').textContent}, () => this.getViewHistory())
+    }
     getViewHistory(){
-        let url = ENDPOINTS.GET_CUSTOMER_VIEW_HISTORY;
+        const args = {
+            username: this.state.username
+        };
+		let query = Object.keys(args)
+             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+             .join('&');
+		let url = ENDPOINTS.GET_CUSTOMER_VIEW_HISTORY + '?' + query;
+
         fetch(url).then(res => res.json()).then((result)=> {
             this.setState({ viewHistory: result}, () => this.renderTableData())});
 
@@ -30,6 +47,16 @@ export class CustomerViewHistory extends Component{
           return <th key={index}>{key}</th>
       })
    }
+    backToFunc(){
+        const args = {
+            usertype : this.state.usertype
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+        window.location.href = url;
+    }
    renderTableData() {
       return this.state.viewHistory.map((view_info, index) => {
           const { movName, thName, comName, creditCardNum, movPlayDate } = view_info
@@ -59,9 +86,7 @@ export class CustomerViewHistory extends Component{
                     </tbody>
                 </Table>
                 <div className={"text-center"}>
-                <Link to={"/AdminOnlyFunction"}>
-                    <Button variant="primary">Back</Button>
-                </Link>
+                    <Button variant="primary" onClick={this.backToFunc}>Back</Button>
                 </div>
             </Container>
         )
