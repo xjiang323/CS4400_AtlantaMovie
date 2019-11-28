@@ -76,17 +76,17 @@ def customer_function():
 # 12
 @app.route('/UserFunction')
 def user_function():
-  return render_template('index.html', logged_username=config.USERNAME, logged_usertype=config.USERTYPE)
+  return render_template('index.html', logged_usertype=config.USERTYPE)
 
 # 13
 @app.route('/manageUser')
 def admin_manage_user():
-  return render_template('index.html')
+  return render_template('index.html', logged_usertype=config.USERTYPE)
 
 # 14
 @app.route('/manageCompany')
 def manage_company():
-  return render_template('index.html')
+  return render_template('index.html', logged_username=config.USERNAME, logged_usertype=config.USERTYPE)
 
 # 15
 @app.route('/createTheater')

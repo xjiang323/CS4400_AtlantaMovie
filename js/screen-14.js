@@ -9,7 +9,7 @@ export class AdminManageCompany extends Component{
   constructor(props) {
     super(props);
     this.state = {comName: "all", minCity: "", maxCity: "", minTheater: "", maxTheater: "",
-                  minEmployee: "", maxEmployee: "", detailed: "", sortBy: "comName", sortDirection: "DESC",
+                  minEmployee: "", maxEmployee: "", detailed: "", usertype:"", sortBy: "comName", sortDirection: "DESC",
                   companyList:[], comDropdownList:[]
     }
     this.changeCompany = this.changeCompany.bind(this);
@@ -24,10 +24,29 @@ export class AdminManageCompany extends Component{
     this.filter = this.filter.bind(this);
     this.obtainCom = this.obtainCom.bind(this);
     this.sortItems = this.sortItems.bind(this);
+    this.getUsertype = this.getUsertype.bind(this);
+    this.backToFunc = this.backToFunc.bind(this);
+  }
+
+
+  getUsertype(){
+    this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
+  }
+
+  backToFunc(){
+    const args = {
+      usertype : this.state.usertype
+    };
+    let query = Object.keys(args)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+  .join('&');
+    let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+    window.location.href = url;
   }
 
   componentDidMount() {
     this.obtainCom();
+    this.getUsertype();
   }
 
   changeCompany(event) {
@@ -216,7 +235,7 @@ export class AdminManageCompany extends Component{
 
           <Col md={{span:2, offset:5}} className={"text-center"} className={"p-2"}>
             <Link to={"/AdminOnlyFunction"}>
-              <Button variant={"primary"} size={"lg"} className={"w-100"}>
+              <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.backToFunc}>
                 Back
               </Button>
             </Link>
