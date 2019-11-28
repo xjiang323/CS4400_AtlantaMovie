@@ -9,6 +9,8 @@ export class UserExploreTheater extends Component{
         super(props);
         this.props = props;
         this.state = {
+            usertype: '',
+            username: '',
             thNameOptions: [],
             comNameOptions: [],
             stateOptions: [],
@@ -28,11 +30,17 @@ export class UserExploreTheater extends Component{
         this.select = this.select.bind(this);
         this.addVisitHistory = this.addVisitHistory.bind(this);
         this.setVisitDate = this.setVisitDate.bind(this);
+        this.backToFunc = this.backToFunc.bind(this);
     }
     componentDidMount() {
+        this.getUsername();
         this.getTheater();
         this.getCompany();
         this.getState();
+    }
+    getUsername(){
+        this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
+        this.setState({ username: document.getElementById('global-user').textContent}, () => console.log('username', this.state.username))
     }
     getTheater() {
         let url = ENDPOINTS.GET_ALL_THEATER;
@@ -91,6 +99,16 @@ export class UserExploreTheater extends Component{
             this.setState({ theaterList: result}, () => this.renderTableData())});
 
     }
+    backToFunc(){
+        const args = {
+            usertype : this.state.usertype
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+        window.location.href = url;
+    }
 
     setTableHeader() {
         const headings = {'Theater':0, 'Address':1, 'Company':2};
@@ -125,6 +143,7 @@ export class UserExploreTheater extends Component{
         const selectIndex = parseInt(this.state.select);
         const viewRow = this.state.theaterList[selectIndex];
         const args = {
+            username: this.state.username,
             thName: viewRow['thName'],
             comName: viewRow['comName'],
             visitDate: this.state.visitDate
@@ -219,9 +238,7 @@ export class UserExploreTheater extends Component{
                 <Row>
                     <Col sm={4}>
                         <div className={"text-left"}>
-                            <Link to={"/AdminOnlyFunction"}>
-                                <Button variant="primary">Back</Button>
-                            </Link>
+                                <Button variant="primary" onClick={this.backToFunc}>Back</Button>
                         </div>
                     </Col>
                     <Col sm={4}>

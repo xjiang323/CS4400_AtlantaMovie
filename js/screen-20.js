@@ -9,6 +9,8 @@ export class CustomerExploreMovie extends Component{
         super(props);
         this.props = props;
         this.state = {
+            username : '',
+            usertype : '',
             movNameOptions: [],
             comNameOptions: [],
             stateOptions: [],
@@ -34,12 +36,19 @@ export class CustomerExploreMovie extends Component{
         this.addViewHistory = this.addViewHistory.bind(this);
         this.setStartDate = this.setStartDate.bind(this);
         this.setEndDate = this.setEndDate.bind(this);
+        this.getUsername = this.getUsername.bind(this);
+        this.backToFunc = this.backToFunc.bind(this);
     }
     componentDidMount() {
+        this.getUsername();
         this.getCompany();
         this.getMovie();
         this.getState();
-        this.getUserCardNum();
+        // this.getUserCardNum();
+    }
+    getUsername(){
+        this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
+        this.setState({ username: document.getElementById('global-user').textContent}, () => this.getUserCardNum());
     }
     getMovie() {
         let url = ENDPOINTS.GET_ALL_MOVIE;
@@ -60,7 +69,13 @@ export class CustomerExploreMovie extends Component{
             (error)=>{});
     }
     getUserCardNum() {
-        let url = ENDPOINTS.GET_USER_CARD_NUMBER;
+        const args = {
+            username : this.state.username
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.GET_USER_CARD_NUMBER + '?' + query;
         fetch(url).then(res => res.json()).then((result)=>{
         this.setState({cardNumOptions: result})},
             (error)=>{});
@@ -154,6 +169,17 @@ export class CustomerExploreMovie extends Component{
         fetch(url);
 
      }
+
+    backToFunc(e){
+        const args = {
+            usertype : this.state.usertype
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+        window.location.href = url;
+    }
 
    renderTableData() {
       return this.state.movieList.map((movie_info, index) => {
@@ -267,9 +293,7 @@ export class CustomerExploreMovie extends Component{
                 <Row>
                     <Col sm={3}>
                         <div className={"text-left"}>
-                            <Link to={"/AdminOnlyFunction"}>
-                                <Button variant="primary">Back</Button>
-                            </Link>
+                                <Button variant="primary" onClick={this.backToFunc}>Back</Button>
                         </div>
                     </Col>
                     <Col sm={6}>

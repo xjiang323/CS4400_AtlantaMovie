@@ -25,7 +25,7 @@ export const ENDPOINTS = {
     USER_REG:'/recordUserRegister',
     ADD_CARD:'/addCard',
     REMOVE_CARD:'/removeCard',
-    ADD_MAGCARD:'/addManagerCard'
-
+    ADD_MAGCARD:'/addManagerCard',
+    BACK_TO_FUNC: '/backToFunctionality'
 };
 

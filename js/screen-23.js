@@ -9,6 +9,7 @@ export class UserVisitHistory extends Component {
         super(props);
         this.props = props;
         this.state = {
+            usertype: '',
             username: '',
             comName: 'ALL',
             visitStartDate: '',
@@ -20,12 +21,14 @@ export class UserVisitHistory extends Component {
         this.submitFilter = this.submitFilter.bind(this);
         this.setVisitStartDate = this.setVisitStartDate.bind(this);
         this.setVisitEndDate = this.setVisitEndDate.bind(this);
+        this.backToFunc = this.backToFunc.bind(this);
     }
     componentDidMount() {
         this.getUsername();
         this.getCompany();
     }
     getUsername(){
+        this.setState({ usertype: document.getElementById('global-usertype').textContent}, () => console.log('usertype', this.state.usertype));
         this.setState({ username: document.getElementById('global-user').textContent}, () => console.log('username', this.state.username))
     }
     getCompany() {
@@ -89,6 +92,16 @@ export class UserVisitHistory extends Component {
          )
       })
    }
+    backToFunc(){
+        const args = {
+            usertype : this.state.usertype
+        };
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.BACK_TO_FUNC + '?' + query;
+        window.location.href = url;
+    }
     render(){
         return (
             <Container>
@@ -129,9 +142,7 @@ export class UserVisitHistory extends Component {
                     </tbody>
                 </Table>
                 <div className={"text-center"}>
-                    <Link to={"/AdminOnlyFunction"}>
-                        <Button variant="primary">Back</Button>
-                    </Link>
+                        <Button variant="primary" onClick={this.backToFunc}>Back</Button>
                 </div>
             </Container>
 

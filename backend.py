@@ -18,7 +18,7 @@ def pwsmd5(my_string):
 
 @backend_api.route('/valid_login')
 def valid_login():
-    global USERNAME, xx
+    global USERNAME, USERTYPE, xx
     username = request.args.get('username')
     password = request.args.get('password')
     print(username, password)
@@ -76,6 +76,7 @@ def valid_login():
     tmp['status'] = json_data[0]['status']
     new_json.append(tmp)
     config.USERNAME = username
+    config.USERTYPE = type
     # document.getElementById('global-user').textContent
 
     if type == 'Customer':
@@ -665,11 +666,13 @@ def get_all_theather_state():
 # screen20
 @backend_api.route('/getUserCardNum')
 def get_user_cardNum():
+    username = request.args.get('username')
     conn = db.connect()
     cur = conn.cursor()
+    print('username',username)
     try:
-        query = "SELECT DISTINCT creditCardNum FROM CreditCard WHERE username = (%s) "
-        cur.execute(query, USERNAME)
+        query = "SELECT DISTINCT creditCardNum FROM CustomerCreditCard WHERE username = (%s) "
+        cur.execute(query, username)
         conn.commit()
         row_headers = [x[0] for x in cur.description]
         result = cur.fetchall()
@@ -732,7 +735,7 @@ def get_customer_view_history():
         cur.close()
     return json.dumps(json_data, default=myconverter)
 
-# screen21
+# screen22
 @backend_api.route('/getAllTheater')
 def get_all_theather():
     conn = db.connect()
@@ -751,7 +754,7 @@ def get_all_theather():
         cur.close()
     return json.dumps(json_data)
 
-# screen21
+# screen22
 @backend_api.route('/userFilerTheater')
 def user_filer_theater():
     comName = request.args.get('comName')
@@ -780,9 +783,10 @@ def user_filer_theater():
 
     return json.dumps(new_data, default=myconverter)
 
-# screen21
+# screen22
 @backend_api.route('/userVisitTheater')
 def user_visit_theater():
+    username = request.args.get('username')
     thName = request.args.get('thName')
     comName = request.args.get('comName')
     visitDate = request.args.get('visitDate')
@@ -812,7 +816,7 @@ def user_visit_theater():
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('user_visit_th', [thName, comName, parseVisitDate, USERNAME])
+        cur.callproc('user_visit_th', [thName, comName, parseVisitDate, username])
         conn.commit()
     except Exception as e:
         print('exc')
@@ -894,3 +898,20 @@ def parse_address(json_data):
             tmp[key] = row[key]
         new_data.append(tmp)
     return new_data
+
+@backend_api.route('/backToFunctionality')
+def gack_to_funtionality():
+    usertype = request.args.get('usertype')
+
+    if usertype == 'Customer':
+        return redirect('/CustomerFunction', code=302);
+    if usertype == 'AdminCustomer':
+        return redirect('/AdminCustomerFunction', code=302);
+    if usertype == 'ManagerCustomer':
+        return redirect('/ManagerCustomerFunction', code=302);
+    if usertype == 'Admin':
+        return redirect('/AdminFunction', code=302);
+    if usertype == 'Manager':
+        return redirect('/ManagerOnlyFunction', code=302);
+    if usertype == 'User':
+        return redirect('/UserFunction', code=302);
