@@ -234,11 +234,9 @@ export class AdminManageCompany extends Component{
           </Col>
 
           <Col md={{span:2, offset:5}} className={"text-center"} className={"p-2"}>
-            <Link to={"/AdminOnlyFunction"}>
-              <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.backToFunc}>
-                Back
-              </Button>
-            </Link>
+            <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.backToFunc}>
+              Back
+            </Button>
           </Col>
         </div>
     );

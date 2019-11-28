@@ -112,14 +112,14 @@ export class AdminManageUser extends Component{
 
   renderTableData() {
     return this.state.userList.map((user, index) => {
-      const {username, CreditCardCount, userType, status} = user;
+      const {username, creditCardCount, userType, status} = user;
       return (
           <tr key={index} className={"p-2"}>
             <td className={"text-center"}><input type={"radio"}
                                                  value={username}
                                                  checked={this.state.flag === username}
                                                  onChange={this.changeFlag}/>{username}</td>
-            <td className={"text-center"}>{CreditCardCount}</td>
+            <td className={"text-center"}>{creditCardCount}</td>
             <td className={"text-center"}>{userType}</td>
             <td className={"text-center"}>{status}</td>
           </tr>
@@ -208,11 +208,9 @@ export class AdminManageUser extends Component{
           </Col>
 
           <Col md={{span:2, offset:5}} className={"text-center"}>
-            <Link to={"/AdminOnlyFunction"}>
-              <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.backToFunc}>
-                Back
-              </Button>
-            </Link>
+            <Button variant={"primary"} size={"lg"} className={"w-100"} onClick={this.backToFunc}>
+              Back
+            </Button>
           </Col>
         </div>
     )
