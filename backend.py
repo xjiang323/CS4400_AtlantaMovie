@@ -559,13 +559,11 @@ def add_movie():
     ReleaseDate = request.args.get('ReleaseDate')
     PlayDate = request.args.get('PlayDate')
 
-
     ReleaseDate = parse_date(ReleaseDate)
     PlayDate = parse_date(PlayDate)
 
-
-    if Name is None or PlayDate is None or ReleaseDate is None:
-            return Response(status=500)
+    if Name == '' or PlayDate == '' or ReleaseDate == '':
+        return Response(status=500)
     conn = db.connect()
     cur = conn.cursor()
 

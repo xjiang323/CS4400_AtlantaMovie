@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 export class ManagerScheduleMovie extends Component{
     constructor(props) {
         super(props);
-        this.state = {movName:"", releasedate:"", playdate:"", movieList:[]};
+        this.state = {movName: "", releasedate: "", playdate: "", movieList:[]};
 
         this.changeMovieName = this.changeMovieName.bind(this);
         this.changeReleaseDate = this.changeReleaseDate.bind(this);
@@ -21,7 +21,10 @@ export class ManagerScheduleMovie extends Component{
     }
 
     changeMovieName(e) {
-        this.setState({name: e.target.value});
+        this.setState({movName: e.target.value},
+            () => {
+            console.log(this.state.movName)
+            });
     }
 
     changeReleaseDate(date) {
@@ -35,7 +38,7 @@ export class ManagerScheduleMovie extends Component{
     getMovie() {
         let url = ENDPOINTS.GET_ALL_MOVIE;
         fetch(url).then(res => res.json()).then((result)=>{
-                this.setState({movieList: result})},
+                this.setState({movieList: result, movName: result[0].movName})},
             (error)=>{});
     }
 
