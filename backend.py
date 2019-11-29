@@ -164,7 +164,7 @@ def record_screen4():
     password = request.args.get('password')
     confirmpsw = request.args.get('confirmPassword')
     credtcardNum = request.args.get('Creditcardnumber')
-
+    print([username, password, firstname, lastname, confirmpsw, credtcardNum])
     if firstname is None or \
             lastname is None or username is None \
             or password is None or len(password) < 8 \
@@ -201,8 +201,8 @@ def record_screen6():
     city = request.args.get('city')
     state = request.args.get('state')
     zipcode = request.args.get('zipcode')
-    credtcardNum = request.args.get('Creditcardnumber')
-
+    credtcardNum = request.get_json('Creditcardnumber')
+    print(credtcardNum,username,password,zipcode,state,city,comName)
     if firstname is None or \
             lastname is None or username is None \
             or password is None or len(password) < 8\
@@ -216,18 +216,17 @@ def record_screen6():
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
-        cur.callproc('manager_customer_add_creditcard', [username, credtcardNum])
+        a = cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
+        b = cur.callproc('manager_customer_add_creditcard', [username, credtcardNum])
         conn.commit()
+        print('a', a)
+        print('b', b)
     except Exception as e:
-        print(e)
         return Response(status=500)
+        print(e)
     finally:
         cur.close()
     return redirect('/login', code=302)
-
-
-
 
 
 # screen13
