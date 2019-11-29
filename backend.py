@@ -208,31 +208,39 @@ def record_screen6():
     city = request.args.get('city')
     state = request.args.get('state')
     zipcode = request.args.get('zipcode')
-    credtcardNum = request.args.g('Creditcardnumber')
+    credtcardNum = request.args.get('Creditcardnumber')
     print(credtcardNum,username,password,zipcode,state,city,comName)
     if firstname is None or \
             lastname is None or username is None \
             or password is None or len(password) < 8\
             or address is None or comName is None or city is None or state is None or zipcode is None\
-            or credtcardNum is None or len(credtcardNum) !=16 or len(zipcode)!=5:
-        return Response(status=500)
+            or len(zipcode) != 5:
+        return redirect('/ManagerCustomerReg', code=302)
     if password == confirmpsw:
         password = pwsmd5(password)
+        print(password)
     else:
-        return Response(status=500)
+        return redirect('/ManagerCustomerReg', code=302)
+    if credtcardNum:
+        credtcardNum = credtcardNum.split('&')
+    for num in credtcardNum:
+        if len(num) != 16 or not num.isdigit():
+            print("length",len(num))
+            return redirect('/ManagerCustomerReg', code=302)
     conn = db.connect()
     cur = conn.cursor()
+    print(num,username,password,zipcode,state,city,comName)
     try:
-        a = cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
-        b = cur.callproc('manager_customer_add_creditcard', [username, credtcardNum])
+        cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
+        for num in credtcardNum:
+            cur.callproc('manager_customer_add_creditcard', [username, num])
         conn.commit()
-        print('a', a)
-        print('b', b)
     except Exception as e:
         return Response(status=500)
         print(e)
     finally:
         cur.close()
+        return redirect('/login', code=302)
     return redirect('/login', code=302)
 
 
