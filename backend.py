@@ -583,6 +583,12 @@ def filter_movie():
     thState = request.args.get('thState')
     moviePlayStartDate = request.args.get('moviePlayStartDate')
     moviePlayEndDate = request.args.get('moviePlayEndDate')
+    if comName == '':
+        comName = 'ALL'
+    if movName == '':
+        movName = 'ALL'
+    if thState == '':
+        thState = 'ALL'
     conn = db.connect()
     cur = conn.cursor()
 
@@ -756,6 +762,12 @@ def user_filer_theater():
     thName = request.args.get('thName')
     thCity = request.args.get('thCity')
     thState = request.args.get('thState')
+    if comName == '':
+        comName = 'ALL'
+    if thName == '':
+        thName = 'ALL'
+    if thState == '':
+        thState = 'ALL'
 
     conn = db.connect()
     cur = conn.cursor()
@@ -827,6 +839,8 @@ def user_filer_visit_history():
     comName = request.args.get('comName')
     visitStartDate = request.args.get('visitStartDate')
     visitEndDate = request.args.get('visitEndDate')
+    if comName == '':
+        comName = 'ALL'
     if visitStartDate == '':
         visitStartDate = None
     else:

@@ -85,7 +85,7 @@ export class ManagerCustomerReg extends Component {
     }
 
     addstate(event){
-        this.setState({sate:event.target.value},()=>console.log('state',this.state.state));
+        this.setState({state:event.target.value},()=>console.log('state',this.state.state));
     }
 
     addzipcode(event){

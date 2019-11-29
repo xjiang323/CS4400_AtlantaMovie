@@ -202,7 +202,7 @@ export class UserExploreTheater extends Component{
                         <Row className={"p-2"}>
                             <Col>City</Col>
                             <Col>
-                                <input type="text" className="form-control" id="movieCity" placeholder="City" value={this.state.city} onChange={this.changeCity}/>
+                                <input type="text" className="form-control" id="movieCity" placeholder="City" value={this.state.thCity} onChange={this.changeCity}/>
                             </Col>
                         </Row>
                     </Col>
@@ -212,7 +212,7 @@ export class UserExploreTheater extends Component{
                             <Col>
                                 <select
                                     name="state"
-                                    value={this.state.state}
+                                    value={this.state.thState}
                                     onChange={this.changeState}
                                     className="form-select">
                                     <option value="">--ALL--</option>
