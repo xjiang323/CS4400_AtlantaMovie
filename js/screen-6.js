@@ -3,7 +3,7 @@ import {Col, Form,  Row} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import {Link} from "react-router-dom";
 import {ENDPOINTS} from "./Constants";
-import ReactDOM from "react-dom";
+
 
 
 
@@ -123,7 +123,7 @@ export class ManagerCustomerReg extends Component {
         return this.state.Creditcardnumber.map((card, idx) =>
             (<Row key={idx} className="justify-content-md-center" >
                 <p>{card.number}</p>
-                <input type='button' value='remove' className={"p-4"} onClick={() =>this.removeCard(idx)} />
+                <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
             </Row>
             )
 
@@ -206,10 +206,7 @@ export class ManagerCustomerReg extends Component {
                       <Form.Group as={Col} controlId="companyName" className={"form-inline"} md={{span:4,offset:2}}>
                           <Form.Label className={"p-4"}>Company</Form.Label>
                           <Form.Control as="select" className={"w-25 m-2"} value={this.state.company} onChange={this.addcompany}>
-                              <option value="all">--ALL--</option>
-                              {this.state.comNameOptions.map(opt => {
-                                        return (<option key={opt.comName} >{opt.comName}</option>);
-                                    })}
+                              {this.state.comNameOptions.map((company, index) => (<option value={company.comName} key={index}>{company.comName}</option>))}
                           </Form.Control>
                       </Form.Group>
                     </Form.Row>
