@@ -58,21 +58,26 @@ export class Customer_reg extends Component {
     }
 
 
-
-
     removeCard(idx){
     let someArray = this.state.Creditcardnumber;
     someArray.splice(idx, 1);
-    this.setState({ Creditcardnumber: someArray });
+    this.setState({ Creditcardnumber: someArray }, () => {console.log('after remove', this.state.Creditcardnumber)});
     }
 
 
     renderRemoveTable(){
         return this.state.Creditcardnumber.map((card, idx) =>
-            (<Row key={idx} className="justify-content-md-center">
-                <p>{card.number}</p>
-                <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
-            </Row>)
+            (<div  key={idx} className="container">
+                <div   className="row justify-content-md-center">
+                    <div className="col-md-auto">
+                        {card.number}
+                    </div>
+                    <div className="col col-lg-2">
+                        <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
+                    </div>
+                </div>
+            </div>
+                )
 
         )
     }
@@ -84,11 +89,17 @@ export class Customer_reg extends Component {
             this.state.Creditcardnumber.concat([{ id:this.state.tmp, number: this.state.tmp }]),
     tmp: ''}, () => {console.log('credircard after push:', this.state.Creditcardnumber);});
 
+
   }
 
     changevalue(e){
         this.setState({ tmp: e.target.value });
   }
+
+
+
+
+
 
 
 
@@ -98,6 +109,13 @@ export class Customer_reg extends Component {
             .map(key => this.state.Creditcardnumber[key].number)
             .join('&');
         console.log(creditcard_query);
+        console.log(this.state.Fname);
+        console.log(this.state.Lname);
+        console.log(this.state.username);
+        console.log(this.state.password);
+        console.log(this.state.Creditcardnumber);
+
+
         const args = {
             Fname:this.state.Fname,
             Lname:this.state.Lname,
@@ -148,24 +166,33 @@ export class Customer_reg extends Component {
                       </Form.Group>
 
                       <Form.Group as={Col} controlId="confirmpsw" className={"form-inline"} md={{span:4,offset:2}}>
-                          <Form.Label className={"p-4"}>Confirm Password</Form.Label>
+                          <Form.Label className={"p-2"}>Confirm Password</Form.Label>
                           <Form.Control placeholder="enter same password" className={"w-200 m-2"} value={this.state.confirmPassword} onChange={this.confirmPassword}/>
                       </Form.Group>
                     </Form.Row>
 
 
-
-                    <div>
-                        <Form.Row onSubmit={this.onSubmit} className={"p-4"}  md={{span:1,offset:3}}>
-                            <h6>Credit Card #</h6>
+                    <div className={"form-inline"}>
+                        <Form.Row onSubmit={this.onSubmit} className={"p-4"} md={{span: 1, offset: 3}}>
+                            <div>Credit Card #</div>
                         </Form.Row>
                     </div>
                     <div className={"text-center"}>
                         {this.renderRemoveTable()}
                     </div>
-                    <div className={"text-center"}>
-                        <input type="text" value={this.state.tmp} onChange={this.changevalue} />
-                        <input type='button' value='Add' onClick={this.addClick} />
+
+
+                    <div className="p-4">
+                        <div className={'text-center'}>
+                            <div className="row justify-content-md-center">
+                                <div className="col-md-auto">
+                                    <input type="text" value={this.state.tmp} onChange={this.changevalue}/>
+                                </div>
+                                <div className="col col-lg-2">
+                                    <input type='button' value='Add' onClick={this.addClick} />
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 

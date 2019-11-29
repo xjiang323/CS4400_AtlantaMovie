@@ -46,23 +46,23 @@ export class ManagerOnlyReg extends Component {
             (error)=>{});
     }
     First_name(event) {
-        this.setState({Fname: event.target.value});
+        this.setState({Fname: event.target.value},()=>console.log('first name',this.state.Fname));
     }
 
     Last_name(event) {
-        this.setState({Lname: event.target.value});
+        this.setState({Lname: event.target.value},()=>console.log('last name',this.state.Lname));
     }
 
     UserName(event) {
-        this.setState({username: event.target.value});
+        this.setState({username: event.target.value},()=>console.log('username',this.state.username));
     }
 
     addcompany(event){
-        this.setState({company:event.target.value})
+        this.setState({company:event.target.value},()=>console.log('company',this.state.company));
     }
 
     Psw(event){
-        this.setState({password:event.target.value});
+        this.setState({password:event.target.value},()=>console.log('password',this.state.password));
     }
 
     confirmPassword(event){
@@ -70,19 +70,19 @@ export class ManagerOnlyReg extends Component {
     }
 
     address(event){
-        this.setState({StreetAddress:event.target.value});
+        this.setState({StreetAddress:event.target.value},()=>console.log('address',this.state.StreetAddress));
     }
 
     addcity(event){
-        this.setState({city:event.target.value});
+        this.setState({city:event.target.value},()=>console.log('city',this.state.city));
     }
 
     addstate(event){
-        this.setState({state:event.target.value});
+        this.setState({state:event.target.value},()=>console.log('state',this.state.state));
     }
 
     addzipcode(event){
-        this.setState({zipcode:event.target.value});
+        this.setState({zipcode:event.target.value},()=>console.log(('zipcode',this.state.zipcode)));
     }
 
 
@@ -94,6 +94,7 @@ export class ManagerOnlyReg extends Component {
         console.log(this.state.username);
         console.log(this.state.password);
         console.log(this.state.StreetAddress);
+        console.log(this.state.state);
 
         const args = {
             Fname:this.state.Fname,
@@ -168,7 +169,7 @@ export class ManagerOnlyReg extends Component {
                       </Form.Group>
 
                       <Form.Group as={Col} controlId="confirmpsw" className={"form-inline"} md={{span:4,offset:2}}>
-                          <Form.Label className={"p-4"}>Confirm Password</Form.Label>
+                          <Form.Label className={"p-2"}>Confirm Password</Form.Label>
                           <Form.Control placeholder="enter same password" className={"w-200 m-2"} value={this.state.confirmPassword} onChange={this.confirmPassword}/>
                       </Form.Group>
                     </Form.Row>

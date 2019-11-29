@@ -21,7 +21,6 @@ export class ManagerCustomerReg extends Component {
             StreetAddress:'',
             city:'',
             state:'',
-            Statelist:[],
             zipcode:'',
             Creditcardnumber:[],
             tmp: ''
@@ -49,7 +48,8 @@ export class ManagerCustomerReg extends Component {
     };
 
     componentDidMount() {
-		this.getComName();}
+		this.getComName();
+    }
 
 
     First_name(event) {
@@ -85,11 +85,11 @@ export class ManagerCustomerReg extends Component {
     }
 
     addstate(event){
-        this.setState({sate:event.target.value},()=>console.log('city',this.state.state));
+        this.setState({sate:event.target.value},()=>console.log('state',this.state.state));
     }
 
     addzipcode(event){
-        this.setState({zipcode:event.target.value},()=>console.log('city',this.state.zipcode));
+        this.setState({zipcode:event.target.value},()=>console.log('zipcode',this.state.zipcode));
     }
 
 
@@ -107,6 +107,8 @@ export class ManagerCustomerReg extends Component {
 
 
 
+
+
     removeCard(idx){
     let someArray = this.state.Creditcardnumber;
     someArray.splice(idx, 1);
@@ -116,11 +118,17 @@ export class ManagerCustomerReg extends Component {
 
     renderRemoveTable(){
         return this.state.Creditcardnumber.map((card, idx) =>
-            (<Row key={idx} className="justify-content-md-center" >
-                <p>{card.number}</p>
-                <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
-            </Row>
-            )
+            (<div key={idx} className="container">
+                <div  className="row justify-content-md-center">
+                    <div className="col-md-auto">
+                        {card.number}
+                    </div>
+                    <div className="col col-lg-2">
+                        <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
+                    </div>
+                </div>
+            </div>
+                )
 
         )
     }
@@ -149,6 +157,18 @@ export class ManagerCustomerReg extends Component {
             .map(key => this.state.Creditcardnumber[key].number)
             .join('&');
         console.log(creditcard_query);
+        console.log(this.state.Fname);
+        console.log(this.state.Lname);
+        console.log(this.state.username);
+        console.log(this.state.password);
+        console.log(this.state.company);
+        console.log(this.state.StreetAddress);
+        console.log(this.state.city);
+        console.log(this.state.state);
+        console.log(this.state.zipcode);
+        console.log(this.state.Creditcardnumber);
+
+
 
         const args = {
             Fname:this.state.Fname,
@@ -156,12 +176,12 @@ export class ManagerCustomerReg extends Component {
             username : this.state.username,
             password : this.state.password,
             confirmPassword : this.state.confirmPassword,
-            company:this.state.company,
-            StreetAddress:this.state.StreetAddress,
-            city:this.state.city,
-            state:this.state.state,
-            zipcode:this.state.zipcode,
-            Creditcardnumber: creditcard_query,
+            company : this.state.company,
+            StreetAddress : this.state.StreetAddress,
+            city : this.state.city,
+            state : this.state.state,
+            zipcode : this.state.zipcode,
+            Creditcardnumber : creditcard_query,
 
         }
         let query = Object.keys(args)
@@ -221,7 +241,7 @@ export class ManagerCustomerReg extends Component {
                       </Form.Group>
 
                       <Form.Group as={Col} controlId="confirmpsw" className={"form-inline"} md={{span:4,offset:2}}>
-                          <Form.Label className={"p-4"}>Confirm Password</Form.Label>
+                          <Form.Label className={"p-2"}>Confirm Password</Form.Label>
                           <Form.Control placeholder="enter same password" className={"w-200 m-2"} value={this.state.confirmPassword} onChange={this.confirmPassword}/>
                       </Form.Group>
                     </Form.Row>
@@ -314,10 +334,21 @@ export class ManagerCustomerReg extends Component {
                     <div className={"text-center"} >
                         {this.renderRemoveTable()}
                     </div>
-                    <div className={"text-center"}>
-                        <input type="text" value={this.state.tmp} onChange={this.changevalue}/>
-                        <input type='button' value='Add' onClick={this.addClick} />
+
+
+                    <div className="p-4">
+                        <div className={'text-center'}>
+                            <div className="row justify-content-md-center">
+                                <div className="col-md-auto">
+                                    <input type="text" value={this.state.tmp} onChange={this.changevalue}/>
+                                </div>
+                                <div className="col col-lg-2">
+                                    <input type='button' value='Add' onClick={this.addClick} />
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
 
 
 

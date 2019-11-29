@@ -107,7 +107,7 @@ export class UserOnly_reg extends Component {
                       </Form.Group>
 
                       <Form.Group as={Col} controlId="confirmpsw" className={"form-inline"} md={{span:4,offset:2}}>
-                          <Form.Label className={"p-4"}>Confirm Password</Form.Label>
+                          <Form.Label className={"p-2"}>Confirm Password</Form.Label>
                           <Form.Control placeholder="enter same password" className={"w-200 m-2"} value={this.state.confirmPassword} onChange={this.confirmPassword}/>
                       </Form.Group>
                     </Form.Row>

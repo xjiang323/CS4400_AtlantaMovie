@@ -101,7 +101,7 @@ def record_user_register():
     username=request.args.get('username')
     password = request.args.get('password')
     confirmpsw=request.args.get('confirmPassword')
-    # print([username, password, firstname, lastname])
+    print([username, password, firstname, lastname])
     if firstname is None or lastname is None or username is None or password is None or len(password) < 8:
         return Response(status=500)
     if password == confirmpsw:
@@ -150,6 +150,7 @@ def record_ManagerOnly_reg():
     try:
         cur.callproc('manager_only_register', [username, password, firstname, lastname, comName, address, city, state, zipcode])
     except Exception as e:
+        print(e)
         return Response(status=500)
     finally:
         cur.close()
@@ -194,7 +195,7 @@ def record_screen4():
     finally:
         cur.close()
         return redirect('/login', code=302)
-    return redirect('/login', code=302)
+
 
 
 #screen 6 register
@@ -231,7 +232,7 @@ def record_screen6():
             return redirect('/ManagerCustomerReg', code=302)
     conn = db.connect()
     cur = conn.cursor()
-    print(num,username,password,zipcode,state,city,comName)
+    print(num, username, password, zipcode, state, city, comName)
     try:
         cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
         for num in credtcardNum:
@@ -243,7 +244,7 @@ def record_screen6():
     finally:
         cur.close()
         return redirect('/login', code=302)
-    return redirect('/login', code=302)
+
 
 
 # screen13
