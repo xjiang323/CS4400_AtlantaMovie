@@ -201,7 +201,7 @@ def record_screen6():
     city = request.args.get('city')
     state = request.args.get('state')
     zipcode = request.args.get('zipcode')
-    credtcardNum = request.get_json('Creditcardnumber')
+    credtcardNum = request.args.g('Creditcardnumber')
     print(credtcardNum,username,password,zipcode,state,city,comName)
     if firstname is None or \
             lastname is None or username is None \
