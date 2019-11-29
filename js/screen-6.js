@@ -14,7 +14,7 @@ export class ManagerCustomerReg extends Component {
             Fname:'',
             Lname:'',
             username:'',
-            company:'ALL',
+            company:'',
             comNameOptions: [],
             password:'',
             confirmPassword:'',
@@ -263,7 +263,7 @@ export class ManagerCustomerReg extends Component {
 
                         <Form.Group as={Col} controlId="state" className={"form-inline"} md={{span:1,offset:1}}>
                             <Form.Label className={"p-4"}>State</Form.Label>
-                            <Form.Control as="select" className={"w-50 m-2"} value={this.state.sate} onChange={this.addstate}>
+                            <Form.Control as="select" className={"w-50 m-2"} value={this.state.state} onChange={this.addstate}>
                                 <option value="AL">AL</option>
                                 <option value="AK">AK</option>
                                 <option value="AZ">AZ</option>
