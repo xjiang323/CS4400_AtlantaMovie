@@ -42,7 +42,7 @@ export class ManagerOnlyReg extends Component {
     getCompany() {
         let url = ENDPOINTS.OBTAIN_COMPANY;
         fetch(url).then(res => res.json()).then((result)=>{
-        this.setState({comNameOptions: result})},
+        this.setState({comNameOptions: result, company: result[0].comName})},
             (error)=>{});
     }
     First_name(event) {

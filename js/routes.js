@@ -4,7 +4,6 @@ import { Route, BrowserRouter, Switch } from 'react-router-dom';
 /**
  * Import all page components here
  */
-import Hello from "./Hello";
 import {Login} from "./screen-1";
 import {RegisterNavigation} from "./screen-2";
 import {UserOnly_reg} from "./screen-3";
@@ -47,7 +46,7 @@ class App extends Component{
                     */}
                     <Switch>
                         <Route exact path="/">
-                            <Hello/>
+                            <Login/>
                         </Route>
 
                         // 1-6

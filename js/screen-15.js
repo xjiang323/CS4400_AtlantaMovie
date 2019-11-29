@@ -6,7 +6,7 @@ import {ENDPOINTS} from './Constants';
 export class AdminCreateTheater extends Component {
 	constructor(props){
 		super(props);
-		this.state = {Name: "", Company: "", Street_Address: "", City: "", State: "", Zipcode: "",
+		this.state = {Name: "", Company: "", Street_Address: "", City: "", State: "AL", Zipcode: "",
 			            Capacity: "", Manager: "", comDropdownList:[], manDropdownList:[]};
 
 		this.changeTheaterName = this.changeTheaterName.bind(this);
@@ -69,12 +69,14 @@ export class AdminCreateTheater extends Component {
 
   obtainMan() {
 		const args = {Company: this.state.Company};
+		var man = '';
 		let query = Object.keys(args)
              .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
              .join('&');
 		let url = ENDPOINTS.OBTAIN_MANAGER + '?' + query;
 		fetch(url).then(res => res.json()).then((result)=>{
-      this.setState({manDropdownList: result})
+			if (result != null) {man = result[0].username}
+      this.setState({manDropdownList: result, Manager: man})
         },
         (error)=>{});
 	}

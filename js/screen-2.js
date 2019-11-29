@@ -10,7 +10,7 @@ export class RegisterNavigation extends Component{
                 <h1 className={"text-center"}>Register Navigation</h1>
                 <Row className={"p-2"}>
                     <Col md={{span:2, offset:5}} className={"text-center"}>
-                        <Link to={"/Useronly"}>
+                        <Link to={"/UserOnlyReg"}>
                             <Button variant={"primary"} size={"lg"} className={"w-100"}>
                                 User Only
                             </Button>
@@ -20,7 +20,7 @@ export class RegisterNavigation extends Component{
 
                 <Row className={"p-2"}>
                     <Col md={{span:2, offset:5}} className={"text-center"}>
-                        <Link to={""}>
+                        <Link to={"/CustomerReg"}>
                             <Button variant={"primary"} size={"lg"} className={"w-100"}>
                                 Customer Only
                             </Button>
@@ -30,7 +30,7 @@ export class RegisterNavigation extends Component{
 
                 <Row className={"p-2"}>
                     <Col md={{span:2, offset:5}} className={"text-center"}>
-                        <Link to={""}>
+                        <Link to={"/ManagerReg"}>
                             <Button variant={"primary"} size={"lg"} className={"w-100"}>
                                 Manager Only
                             </Button>
@@ -40,7 +40,7 @@ export class RegisterNavigation extends Component{
 
                 <Row className={"p-2"}>
                     <Col md={{span:2, offset:5}} className={"text-center"}>
-                        <Link to={""}>
+                        <Link to={"/ManagerCustomerReg"}>
                             <Button variant={"primary"} size={"lg"} className={"w-100"}>
                                 Manager-Customer
                             </Button>
@@ -50,7 +50,7 @@ export class RegisterNavigation extends Component{
 
                 <Row className={"p-2"}>
                     <Col md={{span:2, offset:5}} className={"text-center"}>
-                        <Link to={""}>
+                        <Link to={"/"}>
                             <Button variant={"primary"} size={"lg"} className={"w-100"}>
                                 Back
                             </Button>

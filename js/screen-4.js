@@ -16,10 +16,6 @@ export class Customer_reg extends Component {
             confirmPassword:'',
             Creditcardnumber:[],
             tmp: ''
-
-
-
-
         }
 
         this.First_name = this.First_name.bind(this);
@@ -32,8 +28,6 @@ export class Customer_reg extends Component {
         this.addClick=this.addClick.bind(this);
         this.renderRemoveTable=this.renderRemoveTable.bind(this);
         this.scree4Reg=this.scree4Reg.bind(this)
-
-
     };
 
 

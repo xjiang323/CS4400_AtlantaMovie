@@ -3,17 +3,11 @@ from flaskext.mysql import MySQL
 import config
 import json
 import datetime
-import hashlib
 
 db = MySQL()
 
 
 backend_api = Blueprint('backend_api', __name__)
-
-# def pwsmd5(my_string):
-#     m = hashlib.md5()
-#     m.update(my_string.encode('utf-8'))
-#     return m.hexdigest()
 
 
 @backend_api.route('/valid_login')
@@ -22,11 +16,13 @@ def valid_login():
     username = request.args.get('username')
     password = request.args.get('password')
     print(username, password)
-    if password is None or username is None:
+    if not password:
         return Response(status=500)
+    if username is None:
+        return Response(status=500)
+    # print(username, password)
     conn = db.connect()
     cur = conn.cursor()
-    print(username, password)
 
     try:
         cur.callproc('user_login', [username, password])
@@ -88,8 +84,8 @@ def valid_login():
     if type == 'User':
         return redirect('/UserFunction', code=302);
 
-#screen3 register
 
+# screen3 register
 @backend_api.route('/recordUserRegister')
 def record_user_register():
     firstname=request.args.get('Fname')
@@ -114,7 +110,7 @@ def record_user_register():
         cur.close()
     return redirect('/login', code=302);
 
-#screen 5 register
+# screen 5 register
 @backend_api.route('/RedManagerOnlyReg')
 def record_ManagerOnly_reg():
     firstname = request.args.get('Fname')
@@ -136,11 +132,12 @@ def record_ManagerOnly_reg():
         return Response(status=500)
     if password != confirmpsw:
         return Response(status=500)
-    print([username, password, firstname, lastname, comName, address, city, state, zipcode])
+    print( [username, password, firstname, lastname, comName, address, city, state, zipcode])
     conn = db.connect()
     cur = conn.cursor()
     try:
         cur.callproc('manager_only_register', [username, password, firstname, lastname, comName, address, city, state, zipcode])
+        conn.commit()
     except Exception as e:
         print(e)
         return Response(status=500)
@@ -149,7 +146,7 @@ def record_ManagerOnly_reg():
     return redirect('/login', code=302);
 
 
-#screen 4 register
+# screen 4 register
 @backend_api.route('/screen4Reg')
 def record_screen4():
     firstname = request.args.get('Fname')
@@ -184,11 +181,10 @@ def record_screen4():
         return Response(status=500)
     finally:
         cur.close()
-        return redirect('/login', code=302)
+    return redirect('/login', code=302)
 
 
-
-#screen 6 register
+# screen6 register
 @backend_api.route('/screen6Reg')
 def record_screen6():
     firstname = request.args.get('Fname')
@@ -202,7 +198,7 @@ def record_screen6():
     state = request.args.get('state')
     zipcode = request.args.get('zipcode')
     credtcardNum = request.args.get('Creditcardnumber')
-    print(username, password, firstname, lastname, comName, address, city, state, zipcode,credtcardNum)
+    print(credtcardNum,username,password,zipcode,state,city,comName)
     if firstname is None or \
             lastname is None or username is None \
             or password is None or len(password) < 8\
@@ -215,33 +211,22 @@ def record_screen6():
         credtcardNum = credtcardNum.split('&')
     for num in credtcardNum:
         if len(num) != 16 or not num.isdigit():
+            print("length",len(num))
             return redirect('/ManagerCustomerReg', code=302)
-    print('lenght', len(num))
     conn = db.connect()
     cur = conn.cursor()
-    print(username, password, firstname, lastname, comName, address, city, state, zipcode)
+    print(num, username, password, zipcode, state, city, comName)
     try:
-        cur.callproc('manager_customer_register', [username, password, firstname, lastname, comName, address, city, state, zipcode])
-    #     for num in credtcardNum:
-    #         cur.callproc('manager_customer_add_creditcard', [username, num])
-    #     conn.commit()
-    # except Exception as e:
-    #     return Response(status=500)
-    #     print('Creditcard', e)
-    except Exception as e1:
-        print('register', e1)
-        return Response(status=500)
-    try:
-       for num in credtcardNum:
-           cur.callproc('manager_customer_add_creditcard', [username, num])
-           conn.commit()
+        cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
+        for num in credtcardNum:
+            cur.callproc('manager_customer_add_creditcard', [username, num])
+        conn.commit()
     except Exception as e:
-        print('Creditcard', e)
         return Response(status=500)
+        print(e)
     finally:
         cur.close()
-        return redirect('/login', code=302)
-
+    return redirect('/login', code=302)
 
 
 # screen13
@@ -868,6 +853,7 @@ def user_filer_visit_history():
 
     return json.dumps(new_data, default=myconverter)
 
+
 # screen21
 def parse_date(date):
     date = date.split()
@@ -892,6 +878,7 @@ def parse_date(date):
     parseVisitDate = '-'.join(tmp)
     return parseVisitDate
 
+
 # screen21
 def parse_address(json_data):
     new_data = []
@@ -904,6 +891,7 @@ def parse_address(json_data):
             tmp[key] = row[key]
         new_data.append(tmp)
     return new_data
+
 
 @backend_api.route('/backToFunctionality')
 def gack_to_funtionality():
