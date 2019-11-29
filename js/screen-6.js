@@ -21,6 +21,7 @@ export class ManagerCustomerReg extends Component {
             StreetAddress:'',
             city:'',
             state:'',
+            Statelist:[],
             zipcode:'',
             Creditcardnumber:[],
             tmp: ''
@@ -43,7 +44,6 @@ export class ManagerCustomerReg extends Component {
         this.addClick=this.addClick.bind(this);
         this.renderRemoveTable=this.renderRemoveTable.bind(this);
         this.scree6Reg=this.scree6Reg.bind(this);
-        this.obtainCom = this.obtainCom.bind(this);
         this.getComName = this.getComName.bind(this);
 
     };
@@ -100,6 +100,8 @@ export class ManagerCustomerReg extends Component {
         (error)=>{});
   }
 
+
+
   getComName() {
         let url=ENDPOINTS.OBTAIN_COMPANY;
         fetch(url).then(res=> res.json()).then((result)=>{
@@ -150,6 +152,10 @@ export class ManagerCustomerReg extends Component {
 
     scree6Reg(e){
         e.preventDefault();
+        let creditcard_query = Object.keys(this.state.Creditcardnumber)
+            .map(key => this.state.Creditcardnumber[key].number)
+            .join('&');
+        console.log(creditcard_query);
 
         const args = {
             Fname:this.state.Fname,
@@ -162,7 +168,7 @@ export class ManagerCustomerReg extends Component {
             city:this.state.city,
             state:this.state.state,
             zipcode:this.state.zipcode,
-            Creditcardnumber:this.state.Creditcardnumber
+            Creditcardnumber: creditcard_query,
 
         }
         let query = Object.keys(args)
