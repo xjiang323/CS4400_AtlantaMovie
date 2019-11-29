@@ -94,68 +94,26 @@ export class Customer_reg extends Component {
 
     scree4Reg(e){
         e.preventDefault();
-
+        let creditcard_query = Object.keys(this.state.Creditcardnumber)
+            .map(key => this.state.Creditcardnumber[key].number)
+            .join('&');
+        console.log(creditcard_query);
         const args = {
             Fname:this.state.Fname,
             Lname:this.state.Lname,
             username : this.state.username,
             password : this.state.password,
             confirmPassword : this.state.confirmPassword,
-            Creditcardnumber:this.state.Creditcardnumber,
-
-
+            Creditcardnumber: creditcard_query,
 
         }
         let query = Object.keys(args)
             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
             .join('&');
         let url = ENDPOINTS.SCREEN4_REG + '?' + query;
+        console.log(url)
         window.location.href = url;
     }
-
-
-
-
-
-
-
-
-    //             let Creditcardnumber = [...this.state.Creditcardnumber];
-    //             Creditcardnumber.push(this.CreditCard.value)
-    //             this.setState({ Creditcardnumber })
-    //         }
-    //     }, () => { });
-    // }
-    //
-    //
-    // removeCard(i, event) {
-    //     const args = {
-    //         Creditcardnumber: this.state.Creditcardnumber[i],
-    //         username: this.state.username
-    //     };
-    //
-    //     // ajax
-    //     let query = Object.keys(args)
-    //         .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
-    //         .join('&');
-    //
-    //     let url = ENDPOINTS.REMOVE_CARD + '?' + query;
-    //     // ajax
-    //     fetch(url).then((res) => {
-    //         if (res.status == 200) {
-    //             let Creditcardnumber = [...this.state.Creditcardnumber];
-    //             Creditcardnumber.splice(i, 1);
-    //             this.setState({ Creditcardnumber });
-    //         }
-    //     }, () => { });
-    // }
-
-
-
-
-
-
-
 
 
     render(){
