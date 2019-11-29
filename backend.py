@@ -144,6 +144,7 @@ def record_ManagerOnly_reg():
         password = pwsmd5(password)
     else:
         return Response(status=500)
+    # print( [username, password, firstname, lastname, comName, address, city, state, zipcode])
     conn = db.connect()
     cur = conn.cursor()
     try:
