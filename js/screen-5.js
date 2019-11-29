@@ -13,6 +13,7 @@ export class ManagerOnlyReg extends Component {
             Lname:'',
             username:'',
             company:'',
+            comNameOptions: [],
             password:'',
             confirmPassword:'',
             StreetAddress:'',
@@ -21,7 +22,6 @@ export class ManagerOnlyReg extends Component {
             zipcode:''
 
         }
-
         this.First_name = this.First_name.bind(this);
         this.Last_name = this.Last_name.bind(this);
         this.UserName = this.UserName.bind(this);
@@ -32,11 +32,19 @@ export class ManagerOnlyReg extends Component {
         this.addcity = this.addcity.bind(this);
         this.addstate = this.addstate.bind(this);
         this.addzipcode= this.addzipcode.bind(this);
-
+        this.getCompany = this.getCompany.bind(this);
+        this.getReg = this.getReg.bind(this);
 
     };
-
-
+    componentDidMount() {
+        this.getCompany();
+    }
+    getCompany() {
+        let url = ENDPOINTS.OBTAIN_COMPANY;
+        fetch(url).then(res => res.json()).then((result)=>{
+        this.setState({comNameOptions: result})},
+            (error)=>{});
+    }
     First_name(event) {
         this.setState({Fname: event.target.value});
     }
@@ -50,31 +58,31 @@ export class ManagerOnlyReg extends Component {
     }
 
     addcompany(event){
-        this.setState({compnay:event.target.value})
+        this.setState({company:event.target.value})
     }
 
     Psw(event){
-        this.setSate({password:event.target.value});
+        this.setState({password:event.target.value});
     }
 
     confirmPassword(event){
-        this.setSate({confirmPassword:event.target.value});
+        this.setState({confirmPassword:event.target.value});
     }
 
     address(event){
-        this.setSate({StreetAddress:event.target.value});
+        this.setState({StreetAddress:event.target.value});
     }
 
     addcity(event){
-        this.setSate({city:event.target.value});
+        this.setState({city:event.target.value});
     }
 
     addstate(event){
-        this.setSate({sate:event.target.value});
+        this.setState({state:event.target.value});
     }
 
     addzipcode(event){
-        this.setSate({zipcode:event.target.value});
+        this.setState({zipcode:event.target.value});
     }
 
 
@@ -96,13 +104,15 @@ export class ManagerOnlyReg extends Component {
             city:this.state.city,
             state:this.state.state,
             zipcode:this.state.zipcode,
-
+            company:this.state.company,
+            confirmPassword:this.state.confirmPassword
         }
         let query = Object.keys(args)
             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
             .join('&');
         let url = ENDPOINTS.MANAGER_ONLY_REG + '?' + query;
-        fetch(url).then(()=>{}, ()=>{});
+        window.location.href = url;
+        // fetch(url).then(()=>{}, ()=>{});
     }
 
 
@@ -142,9 +152,7 @@ export class ManagerOnlyReg extends Component {
                       <Form.Group as={Col} controlId="companyName" className={"form-inline"} md={{span:4,offset:2}}>
                           <Form.Label className={"p-4"}>Company</Form.Label>
                           <Form.Control as="select" className={"w-25 m-2"} value={this.state.company} onChange={this.addcompany}>
-                              <option value="all">--ALL--</option>
-                              <option value="amc">AMC</option>
-                              <option value="regal">Regal</option>
+                              {this.state.comNameOptions.map((company, index) => (<option value={company.comName} key={index}>{company.comName}</option>))}
                           </Form.Control>
                       </Form.Group>
                     </Form.Row>
@@ -174,15 +182,15 @@ export class ManagerOnlyReg extends Component {
 
 
                     <Form.Row className={"p-2"}>
-                        <Form.Group as={Col} controlId="city" className={"form-inline"} md={{span:1}}>
+                        <Form.Group as={Col} controlId="city" className={"form-inline"} md={{span:1}} >
                             <Form.Label className={"p-4"}>City</Form.Label>
-                            <Form.Control  className={"w-50 m-2"} value={this.state.city} onChange={this.addcompany}/>
+                            <Form.Control  className={"w-50 m-2"} value={this.state.city} onChange={this.addcity}/>
                         </Form.Group>
 
 
                         <Form.Group as={Col} controlId="state" className={"form-inline"} md={{span:1,offset:1}}>
                             <Form.Label className={"p-4"}>State</Form.Label>
-                            <Form.Control as="select" className={"w-50 m-2"} value={this.state.sate} onChange={this.addstate}>
+                            <Form.Control as="select" className={"w-50 m-2"} value={this.state.state} onChange={this.addstate}>
                                 <option value="AL">AL</option>
                                 <option value="AK">AK</option>
                                 <option value="AZ">AZ</option>
@@ -240,7 +248,7 @@ export class ManagerOnlyReg extends Component {
 
                          <Form.Group as={Col} controlId="zipcode" className={"form-inline"} md={{span:1,offset:3}}>
                              <Form.Label className={"p-4"}>Zipcode</Form.Label>
-                             <Form.Control  className={"w-50 m-2"} value={this.state.zipcode} onChange={this.Last_name}/>
+                             <Form.Control  className={"w-50 m-2"} value={this.state.zipcode} onChange={this.addzipcode}/>
                          </Form.Group>
                     </Form.Row>
 
@@ -257,7 +265,7 @@ export class ManagerOnlyReg extends Component {
                          </Col>
                          <Col md={{span:2, offset:3}} className={"text-center"}>
                              <Link to={""}>
-                                 <Button variant={"primary"} size={"lg"} className={"w-150"} onClik={this.getReg}>
+                                 <Button variant={"primary"} size={"lg"} className={"w-150"} onClick={this.getReg}>
                                      Register
                                  </Button>
                              </Link>
