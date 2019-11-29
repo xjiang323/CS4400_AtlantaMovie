@@ -165,27 +165,33 @@ def record_screen4():
     password = request.args.get('password')
     confirmpsw = request.args.get('confirmPassword')
     credtcardNum = request.args.get('Creditcardnumber')
-    print([username, password, firstname, lastname, confirmpsw, credtcardNum])
+    # print([username, password, firstname, lastname, confirmpsw, credtcardNum])
     if firstname is None or \
             lastname is None or username is None \
             or password is None or len(password) < 8 \
-            or credtcardNum is None or len(credtcardNum) != 16:
-        return Response(status=500)
+            or credtcardNum is None:
+        return redirect('/CustomerReg', code=302)
     if password == confirmpsw:
         password = pwsmd5(password)
     else:
-        return Response(status=500)
+        return redirect('/CustomerReg', code=302)
+    if credtcardNum:
+        credtcardNum = credtcardNum.split('&')
+    for num in credtcardNum:
+        if len(num) != 16 or not num.isdigit():
+            return redirect('/CustomerReg', code=302)
     conn = db.connect()
     cur = conn.cursor()
     try:
         cur.callproc('customer_only_register', [username, password, firstname, lastname])
-        cur.callproc('customer_add_creditcard', [username, credtcardNum])
+        for num in credtcardNum:
+            cur.callproc('customer_add_creditcard', [username, num])
         conn.commit()
     except Exception as e:
-        print(e)
         return Response(status=500)
     finally:
         cur.close()
+        return redirect('/login', code=302)
     return redirect('/login', code=302)
 
 
