@@ -47,43 +47,43 @@ export class ManagerCustomerReg extends Component {
 
 
     First_name(event) {
-        this.setState({Fname: event.target.value});
+        this.setState({ Fname: event.target.value }, () => console.log('first name', this.state.Fname));
     }
 
     Last_name(event) {
-        this.setState({Lname: event.target.value});
+        this.setState({ Lname: event.target.value }, () => console.log('last name', this.state.Lname));
     }
 
     UserName(event) {
-        this.setState({username: event.target.value});
+        this.setState({ username: event.target.value }, () => console.log('username', this.state.username));
     }
 
     addcompany(event){
-        this.setState({compnay:event.target.value})
+        this.setState({compnay:event.target.value},()=>console.log('company',this.state.company));
     }
 
     Psw(event){
-        this.setState({password:event.target.value});
+        this.setState({ password: event.target.value }, () => console.log('password', this.state.password));
     }
 
     confirmPassword(event){
-        this.setState({confirmPassword:event.target.value});
+        this.setState({ confirmPassword: event.target.value }, () => console.log('confirmPassword password', this.state.confirmPassword));
     }
 
     address(event){
-        this.setState({StreetAddress:event.target.value});
+        this.setState({StreetAddress:event.target.value},()=>console.log('address',this.state.StreetAddress));
     }
 
     addcity(event){
-        this.setState({city:event.target.value});
+        this.setState({city:event.target.value},()=>console.log('city',this.state.city));
     }
 
     addstate(event){
-        this.setState({sate:event.target.value});
+        this.setState({sate:event.target.value},()=>console.log('city',this.state.state));
     }
 
     addzipcode(event){
-        this.setState({zipcode:event.target.value});
+        this.setState({zipcode:event.target.value},()=>console.log('city',this.state.zipcode));
     }
 
 
@@ -97,10 +97,10 @@ export class ManagerCustomerReg extends Component {
 
     renderRemoveTable(){
         return this.state.Creditcardnumber.map((card, idx) =>
-            (<Form.Row key={idx} className={"text-center"} >
+            (<Row key={idx} className="justify-content-md-center" >
                 <p>{card.number}</p>
-                <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
-            </Form.Row>
+                <input type='button' value='remove' size={"lg"} className={"w-150"} onClick={() =>this.removeCard(idx)} />
+            </Row>
             )
 
         )
@@ -132,6 +132,7 @@ export class ManagerCustomerReg extends Component {
             Lname:this.state.Lname,
             username : this.state.username,
             password : this.state.password,
+            confirmPassword : this.state.confirmPassword,
             company:this.state.compnay,
             StreetAddress:this.state.StreetAddress,
             city:this.state.city,
@@ -146,7 +147,7 @@ export class ManagerCustomerReg extends Component {
             .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
             .join('&');
         let url = ENDPOINTS.SCREEN6_REG + '?' + query;
-        fetch(url).then(()=>{}, ()=>{});
+        window.location.href = url;
     }
 
 
@@ -213,10 +214,10 @@ export class ManagerCustomerReg extends Component {
                     </Form.Row>
 
 
-                    <Form.Row className={"p-2"}>
+                    <Form.Row className={"p-4"}>
                         <Form.Group as={Col} controlId="city" className={"form-inline"} md={{span:1}}>
                             <Form.Label className={"p-4"}>City</Form.Label>
-                            <Form.Control  className={"w-50 m-2"} value={this.state.city} onChange={this.addcompany}/>
+                            <Form.Control  className={"w-75 m-2"} value={this.state.city} onChange={this.addcity}/>
                         </Form.Group>
 
 
@@ -279,22 +280,22 @@ export class ManagerCustomerReg extends Component {
 
                          <Form.Group as={Col} controlId="zipcode" className={"form-inline"} md={{span:1,offset:3}}>
                              <Form.Label className={"p-4"}>Zipcode</Form.Label>
-                             <Form.Control  className={"w-50 m-2"} value={this.state.zipcode} onChange={this.Last_name}/>
+                             <Form.Control  className={"w-75 m-2"} value={this.state.zipcode} onChange={this.addzipcode}/>
                          </Form.Group>
                     </Form.Row>
 
 
 
-                    <div>
-                        <Form.Row onSubmit={this.onSubmit}>
-                            <h6>Credit Card #</h6>
+                    <div className={"form-inline"}>
+                        <Form.Row onSubmit={this.onSubmit} className={"p-4"}  md={{span:1,offset:3}} >
+                            <div >Credit Card #</div>
                         </Form.Row>
                     </div>
-                    <div className={"text-center"} >
+                    <div className="justify-content-md-center"  >
                         {this.renderRemoveTable()}
                     </div>
                     <div className={"text-center"}>
-                        <input type="text" value={this.state.tmp} onChange={this.changevalue} />
+                        <input type="text" value={this.state.tmp} onChange={this.changevalue} className="col-xs-4"/>
                         <input type='button' value='Add' onClick={this.addClick} />
                     </div>
 
@@ -310,8 +311,8 @@ export class ManagerCustomerReg extends Component {
                               </Link>
                          </Col>
                          <Col md={{span:2, offset:3}} className={"text-center"}>
-                             <Link to={"/login"}>
-                                 <Button variant={"primary"} size={"lg"} className={"w-150"} onClick={this.recordReg}>
+                             <Link to={""}>
+                                 <Button variant={"primary"} size={"lg"} className={"w-150"} onClick={this.scree6Reg}>
                                      Register
                                  </Button>
                              </Link>

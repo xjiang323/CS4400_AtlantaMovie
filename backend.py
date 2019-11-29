@@ -92,7 +92,7 @@ def valid_login():
     if type == 'User':
         return redirect('/UserFunction', code=302);
 
-
+#screen3 register
 
 @backend_api.route('/recordUserRegister')
 def record_user_register():
@@ -114,13 +114,13 @@ def record_user_register():
         cur.callproc('user_register', [username, password, firstname, lastname])
         conn.commit()
     except Exception as e:
+        print(e)
         return Response(status=500)
     finally:
         cur.close()
     return redirect('/login', code=302);
 
-
-
+#screen 5 register
 @backend_api.route('/RedManagerOnlyReg')
 def record_ManagerOnly_reg():
     firstname = request.args.get('Fname')
@@ -129,9 +129,9 @@ def record_ManagerOnly_reg():
     password = request.args.get('password')
     confirmpsw = request.args.get('confirmPassword')
     address = request.args.get('StreetAddress')
-    comName = request.args.get('compnay')
+    comName = request.args.get('company')
     city = request.args.get('city')
-    state = request.args.get('statr')
+    state = request.args.get('state')
     zipcode = request.args.get('zipcode')
 
     if firstname is None or \
@@ -148,31 +148,47 @@ def record_ManagerOnly_reg():
     cur = conn.cursor()
     try:
         cur.callproc('manager_only_register', [username, password, firstname, lastname, comName, address, city, state, zipcode])
-        conn.commit()
     except Exception as e:
         return Response(status=500)
     finally:
         cur.close()
-    return Response(status=200)
+    return redirect('/login', code=302);
 
-@backend_api.route('/screen5Reg')
-def screen4_reg():
+
+#screen 4 register
+@backend_api.route('/screen4Reg')
+def record_screen4():
     firstname = request.args.get('Fname')
     lastname = request.args.get('Lname')
     username = request.args.get('username')
     password = request.args.get('password')
     confirmpsw = request.args.get('confirmPassword')
-    address = request.args.get('StreetAddress')
-    comName = request.args.get('company')
-    city = request.args.get('city')
-    state = request.args.get('statr')
-    zipcode = request.args.get('zipcode')
-    credtcardNum=request.args.get('Creditcardnumber')
+    credtcardNum = request.args.get('Creditcardnumber')
 
-    if
+    if firstname is None or \
+            lastname is None or username is None \
+            or password is None or len(password) < 8 \
+            or credtcardNum is None or len(credtcardNum) != 16:
+        return Response(status=500)
+    if password == confirmpsw:
+        password = pwsmd5(password)
+    else:
+        return Response(status=500)
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('customer_only_register', [username, password, firstname, lastname])
+        cur.callproc('customer_add_creditcard', [username, credtcardNum])
+        conn.commit()
+    except Exception as e:
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.close()
+    return redirect('/login', code=302)
 
 
-
+#screen 6 register
 @backend_api.route('/screen6Reg')
 def record_screen6():
     firstname = request.args.get('Fname')
@@ -181,9 +197,9 @@ def record_screen6():
     password = request.args.get('password')
     confirmpsw = request.args.get('confirmPassword')
     address = request.args.get('StreetAddress')
-    comName = request.args.get('compnay')
+    comName = request.args.get('company')
     city = request.args.get('city')
-    state = request.args.get('statr')
+    state = request.args.get('state')
     zipcode = request.args.get('zipcode')
     credtcardNum = request.args.get('Creditcardnumber')
 
@@ -201,83 +217,15 @@ def record_screen6():
     cur = conn.cursor()
     try:
         cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
-        cur.callproc('manager_customer_add_creditcard',[username, credtcardNum])
+        cur.callproc('manager_customer_add_creditcard', [username, credtcardNum])
         conn.commit()
     except Exception as e:
         print(e)
         return Response(status=500)
     finally:
         cur.close()
-    return Response(status=200)
+    return redirect('/login', code=302)
 
-
-@backend_api.route('/addCard')
-def add_card():
-    username = request.args.get('username')
-    Creditcardnumbe = request.args.get('Creditcardnumber')
-    if Creditcardnumbe is None or username is None or len(Creditcardnumbe) != 16:
-        print('1')
-        return Response(status=500)
-    conn = db.connect()
-    cur = conn.cursor()
-    try:
-        cur.callproc('customer_add_creditcard', [username, Creditcardnumbe])
-        conn.commit()
-    except Exception as e:
-        print('2')
-        print(e)
-        return Response(status=500)
-    finally:
-        cur.close()
-    return Response(status=200)
-
-
-@backend_api.route('/addManagerCard')
-def add_mancard():
-    username = request.args.get('username')
-    Creditcardnumbe = request.args.get('Creditcardnumber')
-    if Creditcardnumbe is None or username is None or len(Creditcardnumbe) != 16:
-        print('1')
-        return Response(status=500)
-    conn = db.connect()
-    cur = conn.cursor()
-    try:
-        cur.callproc('manager_customer_add_creditcard', [username, Creditcardnumbe])
-        conn.commit()
-    except Exception as e:
-        print(e)
-        return Response(status=500)
-    finally:
-        cur.close()
-    return Response(status=200)
-
-
-@backend_api.route('/removeCard')
-def remove_card():
-    Creditcardnumber = request.args.get('Creditcardnumber')
-    username=request.args.get('username')
-    conn = db.connect()
-    cur = conn.cursor()
-
-    try:
-        query = "DELETE FROM CustomerCreditCard WHERE creditCardNum = (%s)"
-        cur.execute(query, Creditcardnumber)
-        conn.commit()
-        # row_headers = [x[0] for x in cur.description]
-        # result = cur.fetchall()
-        # print('1')
-        # if not result:
-        #     return Response(status=500)
-        # result = dict(zip(row_headers, result[0]))
-        # json_data = []
-        # for row in result:
-        #     json_data.append(dict(zip(row_headers, row)))
-    except Exception as e:
-        print(e)
-        return Response(status=500)
-    finally:
-        cur.close()
-    return Response(status=200)
 
 
 

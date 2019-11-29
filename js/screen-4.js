@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import {Col, Form, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {ENDPOINTS} from "./Constants";
+import Button from "react-bootstrap/Button";
 
 
 export class Customer_reg extends Component {
@@ -12,7 +14,7 @@ export class Customer_reg extends Component {
             username:'',
             password:'',
             confirmPassword:'',
-            CreditCard_Number:[],
+            Creditcardnumber:[],
             tmp: ''
 
 
@@ -25,39 +27,37 @@ export class Customer_reg extends Component {
         this.UserName = this.UserName.bind(this);
         this.Psw = this.Psw.bind(this);
         this.confirmPassword = this.confirmPassword.bind(this);
-        this.CreditCard = this.CreditCard.bind(this);
         this.removeCard=this.removeCard.bind(this);
         this.changevalue=this.changevalue.bind(this);
         this.addClick=this.addClick.bind(this);
         this.renderRemoveTable=this.renderRemoveTable.bind(this);
-        this.Reg=this.Reg.bind(this)
+        this.scree4Reg=this.scree4Reg.bind(this)
+
 
     };
 
 
     First_name(event) {
-        this.setState({Fname: event.target.value});
+        this.setState({Fname: event.target.value},()=>console.log('first name',this.state.Fname));
     }
 
     Last_name(event) {
-        this.setState({Lname: event.target.value});
+        this.setState({ Lname: event.target.value }, () => console.log('last name', this.state.Lname));
     }
 
     UserName(event) {
-        this.setState({username: event.target.value});
+        this.setState({ username: event.target.value }, () => console.log('username', this.state.username));
     }
 
     Psw(event){
-        this.setState({password:event.target.value});
+        this.setState({ password: event.target.value }, () => console.log('password', this.state.password));
     }
 
     confirmPassword(event){
-        this.setState({confirmPassword:event.target.value});
+        this.setState({ confirmPassword: event.target.value }, () => console.log('confirmPassword password', this.state.confirmPassword));
     }
 
-    CreditCard(event){
-        this.setState({CreditCard_Number:event.target.value});
-    }
+
 
 
     removeCard(idx){
@@ -69,9 +69,9 @@ export class Customer_reg extends Component {
 
     renderRemoveTable(){
         return this.state.Creditcardnumber.map((card, idx) =>
-            (<Row key={idx}>
+            (<Row key={idx} className="justify-content-md-center">
                 <p>{card.number}</p>
-                <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
+                <input type='button' value='remove' className={"p-4"} onClick={() =>this.removeCard(idx)} />
             </Row>)
 
         )
@@ -92,51 +92,34 @@ export class Customer_reg extends Component {
 
 
 
+    scree4Reg(e){
+        e.preventDefault();
+
+        const args = {
+            Fname:this.state.Fname,
+            Lname:this.state.Lname,
+            username : this.state.username,
+            password : this.state.password,
+            confirmPassword : this.state.confirmPassword,
+            Creditcardnumber:this.state.Creditcardnumber,
 
 
 
-    // filter() {
-    //     const args = {
-    //   Creditcardnumber: this.state.Creditcardnumber,
-    //
-    // };
-    //
-    // // ajax
-    // let query = Object.keys(args)
-    //          .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
-    //          .join('&');
-    //
-    // let url = ENDPOINTS.ADD_CARD + '?' + query;
-    // // ajax
-    // fetch(url).then(res => res.json()).then((result)=>{
-    //   this.setState({Creditcardnumber: result})
-    //     },
-    //     (error)=>{});
-    // }
-    //
-    //
-    // createUI() {
-    //     return this.state.Creditcardnumber.map((el, i) =>
-    //         <div key={i}>
-    //             <input type="text" value={el} />
-    //             <input type='button' value='remove' onClick={this.removeCard.bind(this, i)} />
-    //         </div>
-    //     )
-    // }
-    //
-    //
-    // addClick(event) {
-    //     const args = {
-    //         Creditcardnumber: this.CreditCard.value,
-    //         username: this.state.username
-    //     };
-    //     // ajax
-    //     let query = Object.keys(args)
-    //         .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
-    //         .join('&');
-    //     let url = ENDPOINTS.ADD_CARD + '?' + query;
-    //     fetch(url).then((res) => {
-    //         if (res.status == 200) {
+        }
+        let query = Object.keys(args)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(args[k]))
+            .join('&');
+        let url = ENDPOINTS.SCREEN4_REG + '?' + query;
+        window.location.href = url;
+    }
+
+
+
+
+
+
+
+
     //             let Creditcardnumber = [...this.state.Creditcardnumber];
     //             Creditcardnumber.push(this.CreditCard.value)
     //             this.setState({ Creditcardnumber })
@@ -240,7 +223,7 @@ export class Customer_reg extends Component {
 
                          <Col md={{span:2, offset:3}} className={"text-center"}>
                              <Link to={""}>
-                                 <Button variant={"primary"} size={"lg"} className={"w-150"}>
+                                 <Button variant={"primary"} size={"lg"} className={"w-150"} onClick={this.scree4Reg}>
                                      Register
                                  </Button>
                              </Link>
