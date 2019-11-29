@@ -71,7 +71,7 @@ export class Customer_reg extends Component {
         return this.state.Creditcardnumber.map((card, idx) =>
             (<Row key={idx} className="justify-content-md-center">
                 <p>{card.number}</p>
-                <input type='button' value='remove' className={"p-4"} onClick={() =>this.removeCard(idx)} />
+                <input type='button' value='remove' onClick={() =>this.removeCard(idx)} />
             </Row>)
 
         )

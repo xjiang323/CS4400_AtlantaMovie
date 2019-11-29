@@ -92,13 +92,6 @@ export class ManagerCustomerReg extends Component {
         this.setState({zipcode:event.target.value},()=>console.log('city',this.state.zipcode));
     }
 
-    obtainCom() {
-    let url = ENDPOINTS.OBTAIN_COMPANY;
-    fetch(url).then(res => res.json()).then((result)=>{
-      this.setState({comNameOptions: result})
-        },
-        (error)=>{});
-  }
 
 
 
