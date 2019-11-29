@@ -144,7 +144,7 @@ def record_ManagerOnly_reg():
         password = pwsmd5(password)
     else:
         return Response(status=500)
-    # print( [username, password, firstname, lastname, comName, address, city, state, zipcode])
+    print( [username, password, firstname, lastname, comName, address, city, state, zipcode])
     conn = db.connect()
     cur = conn.cursor()
     try:
@@ -165,7 +165,7 @@ def record_screen4():
     password = request.args.get('password')
     confirmpsw = request.args.get('confirmPassword')
     credtcardNum = request.args.get('Creditcardnumber')
-    # print([username, password, firstname, lastname, confirmpsw, credtcardNum])
+    print([username, password, firstname, lastname, confirmpsw, credtcardNum])
     if firstname is None or \
             lastname is None or username is None \
             or password is None or len(password) < 8 \
@@ -182,12 +182,14 @@ def record_screen4():
             return redirect('/CustomerReg', code=302)
     conn = db.connect()
     cur = conn.cursor()
+    print(num)
     try:
         cur.callproc('customer_only_register', [username, password, firstname, lastname])
         for num in credtcardNum:
             cur.callproc('customer_add_creditcard', [username, num])
         conn.commit()
     except Exception as e:
+        print(e)
         return Response(status=500)
     finally:
         cur.close()
