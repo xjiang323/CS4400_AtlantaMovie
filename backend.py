@@ -10,10 +10,10 @@ db = MySQL()
 
 backend_api = Blueprint('backend_api', __name__)
 
-def pwsmd5(my_string):
-    m = hashlib.md5()
-    m.update(my_string.encode('utf-8'))
-    return m.hexdigest()
+# def pwsmd5(my_string):
+#     m = hashlib.md5()
+#     m.update(my_string.encode('utf-8'))
+#     return m.hexdigest()
 
 
 @backend_api.route('/valid_login')
@@ -22,15 +22,11 @@ def valid_login():
     username = request.args.get('username')
     password = request.args.get('password')
     print(username, password)
-    if password:
-        password = pwsmd5(password)
-    else:
+    if password is None or username is None:
         return Response(status=500)
-    if username is None:
-        return Response(status=500)
-    # print(username, password)
     conn = db.connect()
     cur = conn.cursor()
+    print(username, password)
 
     try:
         cur.callproc('user_login', [username, password])
@@ -104,9 +100,7 @@ def record_user_register():
     print([username, password, firstname, lastname])
     if firstname is None or lastname is None or username is None or password is None or len(password) < 8:
         return Response(status=500)
-    if password == confirmpsw:
-        password = pwsmd5(password)
-    else:
+    if password != confirmpsw:
         return Response(status=500)
     conn = db.connect()
     cur = conn.cursor()
@@ -140,11 +134,9 @@ def record_ManagerOnly_reg():
             or address is None or comName is None or city is None or state is None or zipcode is None\
             or len(zipcode) != 5:
         return Response(status=500)
-    if password == confirmpsw:
-        password = pwsmd5(password)
-    else:
+    if password != confirmpsw:
         return Response(status=500)
-    print( [username, password, firstname, lastname, comName, address, city, state, zipcode])
+    print([username, password, firstname, lastname, comName, address, city, state, zipcode])
     conn = db.connect()
     cur = conn.cursor()
     try:
@@ -172,9 +164,7 @@ def record_screen4():
             or password is None or len(password) < 8 \
             or credtcardNum is None:
         return redirect('/CustomerReg', code=302)
-    if password == confirmpsw:
-        password = pwsmd5(password)
-    else:
+    if password != confirmpsw:
         return redirect('/CustomerReg', code=302)
     if credtcardNum:
         credtcardNum = credtcardNum.split('&')
@@ -212,35 +202,42 @@ def record_screen6():
     state = request.args.get('state')
     zipcode = request.args.get('zipcode')
     credtcardNum = request.args.get('Creditcardnumber')
-    print(credtcardNum,username,password,zipcode,state,city,comName)
+    print(username, password, firstname, lastname, comName, address, city, state, zipcode,credtcardNum)
     if firstname is None or \
             lastname is None or username is None \
             or password is None or len(password) < 8\
             or address is None or comName is None or city is None or state is None or zipcode is None\
             or len(zipcode) != 5:
         return redirect('/ManagerCustomerReg', code=302)
-    if password == confirmpsw:
-        password = pwsmd5(password)
-        print(password)
-    else:
+    if password != confirmpsw:
         return redirect('/ManagerCustomerReg', code=302)
     if credtcardNum:
         credtcardNum = credtcardNum.split('&')
     for num in credtcardNum:
         if len(num) != 16 or not num.isdigit():
-            print("length",len(num))
             return redirect('/ManagerCustomerReg', code=302)
+    print('lenght', len(num))
     conn = db.connect()
     cur = conn.cursor()
-    print(num, username, password, zipcode, state, city, comName)
+    print(username, password, firstname, lastname, comName, address, city, state, zipcode)
     try:
-        cur.callproc('manager_customer_register', [username, password, firstname, lastname,comName,address,city,state,zipcode])
-        for num in credtcardNum:
-            cur.callproc('manager_customer_add_creditcard', [username, num])
-        conn.commit()
-    except Exception as e:
+        cur.callproc('manager_customer_register', [username, password, firstname, lastname, comName, address, city, state, zipcode])
+    #     for num in credtcardNum:
+    #         cur.callproc('manager_customer_add_creditcard', [username, num])
+    #     conn.commit()
+    # except Exception as e:
+    #     return Response(status=500)
+    #     print('Creditcard', e)
+    except Exception as e1:
+        print('register', e1)
         return Response(status=500)
-        print(e)
+    try:
+       for num in credtcardNum:
+           cur.callproc('manager_customer_add_creditcard', [username, num])
+           conn.commit()
+    except Exception as e:
+        print('Creditcard', e)
+        return Response(status=500)
     finally:
         cur.close()
         return redirect('/login', code=302)
