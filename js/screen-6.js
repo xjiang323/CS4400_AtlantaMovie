@@ -14,7 +14,8 @@ export class ManagerCustomerReg extends Component {
             Fname:'',
             Lname:'',
             username:'',
-            company:'',
+            company:'ALL',
+            comNameOptions: [],
             password:'',
             confirmPassword:'',
             StreetAddress:'',
@@ -42,8 +43,13 @@ export class ManagerCustomerReg extends Component {
         this.addClick=this.addClick.bind(this);
         this.renderRemoveTable=this.renderRemoveTable.bind(this);
         this.scree6Reg=this.scree6Reg.bind(this);
+        this.obtainCom = this.obtainCom.bind(this);
+        this.getComName = this.getComName.bind(this);
 
     };
+
+    componentDidMount() {
+		this.getComName();}
 
 
     First_name(event) {
@@ -59,7 +65,7 @@ export class ManagerCustomerReg extends Component {
     }
 
     addcompany(event){
-        this.setState({compnay:event.target.value},()=>console.log('company',this.state.company));
+        this.setState({company:event.target.value},()=>console.log('company',this.state.company));
     }
 
     Psw(event){
@@ -86,6 +92,24 @@ export class ManagerCustomerReg extends Component {
         this.setState({zipcode:event.target.value},()=>console.log('city',this.state.zipcode));
     }
 
+    obtainCom() {
+    let url = ENDPOINTS.OBTAIN_COMPANY;
+    fetch(url).then(res => res.json()).then((result)=>{
+      this.setState({comNameOptions: result})
+        },
+        (error)=>{});
+  }
+
+  getComName() {
+        let url=ENDPOINTS.OBTAIN_COMPANY;
+        fetch(url).then(res=> res.json()).then((result)=>{
+            this.setState({comNameOptions:result})
+        })
+  }
+
+
+
+
 
 
     removeCard(idx){
@@ -99,7 +123,7 @@ export class ManagerCustomerReg extends Component {
         return this.state.Creditcardnumber.map((card, idx) =>
             (<Row key={idx} className="justify-content-md-center" >
                 <p>{card.number}</p>
-                <input type='button' value='remove' size={"lg"} className={"w-150"} onClick={() =>this.removeCard(idx)} />
+                <input type='button' value='remove' className={"p-4"} onClick={() =>this.removeCard(idx)} />
             </Row>
             )
 
@@ -133,14 +157,12 @@ export class ManagerCustomerReg extends Component {
             username : this.state.username,
             password : this.state.password,
             confirmPassword : this.state.confirmPassword,
-            company:this.state.compnay,
+            company:this.state.company,
             StreetAddress:this.state.StreetAddress,
             city:this.state.city,
             state:this.state.state,
             zipcode:this.state.zipcode,
-            Creditcardnumber:this.state.Creditcardnumber,
-
-
+            Creditcardnumber:this.state.Creditcardnumber
 
         }
         let query = Object.keys(args)
@@ -155,6 +177,7 @@ export class ManagerCustomerReg extends Component {
 
 
     render(){
+        const companies = this.state.comNameOptions;
         return (
             <div>
                 <h1 className={"text-center"}>
@@ -184,8 +207,9 @@ export class ManagerCustomerReg extends Component {
                           <Form.Label className={"p-4"}>Company</Form.Label>
                           <Form.Control as="select" className={"w-25 m-2"} value={this.state.company} onChange={this.addcompany}>
                               <option value="all">--ALL--</option>
-                              <option value="amc">AMC</option>
-                              <option value="regal">Regal</option>
+                              {this.state.comNameOptions.map(opt => {
+                                        return (<option key={opt.comName} >{opt.comName}</option>);
+                                    })}
                           </Form.Control>
                       </Form.Group>
                     </Form.Row>
@@ -291,11 +315,11 @@ export class ManagerCustomerReg extends Component {
                             <div >Credit Card #</div>
                         </Form.Row>
                     </div>
-                    <div className="justify-content-md-center"  >
+                    <div className={"text-center"} >
                         {this.renderRemoveTable()}
                     </div>
                     <div className={"text-center"}>
-                        <input type="text" value={this.state.tmp} onChange={this.changevalue} className="col-xs-4"/>
+                        <input type="text" value={this.state.tmp} onChange={this.changevalue}/>
                         <input type='button' value='Add' onClick={this.addClick} />
                     </div>
 

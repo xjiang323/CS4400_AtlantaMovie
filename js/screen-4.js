@@ -198,7 +198,7 @@ export class Customer_reg extends Component {
 
 
                     <div>
-                        <Form.Row onSubmit={this.onSubmit}>
+                        <Form.Row onSubmit={this.onSubmit} className={"p-4"}  md={{span:1,offset:3}}>
                             <h6>Credit Card #</h6>
                         </Form.Row>
                     </div>
