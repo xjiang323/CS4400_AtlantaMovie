@@ -1,27 +1,17 @@
 
-# React + Flask starter kit
-
-A quick starter repo that includes Flask and React, with Babel and Webpack. For proof-of-concept projects, workshop settings, etc where you don't want to worry about developer setup or writing config files.
-
-TLDR; for the quick and dirty setup, install your dependencies:
-
-```
-pip install virtualenv
-virtualenv venv; source venv/bin/activate
-pip install -r requirements.txt
-npm install webpack@1.12.12; npm install
-```
-
-Then in two separate tabs run `python app.py` and `npx webpack --watch`. Make edits to `js/Hello.js` and `app.py` to edit the frontend and backend, respectively.
-
-These steps are explained in more detail below.
-
+# Team 43 Atlanta Movie Phase IV
 ## Prerequisites
 
-You'll need some package managers.
+You'll need to install the following packages or softwares to launch the project.
 
+- `Python`
+- `node`
 - `npm`
 - `pip`
+- `MySQL`
+
+### MySQL
+The project needs to connect the local MySQL to do data mangement. Thus, to launch the project successfully, it is necessary to make sure that local MySQl is running on 3306 port and phase III schema has been created. Also, change your database configuration in `app.py` correctly, or remove your MySQL root's password so that the default database configuration in `app.py` can work.
 
 ## Setup
 
@@ -47,29 +37,8 @@ Then, use `npm` to install the remaining JavaScript dependencies.
 npm install
 ```
 
-## Development
 
-The entry point for the app is in `js/app.js`. The starter React component is `js/Hello.js`. Editing this file is a good place to start.
+## Launch
 
-While developing on the frontend, run `npx webpack --watch` to keep re-compiling your JavaScript code.
-
-Running `npx webpack` creates a file in `static/bundle.js`, which is the bundled version of your frontend code.
-
-The "backend" here is a bare-bones Flask app. Look in `app.py` if you want to make edits to the backend.
-
-To run the application, follow the steps in the next section.
-
-## Running the app
-
-If you're using a virtualenv, activate it.
-
-```
-source venv/bin/activate
-```
-
-Then run the Flask app:
-
-```
-python app.py
-```
+Then in two separate tabs run `python app.py` and `npx webpack --watch`. Visit `http://127.0.0.1:5000/` to use the system.
 
